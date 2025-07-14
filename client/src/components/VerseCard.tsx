@@ -23,21 +23,42 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
     if (audioState.isPlaying) {
       toggle();
     } else {
-      const textToSpeak = mode === 'double' && koreanVerse 
-        ? `${verse.text}. ${koreanVerse.text}`
-        : verse.text;
-      
-      // Get the appropriate voice for current language
-      const voiceMapping = {
-        ko: 'ko-KR',
-        en: 'en-US',
-        zh: 'zh-CN', 
-        ja: 'ja-JP'
-      };
-      
-      const langCode = voiceMapping[language] || 'en-US';
-      speak(textToSpeak, { rate: audioState.speed, lang: langCode });
+      if (mode === 'double' && koreanVerse) {
+        // For cross mode, speak first language then Korean with appropriate voices
+        speakCrossMode(verse, koreanVerse, language);
+      } else {
+        // Single mode - speak only the current verse
+        const voiceMapping = {
+          ko: 'ko-KR',
+          en: 'en-US',
+          zh: 'zh-CN', 
+          ja: 'ja-JP'
+        };
+        
+        const langCode = voiceMapping[language] || 'en-US';
+        speak(verse.text, { rate: audioState.speed, lang: langCode });
+      }
     }
+  };
+
+  const speakCrossMode = (primaryVerse: BibleVerse, koreanVerse: BibleVerse, primaryLang: Language) => {
+    const voiceMapping = {
+      ko: 'ko-KR',
+      en: 'en-US',
+      zh: 'zh-CN', 
+      ja: 'ja-JP'
+    };
+
+    // First speak in the primary language, then Korean when finished
+    const primaryLangCode = voiceMapping[primaryLang] || 'en-US';
+    speak(primaryVerse.text, { 
+      rate: audioState.speed, 
+      lang: primaryLangCode,
+      onEnd: () => {
+        // Speak Korean after the first language finishes
+        speak(koreanVerse.text, { rate: audioState.speed, lang: 'ko-KR' });
+      }
+    });
   };
 
   const handleBookmark = () => {

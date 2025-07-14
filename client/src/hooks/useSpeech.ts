@@ -8,6 +8,7 @@ interface UseSpeechOptions {
   volume?: number;
   voice?: SpeechSynthesisVoice;
   lang?: string;
+  onEnd?: () => void;
 }
 
 export function useSpeech() {
@@ -193,6 +194,11 @@ export function useSpeech() {
         // Note: We'd need to add totalListeningTime to settings schema
         
         setAudioState(prev => ({ ...prev, isPlaying: false, currentPosition: 0 }));
+        
+        // Call onEnd callback if provided
+        if (options.onEnd) {
+          options.onEnd();
+        }
       };
 
       newUtterance.onerror = (event) => {
