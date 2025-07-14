@@ -21,7 +21,7 @@ export default function Home() {
   const [showChapterVerseSelector, setShowChapterVerseSelector] = useState(false);
   const [showBibleSelector, setShowBibleSelector] = useState(false);
   const [showFontSizeModal, setShowFontSizeModal] = useState(false);
-  const [fontSize, setFontSize] = useState(16);
+  const [fontLevel, setFontLevel] = useState(0); // -2 to +3, 0 is base
   
   const {
     currentLanguage,
@@ -44,10 +44,12 @@ export default function Home() {
     setSettings(savedSettings);
     setCurrentLanguage(savedSettings.selectedLanguage);
     
-    // Load saved font size
-    const savedFontSize = localStorage.getItem('fontSize');
-    if (savedFontSize) {
-      setFontSize(parseInt(savedFontSize));
+    // Load saved font level
+    const savedFontLevel = localStorage.getItem('fontLevel');
+    if (savedFontLevel) {
+      const level = parseInt(savedFontLevel);
+      setFontLevel(level);
+      applyFontLevel(level);
     }
   }, []); // Only run once on mount
 
@@ -74,10 +76,33 @@ export default function Home() {
     Storage.saveSettings(newSettings);
   };
 
-  const handleFontSizeChange = (newSize: number) => {
-    setFontSize(newSize);
-    localStorage.setItem('fontSize', newSize.toString());
-    document.documentElement.style.setProperty('--font-size-base', `${newSize}px`);
+  const applyFontLevel = (level: number) => {
+    // Base sizes for different elements
+    const baseSizes = {
+      text: 16,      // p, span, div text
+      heading: 20,   // h3, card titles
+      large: 24,     // h2, main headings
+      small: 14      // small text, labels
+    };
+    
+    // Scale factor: each level increases by 20%
+    const scaleFactor = 1 + (level * 0.2);
+    
+    document.documentElement.style.setProperty('--font-size-text', `${baseSizes.text * scaleFactor}px`);
+    document.documentElement.style.setProperty('--font-size-heading', `${baseSizes.heading * scaleFactor}px`);
+    document.documentElement.style.setProperty('--font-size-large', `${baseSizes.large * scaleFactor}px`);
+    document.documentElement.style.setProperty('--font-size-small', `${baseSizes.small * scaleFactor}px`);
+  };
+
+  const handleFontLevelChange = (newLevel: number) => {
+    setFontLevel(newLevel);
+    localStorage.setItem('fontLevel', newLevel.toString());
+    applyFontLevel(newLevel);
+  };
+
+  const getFontLevelName = (level: number) => {
+    const names = ['매우 작게', '작게', '기본', '크게', '매우 크게', '최대 크게'];
+    return names[level + 2] || '기본';
   };
 
   return (
@@ -109,14 +134,12 @@ export default function Home() {
         />
 
         {currentVerseData && (
-          <div style={{ fontSize: `${fontSize}px` }}>
-            <VerseCard
-              verse={currentVerseData}
-              language={currentLanguage}
-              mode={settings.displayMode}
-              koreanVerse={currentLanguage !== 'ko' ? koreanVerseData : undefined}
-            />
-          </div>
+          <VerseCard
+            verse={currentVerseData}
+            language={currentLanguage}
+            mode={settings.displayMode}
+            koreanVerse={currentLanguage !== 'ko' ? koreanVerseData : undefined}
+          />
         )}
         
         <Navigation
@@ -151,30 +174,27 @@ export default function Home() {
               <h3 className="text-lg font-semibold mb-4 text-center">글자 크기 조절</h3>
               <div className="space-y-4">
                 <div className="text-center text-slate-600">
-                  현재 크기: {fontSize}px
+                  현재 설정: {getFontLevelName(fontLevel)}
                 </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleFontSizeChange(Math.max(12, fontSize - 2))}
-                    className="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-800 py-2 px-4 rounded-lg transition-colors"
-                  >
-                    작게
-                  </button>
-                  <button
-                    onClick={() => handleFontSizeChange(16)}
-                    className="flex-1 bg-amber-200 hover:bg-amber-300 text-amber-800 py-2 px-4 rounded-lg transition-colors"
-                  >
-                    기본
-                  </button>
-                  <button
-                    onClick={() => handleFontSizeChange(Math.min(24, fontSize + 2))}
-                    className="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-800 py-2 px-4 rounded-lg transition-colors"
-                  >
-                    크게
-                  </button>
+                <div className="grid grid-cols-3 gap-2">
+                  {[-2, -1, 0, 1, 2, 3].map((level) => (
+                    <button
+                      key={level}
+                      onClick={() => handleFontLevelChange(level)}
+                      className={`py-2 px-2 rounded-lg transition-colors text-sm ${
+                        fontLevel === level
+                          ? 'bg-amber-800 text-white'
+                          : 'bg-slate-200 hover:bg-slate-300 text-slate-800'
+                      }`}
+                    >
+                      {getFontLevelName(level)}
+                    </button>
+                  ))}
                 </div>
-                <div className="text-center" style={{ fontSize: `${fontSize}px` }}>
-                  미리보기: 하나님이 세상을 이처럼 사랑하사
+                <div className="text-center p-3 bg-slate-50 rounded-lg">
+                  <div style={{ fontSize: `${16 + (fontLevel * 3.2)}px` }}>
+                    미리보기: 하나님이 세상을 이처럼 사랑하사
+                  </div>
                 </div>
                 <button
                   onClick={() => setShowFontSizeModal(false)}

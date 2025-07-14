@@ -184,7 +184,7 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
       <div className="bg-gradient-to-r from-amber-800 to-amber-900 px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-white text-lg font-semibold">{verse.reference}</h3>
+            <h3 className="text-white text-dynamic-heading font-semibold">{verse.reference}</h3>
             <p className="text-amber-100 text-sm">성경</p>
           </div>
           <div className="flex space-x-2">
@@ -218,17 +218,17 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
       <CardContent className="p-6">
         <div className="space-y-4">
           {mode === 'single' ? (
-            <div className="text-slate-800 text-lg leading-relaxed">
+            <div className="text-slate-800 text-dynamic leading-relaxed">
               {verse.text}
             </div>
           ) : (
             <div className="space-y-3">
-              <div className="text-slate-800 text-lg leading-relaxed">
+              <div className="text-slate-800 text-dynamic leading-relaxed">
                 <div className="text-xs text-slate-500 mb-1">{getLanguageLabel(language)}</div>
                 {verse.text}
               </div>
               {koreanVerse && (
-                <div className="text-slate-600 text-base leading-relaxed border-l-4 border-amber-200 pl-4">
+                <div className="text-slate-600 text-dynamic leading-relaxed border-l-4 border-amber-200 pl-4">
                   <div className="text-xs text-slate-500 mb-1">한국어</div>
                   {koreanVerse.text}
                 </div>

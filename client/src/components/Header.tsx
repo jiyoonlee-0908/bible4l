@@ -1,4 +1,4 @@
-import { Search, Settings } from 'lucide-react';
+import { Type, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface HeaderProps {
@@ -26,7 +26,7 @@ export function Header({ onFontSizeClick, onSettingsClick }: HeaderProps) {
               className="w-10 h-10 bg-amber-50 hover:bg-amber-100 rounded-full"
               title="글자 크기 조절"
             >
-              <Search className="h-5 w-5 text-amber-800" />
+              <Type className="h-5 w-5 text-amber-800" />
             </Button>
             <Button
               variant="ghost"

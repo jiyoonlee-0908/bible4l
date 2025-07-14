@@ -64,6 +64,23 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   }
 
+  /* Dynamic font size classes */
+  .text-dynamic {
+    font-size: var(--font-size-text, 16px);
+  }
+  
+  .text-dynamic-heading {
+    font-size: var(--font-size-heading, 20px);
+  }
+  
+  .text-dynamic-large {
+    font-size: var(--font-size-large, 24px);
+  }
+  
+  .text-dynamic-small {
+    font-size: var(--font-size-small, 14px);
+  }
+
   /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
