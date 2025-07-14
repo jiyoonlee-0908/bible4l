@@ -97,13 +97,18 @@ export function useSpeech() {
   const applyDSPSettings = useCallback(() => {
     if (!eqNodesRef.current || !gainNodeRef.current) return;
     
-    const { dsp } = settings;
-    const { eq } = dsp;
+    // Safely access DSP settings with defaults
+    const dsp = settings.dsp || {
+      echo: false,
+      reverb: false,
+      eq: { low: 0, mid: 0, high: 0 }
+    };
+    const eq = dsp.eq || { low: 0, mid: 0, high: 0 };
     
     // Apply EQ settings
-    eqNodesRef.current.low.gain.value = eq.low;
-    eqNodesRef.current.mid.gain.value = eq.mid;
-    eqNodesRef.current.high.gain.value = eq.high;
+    eqNodesRef.current.low.gain.value = eq.low || 0;
+    eqNodesRef.current.mid.gain.value = eq.mid || 0;
+    eqNodesRef.current.high.gain.value = eq.high || 0;
     
     // Apply reverb/echo effects (simplified implementation)
     if (dsp.reverb || dsp.echo) {

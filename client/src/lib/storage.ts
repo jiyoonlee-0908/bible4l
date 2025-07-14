@@ -45,7 +45,19 @@ export class Storage {
     try {
       const stored = localStorage.getItem(STORAGE_KEYS.settings);
       if (stored) {
-        return JSON.parse(stored);
+        const parsed = JSON.parse(stored);
+        // Ensure all required fields exist
+        if (!parsed.dsp) {
+          parsed.dsp = {
+            echo: false,
+            reverb: false,
+            eq: { low: 0, mid: 0, high: 0 }
+          };
+        }
+        if (parsed.pitch === undefined) {
+          parsed.pitch = 0;
+        }
+        return parsed;
       }
     } catch {
       // Fall through to default
@@ -55,7 +67,13 @@ export class Storage {
       selectedLanguage: 'ko',
       displayMode: 'single',
       playbackSpeed: 1.0,
+      pitch: 0,
       autoPlay: false,
+      dsp: {
+        echo: false,
+        reverb: false,
+        eq: { low: 0, mid: 0, high: 0 }
+      }
     };
 
     this.saveSettings(defaultSettings);
