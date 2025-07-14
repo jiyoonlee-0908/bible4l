@@ -22,6 +22,7 @@ export default function ProgressPage() {
   const [location, setLocation] = useLocation();
   const [listeningStats, setListeningStats] = useState<ListeningStat[]>([]);
   const [totalListeningTime, setTotalListeningTime] = useState(0);
+  const [showAllRecent, setShowAllRecent] = useState(false);
 
   useEffect(() => {
     // Load listening statistics from localStorage
@@ -46,9 +47,9 @@ export default function ProgressPage() {
   };
 
   const getRecentListening = () => {
-    return listeningStats
-      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
-      .slice(0, 10);
+    const sorted = listeningStats
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    return showAllRecent ? sorted : sorted.slice(0, 3);
   };
 
   const getUniqueBooks = () => {
@@ -224,71 +225,91 @@ export default function ProgressPage() {
           </Card>
         )}
 
-        {/* Bible Grid */}
-        {listeningStats.length > 0 && (
-          <BibleGrid listeningStats={listeningStats} />
-        )}
-
         {/* Recent Listening */}
         {listeningStats.length > 0 && (
-          <Card className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
-            <CardHeader className="bg-gradient-to-r from-emerald-50 to-emerald-100 border-b border-emerald-200">
-              <CardTitle className="text-lg font-semibold text-emerald-900 flex items-center gap-2">
-                <Calendar className="h-5 w-5" />
+          <Card className="bg-white rounded-xl shadow-lg border border-slate-200">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold text-slate-800 flex items-center gap-2">
+                <Calendar className="h-5 w-5 text-amber-600" />
                 최근 청취 기록
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-0">
+            <CardContent className="space-y-3">
               {getRecentListening().map((stat, index) => (
-                <div key={index} className="p-4 border-b border-slate-100 last:border-b-0 hover:bg-emerald-25 transition-colors">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <div className="font-semibold text-slate-800 mb-1">
+                <div key={index} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-amber-600 rounded-full flex items-center justify-center">
+                      <Book className="h-4 w-4 text-white" />
+                    </div>
+                    <div>
+                      <div className="font-medium text-slate-800">
                         {stat.book} {stat.chapter}:{stat.verse}
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-slate-600">
-                        <Badge variant="secondary" className="text-xs">
-                          {getLanguageName(stat.language)}
-                        </Badge>
-                        <span>•</span>
-                        <span>{formatTime(stat.duration)}</span>
-                        {stat.type && (
-                          <>
-                            <span>•</span>
-                            <span className={stat.type === 'listen' ? 'text-blue-600' : 'text-green-600'}>
-                              {stat.type === 'listen' ? '청취' : '읽기'}
-                            </span>
-                          </>
-                        )}
+                      <div className="text-xs text-slate-500">
+                        {getLanguageName(stat.language)} • {formatTime(stat.duration)}
                       </div>
                     </div>
-                    <div className="text-right text-xs text-slate-500">
-                      <div>{new Date(stat.timestamp).toLocaleDateString('ko-KR')}</div>
-                      <div>{new Date(stat.timestamp).toLocaleTimeString('ko-KR', { 
-                        hour: '2-digit', 
-                        minute: '2-digit' 
-                      })}</div>
-                    </div>
+                  </div>
+                  <div className="text-xs text-slate-400">
+                    {new Date(stat.timestamp).toLocaleDateString('ko-KR')}
                   </div>
                 </div>
               ))}
-              
-              {/* Show more button if there are more records */}
-              {listeningStats.length > 10 && (
-                <div className="p-4 text-center bg-slate-50">
-                  <button 
-                    onClick={() => {
-                      // Could implement modal or expanded view
-                    }}
-                    className="text-emerald-700 font-medium hover:text-emerald-800 transition-colors"
+              {listeningStats.length > 3 && (
+                <div className="text-center">
+                  <button
+                    onClick={() => setShowAllRecent(!showAllRecent)}
+                    className="text-amber-600 text-sm hover:text-amber-700 font-medium"
                   >
-                    전체 기록 보기 ({listeningStats.length - 10}개 더)
+                    {showAllRecent ? '접기' : `더보기 (+${listeningStats.length - 3}개)`}
                   </button>
                 </div>
               )}
             </CardContent>
           </Card>
         )}
+
+        {/* Reading Plan Progress */}
+        <Card className="bg-white rounded-xl shadow-lg border border-slate-200">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold text-slate-800 flex items-center gap-2">
+              <Target className="h-5 w-5 text-amber-600" />
+              읽기 계획 진행률
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-semibold text-amber-900">365일 성경 통독</h4>
+                <Badge variant="secondary" className="bg-amber-200 text-amber-800">Day 15/365</Badge>
+              </div>
+              <Progress value={4.1} className="mb-2" />
+              <p className="text-xs text-amber-700">오늘: 창세기 15-17장</p>
+            </div>
+            
+            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-semibold text-blue-900">90일 신약 통독</h4>
+                <Badge variant="secondary" className="bg-blue-200 text-blue-800">Day 8/90</Badge>
+              </div>
+              <Progress value={8.9} className="mb-2" />
+              <p className="text-xs text-blue-700">오늘: 마태복음 5-7장</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Bible Grid - 성경전체진도 (기본으로 펼쳐져 있음) */}
+        <Card className="bg-white rounded-xl shadow-lg border border-slate-200">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold text-slate-800 flex items-center gap-2">
+              <BookOpen className="h-5 w-5 text-amber-600" />
+              성경 전체 진도
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <BibleGrid listeningStats={listeningStats} />
+          </CardContent>
+        </Card>
 
         {/* Empty State */}
         {listeningStats.length === 0 && (
