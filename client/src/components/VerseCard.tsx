@@ -11,10 +11,10 @@ interface VerseCardProps {
   verse: BibleVerse;
   language: Language;
   mode: 'single' | 'double';
-  secondaryVerse?: BibleVerse;
+  koreanVerse?: BibleVerse;
 }
 
-export function VerseCard({ verse, language, mode, secondaryVerse }: VerseCardProps) {
+export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps) {
   const { audioState, speak, toggle, stop, setSpeed, setPitch } = useSpeech();
   const { isBookmarked, toggleBookmark } = useBookmarks();
   const { toast } = useToast();
@@ -23,8 +23,8 @@ export function VerseCard({ verse, language, mode, secondaryVerse }: VerseCardPr
     if (audioState.isPlaying) {
       toggle();
     } else {
-      const textToSpeak = mode === 'double' && secondaryVerse 
-        ? `${verse.text}. ${secondaryVerse.text}`
+      const textToSpeak = mode === 'double' && koreanVerse 
+        ? `${verse.text}. ${koreanVerse.text}`
         : verse.text;
       
       // Get the appropriate voice for current language
@@ -103,6 +103,16 @@ export function VerseCard({ verse, language, mode, secondaryVerse }: VerseCardPr
     ? (audioState.currentPosition / audioState.duration) * 100 
     : 0;
 
+  const getLanguageLabel = (lang: Language) => {
+    const labels = {
+      ko: '한국어',
+      en: 'English',
+      zh: '中文',
+      ja: '日本語'
+    };
+    return labels[lang];
+  };
+
   return (
     <Card className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
       {/* Verse Header */}
@@ -149,11 +159,13 @@ export function VerseCard({ verse, language, mode, secondaryVerse }: VerseCardPr
           ) : (
             <div className="space-y-3">
               <div className="text-slate-800 text-lg leading-relaxed">
+                <div className="text-xs text-slate-500 mb-1">{getLanguageLabel(language)}</div>
                 {verse.text}
               </div>
-              {secondaryVerse && (
+              {koreanVerse && (
                 <div className="text-slate-600 text-base leading-relaxed border-l-4 border-blue-200 pl-4">
-                  {secondaryVerse.text}
+                  <div className="text-xs text-slate-500 mb-1">한국어</div>
+                  {koreanVerse.text}
                 </div>
               )}
             </div>
@@ -224,33 +236,23 @@ export function VerseCard({ verse, language, mode, secondaryVerse }: VerseCardPr
                     <Plus className="h-2 w-2 text-amber-700" />
                   </Button>
                 </div>
-                <span className="text-xs text-amber-600">음높이</span>
+                <span className="text-xs text-amber-600">음조</span>
               </div>
             </div>
           </div>
           
-          <div className="flex items-center space-x-2">
+          <div className="flex flex-col items-end space-y-1">
+            <div className="text-xs text-slate-500">
+              {audioState.isPlaying ? '재생 중' : '일시정지'}
+            </div>
             {audioState.isPlaying && (
-              <div className="flex space-x-1">
-                <div className="w-1 h-4 bg-blue-600 rounded-full animate-pulse"></div>
-                <div className="w-1 h-3 bg-blue-400 rounded-full animate-pulse" style={{ animationDelay: '0.1s' }}></div>
-                <div className="w-1 h-5 bg-blue-600 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                <div className="w-1 h-2 bg-blue-300 rounded-full animate-pulse" style={{ animationDelay: '0.3s' }}></div>
+              <div className="w-16 bg-slate-200 rounded-full h-1">
+                <div 
+                  className="bg-blue-600 h-1 rounded-full transition-all duration-300" 
+                  style={{ width: `${progressPercentage}%` }}
+                />
               </div>
             )}
-            <span className="text-xs text-slate-500">
-              {formatTime(audioState.currentPosition)}
-            </span>
-          </div>
-        </div>
-        
-        {/* Progress Bar */}
-        <div className="mt-4">
-          <div className="w-full bg-slate-200 rounded-full h-2">
-            <div 
-              className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-              style={{ width: `${progressPercentage}%` }}
-            />
           </div>
         </div>
       </div>

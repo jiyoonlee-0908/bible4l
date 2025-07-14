@@ -20,6 +20,7 @@ export default function Home() {
     currentLanguage,
     setCurrentLanguage,
     currentVerseData,
+    koreanVerseData,
     navigateVerse,
     currentChapter,
     currentVerse,
@@ -80,6 +81,7 @@ export default function Home() {
             verse={currentVerseData}
             language={currentLanguage}
             mode={settings.displayMode}
+            koreanVerse={currentLanguage !== 'ko' ? koreanVerseData : undefined}
           />
         )}
         

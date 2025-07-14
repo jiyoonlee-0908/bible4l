@@ -164,14 +164,14 @@ export default function Settings() {
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-slate-700">음성 선택</label>
                     <Select
-                      value={settings.voice || ''}
-                      onValueChange={(voice) => updateSettings({ voice })}
+                      value={settings.voice || 'default'}
+                      onValueChange={(voice) => updateSettings({ voice: voice === 'default' ? undefined : voice })}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="기본 음성" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">기본 음성</SelectItem>
+                        <SelectItem value="default">기본 음성</SelectItem>
                         {voices.map((voice) => (
                           <SelectItem key={voice.name} value={voice.name}>
                             {voice.name} ({voice.lang})
@@ -211,7 +211,7 @@ export default function Settings() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="single">단일 모드</SelectItem>
-                      <SelectItem value="double">2줄 모드</SelectItem>
+                      <SelectItem value="double">교차 모드</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

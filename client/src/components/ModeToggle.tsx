@@ -34,7 +34,7 @@ export function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
                 : 'text-slate-600 hover:text-slate-800'
             }`}
           >
-            <span className="text-sm font-medium">2줄 모드</span>
+            <span className="text-sm font-medium">교차 모드</span>
           </Button>
         </div>
       </CardContent>

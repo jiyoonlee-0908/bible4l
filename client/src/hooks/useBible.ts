@@ -29,6 +29,13 @@ export function useBible() {
     enabled: !!currentBook && !!currentChapter && !!currentVerse,
   });
 
+  // Always fetch Korean verse for cross-display mode
+  const { data: koreanVerseData } = useQuery({
+    queryKey: ['bible-verse-korean', currentBook, currentChapter, currentVerse],
+    queryFn: () => BibleApi.getVerse(currentBook, currentChapter, currentVerse, 'ko'),
+    enabled: !!currentBook && !!currentChapter && !!currentVerse && currentLanguage !== 'ko',
+  });
+
   const { data: verses } = useQuery({
     queryKey: ['bible-verses', currentBook, currentChapter, currentLanguage],
     queryFn: () => BibleApi.getVerses(currentBook, currentChapter, currentLanguage),
@@ -77,6 +84,7 @@ export function useBible() {
     currentChapter,
     currentVerse,
     currentVerseData,
+    koreanVerseData,
     verses,
     navigateVerse,
     setVerse,
