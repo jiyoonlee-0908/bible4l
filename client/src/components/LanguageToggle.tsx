@@ -30,7 +30,7 @@ export function LanguageToggle({ selectedLanguage, onLanguageChange, displayMode
                 size="sm"
                 className={`h-10 text-sm transition-colors flex items-center gap-2 ${
                   isSelected
-                    ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 shadow-md'
+                    ? 'bg-gradient-to-r from-amber-500 to-yellow-600 text-white hover:from-amber-600 hover:to-yellow-700 shadow-md'
                     : 'bg-white text-slate-700 hover:bg-slate-50 border-slate-200'
                 }`}
               >
