@@ -26,8 +26,7 @@ export function Header({ onFontSizeClick, onSettingsClick }: HeaderProps) {
               <img src="/bible-icon-option2.svg" alt="성경" className="w-10 h-10 rounded-lg" />
             </div>
             <div>
-              <h1 className="text-lg font-semibold text-card-foreground">성경듣기</h1>
-              <p className="text-xs text-muted-foreground">다개국어 성경듣기</p>
+              <h1 className="text-lg font-semibold text-card-foreground">다개국어 성경듣기</h1>
             </div>
           </div>
           
