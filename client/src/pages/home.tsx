@@ -6,15 +6,20 @@ import { ModeToggle } from '@/components/ModeToggle';
 import { VerseCard } from '@/components/VerseCard';
 import { Navigation } from '@/components/Navigation';
 import { BottomNavigation } from '@/components/BottomNavigation';
+import { ChapterVerseSelector } from '@/components/ChapterVerseSelector';
+import { BibleSelector } from '@/components/BibleSelector';
 import { useBible } from '@/hooks/useBible';
 import { useBadges } from '@/hooks/useBadges';
 import { useBookmarks } from '@/hooks/useBookmarks';
 import { Storage } from '@/lib/storage';
 import { Language, Settings } from '@shared/schema';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Home() {
   const [location, setLocation] = useLocation();
   const [settings, setSettings] = useState<Settings>(Storage.getSettings());
+  const [showChapterVerseSelector, setShowChapterVerseSelector] = useState(false);
+  const [showBibleSelector, setShowBibleSelector] = useState(false);
   
   const {
     currentLanguage,
@@ -24,10 +29,13 @@ export default function Home() {
     navigateVerse,
     currentChapter,
     currentVerse,
+    currentBook,
+    setVerse
   } = useBible();
   
   const { checkAndUnlockBadge } = useBadges();
   const { bookmarks } = useBookmarks();
+  const { toast } = useToast();
 
   useEffect(() => {
     const savedSettings = Storage.getSettings();
@@ -76,6 +84,18 @@ export default function Home() {
           onModeChange={handleModeChange}
         />
         
+        {/* Bible Selector */}
+        <BibleSelector
+          onSelect={(book, chapter, verse) => {
+            setVerse(book, chapter, verse);
+            toast({
+              title: '성경 구절 선택됨',
+              description: `${book} ${chapter}:${verse}로 이동했습니다.`,
+            });
+          }}
+          selectedLanguage={currentLanguage}
+        />
+
         {currentVerseData && (
           <VerseCard
             verse={currentVerseData}
@@ -90,12 +110,24 @@ export default function Home() {
           currentVerse={currentVerse}
           onPrevious={() => navigateVerse('prev')}
           onNext={() => navigateVerse('next')}
-          onChapterSelect={() => {
-            // TODO: Implement chapter selector modal
+          onChapterSelect={() => setShowChapterVerseSelector(true)}
+          onVerseSelect={() => setShowChapterVerseSelector(true)}
+        />
+
+        {/* Chapter/Verse Selector Modal */}
+        <ChapterVerseSelector
+          isOpen={showChapterVerseSelector}
+          onClose={() => setShowChapterVerseSelector(false)}
+          onSelect={(chapter, verse) => {
+            setVerse(currentBook, chapter, verse);
+            toast({
+              title: '구절 이동됨',
+              description: `${currentBook} ${chapter}:${verse}로 이동했습니다.`,
+            });
           }}
-          onVerseSelect={() => {
-            // TODO: Implement verse selector modal
-          }}
+          currentChapter={currentChapter}
+          currentVerse={currentVerse}
+          maxChapters={150}
         />
       </div>
       
