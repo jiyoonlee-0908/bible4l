@@ -11,15 +11,30 @@ export default function IconPreview() {
   const icons = [
     { id: 'bible-icon-1', name: '아이콘 1', description: '상단 4개 국기 배치' },
     { id: 'bible-icon-2', name: '아이콘 2', description: '모서리 국기 배치' },
-    { id: 'bible-icon-3', name: '아이콘 3', description: '가로 스트립 국기 배치' },
+    { id: 'bible-icon-3', name: '아이콘 3', description: '2x2 국기 배치, 전체 우드색' },
     { id: 'bible-icon-4', name: '아이콘 4', description: '헤드폰 + 가로 국기 배치' },
     { id: 'bible-icon-5', name: '아이콘 5', description: '큰 헤드폰 + 격자 국기 배치' },
   ];
 
   const handleSelectIcon = (iconId: string) => {
     setSelectedIcon(iconId);
-    // Here you would update the app to use this icon
+    // Update the main app icon
+    updateAppIcon(iconId);
     console.log('Selected icon:', iconId);
+  };
+
+  const updateAppIcon = (iconId: string) => {
+    // Update all icon references to use the selected icon
+    const favicon = document.querySelector('link[rel="icon"]') as HTMLLinkElement;
+    const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]') as HTMLLinkElement;
+    const shortcutIcon = document.querySelector('link[rel="shortcut icon"]') as HTMLLinkElement;
+    
+    if (favicon) favicon.href = `/${iconId}.svg`;
+    if (appleTouchIcon) appleTouchIcon.href = `/${iconId}.svg`;
+    if (shortcutIcon) shortcutIcon.href = `/${iconId}.svg`;
+    
+    // Save selection to localStorage
+    localStorage.setItem('selectedIcon', iconId);
   };
 
   return (

@@ -17,7 +17,7 @@ Commercial use: Prioritize cost-free solutions using public domain content.
 ✓ Added DSP audio effects: Echo, Reverb, 3-band EQ, Pitch control (±4 semitones)
 ✓ Implemented 90-day and 365-day reading plans with progress tracking
 ✓ Created badge/achievement system with streak tracking and listening time
-✓ Enhanced audio controls with speed (0.8x-1.5x) and pitch adjustment
+✓ Enhanced audio controls with speed (0.5x-1.5x) and pitch adjustment
 ✓ Added tabbed settings interface: Audio, Reading Plans, Badges
 ✓ Integrated badge checking for first listen and bookmark milestones
 ✓ Completed wood tone color scheme throughout entire app (성경책처럼)
@@ -25,6 +25,9 @@ Commercial use: Prioritize cost-free solutions using public domain content.
 ✓ Fixed Bible navigation to show diverse verses using hash-based fallback system
 ✓ Added continuous playback in Player with auto-advance to next verse
 ✓ Resolved API fetch errors with reliable fallback verse system
+✓ Created 5 custom wood-toned Bible app icons with country flags and "성경듣기" text
+✓ Added single verse repeat functionality in player alongside continuous playback
+✓ Extended speed control to 0.5x minimum for slower listening preferences
 
 ## System Architecture
 
