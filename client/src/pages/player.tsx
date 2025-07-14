@@ -150,17 +150,17 @@ export default function Player() {
         <LanguageToggle
           selectedLanguage={currentLanguage}
           onLanguageChange={handleLanguageChange}
-        />
-        
-        <BibleSelector
-          onSelect={handleBibleSelect}
-          selectedLanguage={currentLanguage}
           displayMode={settings.displayMode}
           onModeChange={(mode) => {
             const newSettings = { ...settings, displayMode: mode };
             setSettings(newSettings);
             Storage.saveSettings(newSettings);
           }}
+        />
+        
+        <BibleSelector
+          onSelect={handleBibleSelect}
+          selectedLanguage={currentLanguage}
         />
         
         <Card className="bg-white rounded-2xl shadow-lg border border-slate-200">

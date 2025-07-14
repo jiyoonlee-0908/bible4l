@@ -74,7 +74,7 @@ export default function Home() {
       />
       
       <div className="max-w-md mx-auto px-4 py-3 space-y-3">
-        {/* Bible Selector with integrated mode toggle */}
+        {/* Bible Selector */}
         <BibleSelector
           onSelect={(book, chapter, verse) => {
             setVerse(book, chapter, verse);
@@ -84,14 +84,14 @@ export default function Home() {
             });
           }}
           selectedLanguage={currentLanguage}
-          displayMode={settings.displayMode}
-          onModeChange={handleModeChange}
         />
 
-        {/* Language Toggle */}
+        {/* Language Toggle with Mode Selection */}
         <LanguageToggle
           selectedLanguage={settings.selectedLanguage}
           onLanguageChange={handleLanguageChange}
+          displayMode={settings.displayMode}
+          onModeChange={handleModeChange}
         />
 
         {currentVerseData && (
