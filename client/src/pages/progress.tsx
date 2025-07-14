@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { Header } from '@/components/Header';
 import { BottomNavigation } from '@/components/BottomNavigation';
+import { FontSizeModal } from '@/components/FontSizeModal';
 import { BibleGrid } from '@/components/BibleGrid';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -23,6 +24,8 @@ export default function ProgressPage() {
   const [listeningStats, setListeningStats] = useState<ListeningStat[]>([]);
   const [totalListeningTime, setTotalListeningTime] = useState(0);
   const [showAllRecent, setShowAllRecent] = useState(false);
+  const [showFontSizeModal, setShowFontSizeModal] = useState(false);
+  const [fontLevel, setFontLevel] = useState(0);
 
   useEffect(() => {
     // Load listening statistics from localStorage
@@ -35,6 +38,10 @@ export default function ProgressPage() {
       const total = stats.reduce((sum: number, stat: ListeningStat) => sum + stat.duration, 0);
       setTotalListeningTime(total);
     }
+    
+    // Load font level
+    const savedSettings = Storage.getSettings();
+    setFontLevel(savedSettings.fontLevel || 0);
   }, []);
 
   const formatTime = (minutes: number) => {
@@ -108,7 +115,7 @@ export default function ProgressPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-amber-50">
       <Header
-        onFontSizeClick={() => setLocation('/bookmarks')}
+        onFontSizeClick={() => setShowFontSizeModal(true)}
         onSettingsClick={() => setLocation('/settings')}
       />
       
@@ -332,6 +339,13 @@ export default function ProgressPage() {
       <BottomNavigation
         currentPath={location}
         onNavigate={setLocation}
+      />
+      
+      <FontSizeModal
+        isOpen={showFontSizeModal}
+        onClose={() => setShowFontSizeModal(false)}
+        currentLevel={fontLevel}
+        onLevelChange={setFontLevel}
       />
     </div>
   );

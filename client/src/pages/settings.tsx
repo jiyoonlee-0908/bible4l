@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { Header } from '@/components/Header';
 import { BottomNavigation } from '@/components/BottomNavigation';
+import { FontSizeModal } from '@/components/FontSizeModal';
 import { DSPControls } from '@/components/DSPControls';
 import { ReadingPlanCard } from '@/components/ReadingPlanCard';
 import { BadgeDisplay } from '@/components/BadgeDisplay';
@@ -23,6 +24,8 @@ export default function Settings() {
   const [location, setLocation] = useLocation();
   const [settings, setSettings] = useState<SettingsType>(Storage.getSettings());
   const [activeTab, setActiveTab] = useState<'audio' | 'plans' | 'badges' | 'subscription'>('audio');
+  const [showFontSizeModal, setShowFontSizeModal] = useState(false);
+  const [fontLevel, setFontLevel] = useState(0);
   const { voices } = useSpeech();
   const { toast } = useToast();
   const readingPlan = useReadingPlan();
@@ -32,6 +35,7 @@ export default function Settings() {
   useEffect(() => {
     const savedSettings = Storage.getSettings();
     setSettings(savedSettings);
+    setFontLevel(savedSettings.fontLevel || 0);
   }, []);
 
   const updateSettings = (newSettings: Partial<SettingsType>) => {
@@ -81,7 +85,7 @@ export default function Settings() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <Header
-        onFontSizeClick={() => setLocation('/bookmarks')}
+        onFontSizeClick={() => setShowFontSizeModal(true)}
         onSettingsClick={() => setLocation('/settings')}
       />
       
@@ -390,6 +394,13 @@ export default function Settings() {
       <BottomNavigation
         currentPath={location}
         onNavigate={setLocation}
+      />
+      
+      <FontSizeModal
+        isOpen={showFontSizeModal}
+        onClose={() => setShowFontSizeModal(false)}
+        currentLevel={fontLevel}
+        onLevelChange={setFontLevel}
       />
     </div>
   );

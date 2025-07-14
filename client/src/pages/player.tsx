@@ -10,6 +10,7 @@ import { useBible } from '@/hooks/useBible';
 import { useSpeech } from '@/hooks/useSpeech';
 import { useSubscription } from '@/hooks/useSubscription';
 import { AdFitBanner } from '@/components/AdFitBanner';
+import { FontSizeModal } from '@/components/FontSizeModal';
 import { Storage } from '@/lib/storage';
 import { Language, Settings, languageConfig } from '@shared/schema';
 import { useToast } from '@/hooks/use-toast';
@@ -20,6 +21,8 @@ export default function Player() {
   const [isLoading, setIsLoading] = useState(false);
   const [playMode, setPlayMode] = useState<'single' | 'continuous'>('continuous');
   const [isPlayingContinuous, setIsPlayingContinuous] = useState(false);
+  const [showFontSizeModal, setShowFontSizeModal] = useState(false);
+  const [fontLevel, setFontLevel] = useState(0);
   
   const {
     currentLanguage,
@@ -41,6 +44,7 @@ export default function Player() {
     const savedSettings = Storage.getSettings();
     setSettings(savedSettings);
     setCurrentLanguage(savedSettings.selectedLanguage);
+    setFontLevel(savedSettings.fontLevel || 0);
   }, []);
 
   // Auto-play when verse changes in continuous mode
@@ -156,7 +160,7 @@ export default function Player() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <Header
-        onFontSizeClick={() => setLocation('/bookmarks')}
+        onFontSizeClick={() => setShowFontSizeModal(true)}
         onSettingsClick={() => setLocation('/settings')}
       />
       
@@ -342,6 +346,13 @@ export default function Player() {
       <BottomNavigation
         currentPath={location}
         onNavigate={setLocation}
+      />
+      
+      <FontSizeModal
+        isOpen={showFontSizeModal}
+        onClose={() => setShowFontSizeModal(false)}
+        currentLevel={fontLevel}
+        onLevelChange={setFontLevel}
       />
     </div>
   );

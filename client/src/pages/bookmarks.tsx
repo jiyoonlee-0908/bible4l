@@ -1,15 +1,25 @@
+import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { Header } from '@/components/Header';
 import { BookmarksList } from '@/components/BookmarksList';
+import { FontSizeModal } from '@/components/FontSizeModal';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { useBookmarks } from '@/hooks/useBookmarks';
 import { useBible } from '@/hooks/useBible';
+import { Storage } from '@/lib/storage';
 import { Bookmark } from '@shared/schema';
 
 export default function Bookmarks() {
   const [location, setLocation] = useLocation();
+  const [showFontSizeModal, setShowFontSizeModal] = useState(false);
+  const [fontLevel, setFontLevel] = useState(0);
   const { bookmarks, removeBookmark } = useBookmarks();
   const { setVerse } = useBible();
+
+  useEffect(() => {
+    const savedSettings = Storage.getSettings();
+    setFontLevel(savedSettings.fontLevel || 0);
+  }, []);
 
   const handleSelectBookmark = (bookmark: Bookmark) => {
     // Parse the verse reference to navigate to it
@@ -27,7 +37,7 @@ export default function Bookmarks() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <Header
-        onFontSizeClick={() => {}}
+        onFontSizeClick={() => setShowFontSizeModal(true)}
         onSettingsClick={() => setLocation('/settings')}
       />
       
@@ -42,6 +52,13 @@ export default function Bookmarks() {
       <BottomNavigation
         currentPath={location}
         onNavigate={setLocation}
+      />
+      
+      <FontSizeModal
+        isOpen={showFontSizeModal}
+        onClose={() => setShowFontSizeModal(false)}
+        currentLevel={fontLevel}
+        onLevelChange={setFontLevel}
       />
     </div>
   );

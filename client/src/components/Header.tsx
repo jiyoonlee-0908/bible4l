@@ -1,5 +1,6 @@
 import { Type, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useLocation } from 'wouter';
 
 interface HeaderProps {
   onFontSizeClick: () => void;
@@ -7,15 +8,27 @@ interface HeaderProps {
 }
 
 export function Header({ onFontSizeClick, onSettingsClick }: HeaderProps) {
+  const [, setLocation] = useLocation();
+
+  const handleHeaderClick = () => {
+    setLocation('/');
+  };
+
   return (
     <header className="bg-card shadow-sm border-b border-border sticky top-0 z-50">
       <div className="max-w-md mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
+          <div 
+            className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity"
+            onClick={handleHeaderClick}
+          >
             <div className="w-10 h-10 rounded-lg flex items-center justify-center">
               <img src="/bible-icon-option2.svg" alt="성경" className="w-10 h-10 rounded-lg" />
             </div>
-            <h1 className="text-lg font-semibold text-card-foreground">BibleAudio 4L</h1>
+            <div>
+              <h1 className="text-lg font-semibold text-card-foreground">성경듣기</h1>
+              <p className="text-xs text-muted-foreground">다개국어 성경듣기</p>
+            </div>
           </div>
           
           <div className="flex items-center space-x-2">
