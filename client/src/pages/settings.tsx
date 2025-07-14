@@ -93,7 +93,7 @@ export default function Settings() {
               <Button
                 variant="ghost"
                 onClick={() => setActiveTab('audio')}
-                className={`flex-1 py-2 px-3 rounded-lg transition-all duration-200 ${
+                className={`flex-1 py-2 px-2 rounded-lg transition-all duration-200 ${
                   activeTab === 'audio'
                     ? 'bg-amber-800 shadow-sm text-white'
                     : 'text-slate-600 hover:text-slate-800'
@@ -104,13 +104,13 @@ export default function Settings() {
               <Button
                 variant="ghost"
                 onClick={() => setActiveTab('plans')}
-                className={`flex-1 py-2 px-3 rounded-lg transition-all duration-200 ${
+                className={`flex-1 py-2 px-2 rounded-lg transition-all duration-200 ${
                   activeTab === 'plans'
                     ? 'bg-amber-800 shadow-sm text-white'
                     : 'text-slate-600 hover:text-slate-800'
                 }`}
               >
-                <span className="text-xs font-medium">통독계획</span>
+                <span className="text-sm font-medium">통독계획</span>
               </Button>
               <Button
                 variant="ghost"
@@ -121,7 +121,7 @@ export default function Settings() {
                     : 'text-slate-600 hover:text-slate-800'
                 }`}
               >
-                <span className="text-xs font-medium">배지</span>
+                <span className="text-sm font-medium">배지</span>
               </Button>
               <Button
                 variant="ghost"
@@ -132,7 +132,7 @@ export default function Settings() {
                     : 'text-slate-600 hover:text-slate-800'
                 }`}
               >
-                <span className="text-xs font-medium">구독</span>
+                <span className="text-sm font-medium">구독</span>
               </Button>
             </div>
           </CardContent>
