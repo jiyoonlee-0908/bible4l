@@ -73,7 +73,8 @@ export class Storage {
         echo: false,
         reverb: false,
         eq: { low: 0, mid: 0, high: 0 }
-      }
+      },
+      fontLevel: 0
     };
 
     this.saveSettings(defaultSettings);

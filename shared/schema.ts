@@ -38,6 +38,7 @@ export const settingsSchema = z.object({
       high: z.number().min(-10).max(10).default(0),
     }).default({}),
   }).default({}),
+  fontLevel: z.number().min(-2).max(3).default(0),
 });
 
 // Audio state schema

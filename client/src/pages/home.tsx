@@ -46,15 +46,8 @@ export default function Home() {
     const savedSettings = Storage.getSettings();
     setSettings(savedSettings);
     setCurrentLanguage(savedSettings.selectedLanguage);
-    
-    // Load saved font level
-    const savedFontLevel = localStorage.getItem('fontLevel');
-    if (savedFontLevel) {
-      const level = parseInt(savedFontLevel);
-      setFontLevel(level);
-      applyFontLevel(level);
-    }
-  }, []); // Only run once on mount
+    setFontLevel(savedSettings.fontLevel || 0);
+  }, []);
 
   useEffect(() => {
     // Check for badges when bookmarks change
@@ -79,28 +72,27 @@ export default function Home() {
     Storage.saveSettings(newSettings);
   };
 
-  const applyFontLevel = (level: number) => {
-    // Base sizes for different elements
-    const baseSizes = {
-      text: 16,      // p, span, div text
-      heading: 20,   // h3, card titles
-      large: 24,     // h2, main headings
-      small: 14      // small text, labels
-    };
-    
-    // Scale factor: each level increases by 20%
-    const scaleFactor = 1 + (level * 0.2);
-    
-    document.documentElement.style.setProperty('--font-size-text', `${baseSizes.text * scaleFactor}px`);
-    document.documentElement.style.setProperty('--font-size-heading', `${baseSizes.heading * scaleFactor}px`);
-    document.documentElement.style.setProperty('--font-size-large', `${baseSizes.large * scaleFactor}px`);
-    document.documentElement.style.setProperty('--font-size-small', `${baseSizes.small * scaleFactor}px`);
-  };
+
 
   const handleFontLevelChange = (newLevel: number) => {
     setFontLevel(newLevel);
-    localStorage.setItem('fontLevel', newLevel.toString());
-    applyFontLevel(newLevel);
+    const newSettings = { ...settings, fontLevel: newLevel };
+    setSettings(newSettings);
+    Storage.saveSettings(newSettings);
+    
+    // 전역 폰트 크기 적용
+    const fontScaleClasses = [
+      'font-scale-xs',   // -2
+      'font-scale-sm',   // -1  
+      'font-scale-base', // 0
+      'font-scale-lg',   // 1
+      'font-scale-xl',   // 2
+      'font-scale-2xl'   // 3
+    ];
+    
+    document.body.classList.remove(...fontScaleClasses);
+    const scaleIndex = Math.max(0, Math.min(5, newLevel + 2));
+    document.body.classList.add(fontScaleClasses[scaleIndex]);
   };
 
   const getFontLevelName = (level: number) => {
@@ -215,7 +207,7 @@ export default function Home() {
                   ))}
                 </div>
                 <div className="text-center p-3 bg-slate-50 rounded-lg">
-                  <div style={{ fontSize: `${16 + (fontLevel * 3.2)}px` }}>
+                  <div className="text-base">
                     미리보기: 하나님이 세상을 이처럼 사랑하사
                   </div>
                 </div>
