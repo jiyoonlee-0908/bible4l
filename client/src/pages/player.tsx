@@ -155,6 +155,12 @@ export default function Player() {
         <BibleSelector
           onSelect={handleBibleSelect}
           selectedLanguage={currentLanguage}
+          displayMode={settings.displayMode}
+          onModeChange={(mode) => {
+            const newSettings = { ...settings, displayMode: mode };
+            setSettings(newSettings);
+            Storage.saveSettings(newSettings);
+          }}
         />
         
         <Card className="bg-white rounded-2xl shadow-lg border border-slate-200">

@@ -74,7 +74,7 @@ export default function Home() {
       />
       
       <div className="max-w-md mx-auto px-4 py-3 space-y-3">
-        {/* Bible Selector - First */}
+        {/* Bible Selector with integrated mode toggle */}
         <BibleSelector
           onSelect={(book, chapter, verse) => {
             setVerse(book, chapter, verse);
@@ -84,23 +84,15 @@ export default function Home() {
             });
           }}
           selectedLanguage={currentLanguage}
+          displayMode={settings.displayMode}
+          onModeChange={handleModeChange}
         />
 
-        {/* Language and Mode Controls - Compact Row */}
-        <div className="flex gap-3">
-          <div className="flex-1">
-            <LanguageToggle
-              selectedLanguage={settings.selectedLanguage}
-              onLanguageChange={handleLanguageChange}
-            />
-          </div>
-          <div className="flex-1">
-            <ModeToggle
-              mode={settings.displayMode}
-              onModeChange={handleModeChange}
-            />
-          </div>
-        </div>
+        {/* Language Toggle */}
+        <LanguageToggle
+          selectedLanguage={settings.selectedLanguage}
+          onLanguageChange={handleLanguageChange}
+        />
 
         {currentVerseData && (
           <VerseCard
