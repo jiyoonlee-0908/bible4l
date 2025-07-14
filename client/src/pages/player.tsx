@@ -5,7 +5,7 @@ import { BottomNavigation } from '@/components/BottomNavigation';
 import { BibleSelector } from '@/components/BibleSelector';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, SkipForward, SkipBack, Volume2, Loader2, Repeat } from 'lucide-react';
+import { Play, Pause, SkipForward, SkipBack, Volume2, Loader2, Repeat, Repeat1, Plus, Minus } from 'lucide-react';
 import { useBible } from '@/hooks/useBible';
 import { useSpeech } from '@/hooks/useSpeech';
 import { Storage } from '@/lib/storage';
@@ -18,6 +18,7 @@ export default function Player() {
   const [isLoading, setIsLoading] = useState(false);
   const [continuousMode, setContinuousMode] = useState(true);
   const [isPlayingContinuous, setIsPlayingContinuous] = useState(false);
+  const [repeatMode, setRepeatMode] = useState(false);
   
   const {
     currentLanguage,
@@ -31,7 +32,7 @@ export default function Player() {
     navigateVerse
   } = useBible();
   
-  const { audioState, speak, toggle, stop } = useSpeech();
+  const { audioState, speak, toggle, stop, setSpeed } = useSpeech();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -106,7 +107,12 @@ export default function Player() {
           localStorage.setItem('listeningStats', JSON.stringify(listeningStats));
         }
         
-        if (continuousMode && isPlayingContinuous) {
+        if (repeatMode) {
+          // Repeat current verse
+          setTimeout(() => {
+            playCurrentVerse();
+          }, 500);
+        } else if (continuousMode && isPlayingContinuous) {
           // Auto advance to next verse after 1 second
           setTimeout(() => {
             navigateVerse('next');
@@ -138,6 +144,11 @@ export default function Player() {
 
   const handlePrevious = () => {
     navigateVerse('prev');
+  };
+
+  const adjustSpeed = (delta: number) => {
+    const newSpeed = Math.max(0.5, Math.min(1.5, audioState.speed + delta));
+    setSpeed(newSpeed);
   };
 
   return (
@@ -255,8 +266,33 @@ export default function Player() {
               </Button>
             </div>
             
-            {/* Continuous Play Toggle */}
-            <div className="flex justify-center">
+            {/* Speed Controls */}
+            <div className="flex justify-center items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => adjustSpeed(-0.1)}
+                  className="w-8 h-8 bg-slate-200 hover:bg-slate-300 rounded-full"
+                >
+                  <Minus className="h-3 w-3 text-slate-600" />
+                </Button>
+                <span className="text-sm font-medium text-slate-700 min-w-12 text-center">
+                  {audioState.speed.toFixed(1)}x
+                </span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => adjustSpeed(0.1)}
+                  className="w-8 h-8 bg-slate-200 hover:bg-slate-300 rounded-full"
+                >
+                  <Plus className="h-3 w-3 text-slate-600" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Play Mode Toggles */}
+            <div className="flex justify-center gap-2">
               <Button
                 onClick={() => setContinuousMode(!continuousMode)}
                 variant="ghost"
@@ -268,7 +304,21 @@ export default function Player() {
                 }`}
               >
                 <Repeat className={`h-3 w-3 mr-1 ${continuousMode ? 'text-amber-600' : 'text-slate-500'}`} />
-                {continuousMode ? '연속재생 켜짐' : '연속재생 꺼짐'}
+                연속재생
+              </Button>
+              
+              <Button
+                onClick={() => setRepeatMode(!repeatMode)}
+                variant="ghost"
+                size="sm"
+                className={`text-xs px-3 py-1 rounded-full transition-colors ${
+                  repeatMode 
+                    ? 'bg-blue-100 text-blue-800 hover:bg-blue-200' 
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
+              >
+                <Repeat1 className={`h-3 w-3 mr-1 ${repeatMode ? 'text-blue-600' : 'text-slate-500'}`} />
+                반복재생
               </Button>
             </div>
 

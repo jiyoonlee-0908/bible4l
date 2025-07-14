@@ -149,7 +149,7 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
   };
 
   const adjustSpeed = (delta: number) => {
-    const newSpeed = Math.max(0.8, Math.min(1.5, audioState.speed + delta));
+    const newSpeed = Math.max(0.5, Math.min(1.5, audioState.speed + delta));
     setSpeed(newSpeed);
   };
 
