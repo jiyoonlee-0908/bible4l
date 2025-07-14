@@ -72,3 +72,57 @@ export const languageConfig = {
 } as const;
 
 export type Language = keyof typeof languageConfig;
+
+// Reading plan schemas
+export const readingPlanSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  type: z.enum(['90days', '365days']),
+  totalDays: z.number(),
+  dailyReadings: z.array(z.object({
+    day: z.number(),
+    books: z.array(z.string()),
+    chapters: z.array(z.number()),
+    description: z.string().optional(),
+  })),
+  createdAt: z.string(),
+});
+
+// Progress tracking schema
+export const progressSchema = z.object({
+  id: z.string(),
+  planId: z.string(),
+  currentDay: z.number().default(1),
+  completedDays: z.array(z.number()).default([]),
+  streak: z.number().default(0),
+  totalListeningTime: z.number().default(0), // in minutes
+  lastActivityDate: z.string().optional(),
+});
+
+// Badge/Achievement schema
+export const badgeSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  condition: z.string(), // e.g., "streak_7", "listening_60", "plan_50"
+  iconType: z.enum(['streak', 'time', 'completion', 'special']),
+  metallic: z.boolean().default(false), // for gold rim effect
+  unlockedAt: z.string().optional(),
+});
+
+// Audio settings with DSP
+export const dspSettingsSchema = z.object({
+  echo: z.boolean().default(false),
+  reverb: z.boolean().default(false),
+  eq: z.object({
+    low: z.number().min(-10).max(10).default(0),
+    mid: z.number().min(-10).max(10).default(0),
+    high: z.number().min(-10).max(10).default(0),
+  }).default({}),
+  pitch: z.number().min(-4).max(4).default(0), // semitones
+});
+
+export type ReadingPlan = z.infer<typeof readingPlanSchema>;
+export type Progress = z.infer<typeof progressSchema>;
+export type Badge = z.infer<typeof badgeSchema>;
+export type DspSettings = z.infer<typeof dspSettingsSchema>;
