@@ -33,10 +33,10 @@
     <line x1="110" y1="340" x2="402" y2="340"/>
   </g>
   
-  <!-- Main text layout -->
-  <text x="256" y="250" font-family="Arial, sans-serif" font-size="90" font-weight="bold" text-anchor="middle" fill="url(#gold1)" stroke="#654321" stroke-width="3">성경</text>
-  <text x="256" y="320" font-family="Arial, sans-serif" font-size="90" font-weight="bold" text-anchor="middle" fill="url(#gold1)" stroke="#654321" stroke-width="3">듣기</text>
+  <!-- Main text layout with proper spacing -->
+  <text x="256" y="230" font-family="Arial, sans-serif" font-size="85" font-weight="bold" text-anchor="middle" fill="url(#gold1)" stroke="#654321" stroke-width="4">성경</text>
+  <text x="256" y="320" font-family="Arial, sans-serif" font-size="85" font-weight="bold" text-anchor="middle" fill="url(#gold1)" stroke="#654321" stroke-width="4">듣기</text>
   
   <!-- Language indicators aligned with "성경" width -->
-  <text x="256" y="380" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle" fill="url(#gold1)" stroke="#654321" stroke-width="2" letter-spacing="15px">한/영/중/일</text>
+  <text x="256" y="385" font-family="Arial, sans-serif" font-size="45" font-weight="bold" text-anchor="middle" fill="url(#gold1)" stroke="#654321" stroke-width="3" letter-spacing="12px">한/영/중/일</text>
 </svg>
