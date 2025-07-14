@@ -182,11 +182,12 @@ export function BibleSelector({ onSelect, selectedLanguage }: BibleSelectorProps
 
   return (
     <Card className="bg-white rounded-xl shadow-sm border border-slate-200">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-base font-semibold text-slate-800">성경 선택</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3 pt-0">
-        <div className="grid grid-cols-3 gap-2">
+      <CardContent className="p-4">
+        <div className="mb-3">
+          <h3 className="text-sm font-medium text-slate-700">성경 선택</h3>
+        </div>
+        <div className="space-y-3">
+          <div className="grid grid-cols-3 gap-2">
           <div className="space-y-1">
             <label className="text-xs font-medium text-slate-600">성경책</label>
             <Select value={selectedBook} onValueChange={setSelectedBook}>
@@ -241,10 +242,14 @@ export function BibleSelector({ onSelect, selectedLanguage }: BibleSelectorProps
         </div>
 
         {selectedBook && selectedChapter && selectedVerse && (
-          <Button onClick={handleSubmit} className="w-full h-8 text-sm">
+          <Button 
+            onClick={handleSubmit} 
+            className="w-full h-9 text-sm bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white shadow-md font-medium"
+          >
             이 구절부터 재생하기
           </Button>
         )}
+        </div>
       </CardContent>
     </Card>
   );
