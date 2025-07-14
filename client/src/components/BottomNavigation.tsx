@@ -20,7 +20,7 @@ export function BottomNavigation({ currentPath, onNavigate }: BottomNavigationPr
     <nav className="max-w-md mx-auto px-4 pb-4 sticky bottom-4">
       <Card className="bg-white rounded-2xl shadow-lg border border-slate-200">
         <CardContent className="p-2">
-          <div className="flex items-center justify-around">
+          <div className="flex items-center justify-around px-2">
             {navItems.map(({ path, icon: Icon, label }) => {
               const isActive = currentPath === path;
               return (
@@ -28,9 +28,9 @@ export function BottomNavigation({ currentPath, onNavigate }: BottomNavigationPr
                   key={path}
                   variant="ghost"
                   onClick={() => onNavigate(path)}
-                  className={`flex flex-col items-center py-3 px-4 rounded-xl transition-colors ${
+                  className={`flex flex-col items-center py-3 px-3 rounded-xl transition-all transform hover:scale-105 ${
                     isActive
-                      ? 'bg-amber-50 hover:bg-amber-100'
+                      ? 'bg-amber-50 hover:bg-amber-100 shadow-sm'
                       : 'hover:bg-slate-50'
                   }`}
                 >

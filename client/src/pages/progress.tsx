@@ -5,6 +5,7 @@ import { BottomNavigation } from '@/components/BottomNavigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, Trophy, BookOpen, Target, CheckCircle } from 'lucide-react';
 import { useReadingPlan } from '@/hooks/useReadingPlan';
@@ -68,20 +69,25 @@ export default function ProgressPage() {
       
       <div className="max-w-md mx-auto px-4 py-4 space-y-4">
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold text-slate-800 mb-2">성경 통독 진도</h2>
-          <p className="text-slate-600">하나님의 말씀과 함께하는 여정</p>
+          <div className="bg-gradient-to-r from-amber-800 to-amber-900 text-white rounded-2xl p-6 shadow-lg">
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <BookOpen className="h-8 w-8" />
+              <h2 className="text-2xl font-bold">성경 통독 진도</h2>
+            </div>
+            <p className="text-amber-100">하나님의 말씀과 함께하는 영적 여정</p>
+          </div>
         </div>
 
         {/* Reading Plans Selection */}
-        <Card className="bg-white rounded-xl shadow-sm border border-slate-200">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-              <BookOpen className="h-5 w-5 text-amber-800" />
+        <Card className="bg-white rounded-xl shadow-lg border border-amber-100 overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-amber-50 to-amber-100 border-b border-amber-200">
+            <CardTitle className="text-lg font-semibold text-amber-900 flex items-center gap-2">
+              <Target className="h-5 w-5" />
               통독 계획 선택
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {plans.map((plan) => {
+            {plans && plans.length > 0 ? plans.map((plan) => {
               const isSelected = selectedPlanId === plan.id;
               const planProg = progress[plan.id];
               const completionRate = planProg ? (planProg.completedDays / plan.totalDays) * 100 : 0;
@@ -89,10 +95,10 @@ export default function ProgressPage() {
               return (
                 <div
                   key={plan.id}
-                  className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                  className={`p-4 rounded-xl border-2 cursor-pointer transition-all transform hover:scale-[1.02] ${
                     isSelected
-                      ? 'border-amber-800 bg-amber-50'
-                      : 'border-slate-200 hover:border-amber-200 hover:bg-amber-25'
+                      ? 'border-amber-800 bg-gradient-to-r from-amber-50 to-amber-100 shadow-md'
+                      : 'border-slate-200 hover:border-amber-300 hover:bg-amber-25 hover:shadow-sm'
                   }`}
                   onClick={() => handleSelectPlan(plan.id)}
                 >
@@ -121,39 +127,44 @@ export default function ProgressPage() {
                   )}
                 </div>
               );
-            })}
+            }) : (
+              <div className="text-center py-8">
+                <BookOpen className="h-12 w-12 text-slate-300 mx-auto mb-3" />
+                <p className="text-slate-500">통독 계획을 불러오는 중...</p>
+              </div>
+            )}
           </CardContent>
         </Card>
 
         {/* Current Progress */}
         {selectedPlan && planProgress && (
-          <Card className="bg-white rounded-xl shadow-sm border border-slate-200">
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                <Target className="h-5 w-5 text-amber-800" />
+          <Card className="bg-white rounded-xl shadow-lg border border-amber-100 overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-emerald-50 to-emerald-100 border-b border-emerald-200">
+              <CardTitle className="text-lg font-semibold text-emerald-900 flex items-center gap-2">
+                <TrendingUp className="h-5 w-5" />
                 현재 진도
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-3 bg-amber-50 rounded-lg">
-                  <div className="text-2xl font-bold text-amber-800">{planProgress.currentDay}</div>
-                  <div className="text-sm text-amber-600">현재 일차</div>
+                <div className="text-center p-4 bg-gradient-to-br from-amber-100 to-amber-200 rounded-xl shadow-inner">
+                  <div className="text-3xl font-bold text-amber-900 mb-1">{planProgress.currentDay}</div>
+                  <div className="text-sm font-medium text-amber-700">현재 일차</div>
                 </div>
-                <div className="text-center p-3 bg-amber-50 rounded-lg">
-                  <div className="text-2xl font-bold text-amber-800">{planProgress.streak}</div>
-                  <div className="text-sm text-amber-600">연속 일수</div>
+                <div className="text-center p-4 bg-gradient-to-br from-orange-100 to-orange-200 rounded-xl shadow-inner">
+                  <div className="text-3xl font-bold text-orange-900 mb-1">{planProgress.streak}</div>
+                  <div className="text-sm font-medium text-orange-700">연속 일수</div>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-3 bg-slate-50 rounded-lg">
-                  <div className="text-lg font-bold text-slate-800">{planProgress.completedDays}</div>
-                  <div className="text-sm text-slate-600">완료한 일수</div>
+                <div className="text-center p-4 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-xl shadow-inner">
+                  <div className="text-2xl font-bold text-emerald-900 mb-1">{planProgress.completedDays}</div>
+                  <div className="text-sm font-medium text-emerald-700">완료한 일수</div>
                 </div>
-                <div className="text-center p-3 bg-slate-50 rounded-lg">
-                  <div className="text-lg font-bold text-slate-800">{formatTime(planProgress.totalListeningTime)}</div>
-                  <div className="text-sm text-slate-600">총 청취 시간</div>
+                <div className="text-center p-4 bg-gradient-to-br from-blue-100 to-blue-200 rounded-xl shadow-inner">
+                  <div className="text-xl font-bold text-blue-900 mb-1">{formatTime(planProgress.totalListeningTime)}</div>
+                  <div className="text-sm font-medium text-blue-700">총 청취 시간</div>
                 </div>
               </div>
             </CardContent>
@@ -162,26 +173,26 @@ export default function ProgressPage() {
 
         {/* Today's Reading */}
         {todaysReading && (
-          <Card className="bg-white rounded-xl shadow-sm border border-slate-200">
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-amber-800" />
+          <Card className="bg-white rounded-xl shadow-lg border border-purple-100 overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-purple-50 to-purple-100 border-b border-purple-200">
+              <CardTitle className="text-lg font-semibold text-purple-900 flex items-center gap-2">
+                <Calendar className="h-5 w-5" />
                 오늘의 말씀
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="bg-amber-50 p-4 rounded-lg">
+              <div className="bg-gradient-to-r from-purple-50 to-purple-100 p-5 rounded-xl border border-purple-200 shadow-inner">
                 <div className="flex items-center gap-2 mb-2">
-                  <Badge variant="secondary" className="bg-amber-800 text-amber-50">
+                  <Badge variant="secondary" className="bg-purple-800 text-purple-50 shadow-sm">
                     {todaysReading.day}일차
                   </Badge>
                 </div>
                 <div className="space-y-2">
                   {todaysReading.books.map((book, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <BookOpen className="h-4 w-4 text-amber-800" />
-                      <span className="font-medium text-slate-800">{book}</span>
-                      <span className="text-slate-600">{todaysReading.chapters[index]}장</span>
+                    <div key={index} className="flex items-center gap-3 p-2 bg-white rounded-lg shadow-sm">
+                      <BookOpen className="h-4 w-4 text-purple-800 flex-shrink-0" />
+                      <span className="font-semibold text-slate-800">{book}</span>
+                      <span className="text-purple-700 font-medium">{todaysReading.chapters[index]}장</span>
                     </div>
                   ))}
                 </div>
@@ -194,18 +205,22 @@ export default function ProgressPage() {
 
               <Button
                 onClick={handleMarkComplete}
-                className="w-full bg-amber-800 hover:bg-amber-900 text-amber-50"
+                className={`w-full transition-all transform hover:scale-105 shadow-lg ${
+                  planProgress?.completedDays >= todaysReading.day 
+                    ? 'bg-green-700 hover:bg-green-800 text-white'
+                    : 'bg-gradient-to-r from-purple-700 to-purple-800 hover:from-purple-800 hover:to-purple-900 text-white'
+                }`}
                 disabled={planProgress?.completedDays >= todaysReading.day}
               >
                 {planProgress?.completedDays >= todaysReading.day ? (
                   <>
                     <CheckCircle className="h-4 w-4 mr-2" />
-                    완료됨
+                    오늘 읽기 완료됨
                   </>
                 ) : (
                   <>
                     <Trophy className="h-4 w-4 mr-2" />
-                    오늘 읽기 완료
+                    오늘 읽기 완료하기
                   </>
                 )}
               </Button>
@@ -215,31 +230,35 @@ export default function ProgressPage() {
 
         {/* Achievement Summary */}
         {planProgress && (
-          <Card className="bg-white rounded-xl shadow-sm border border-slate-200">
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                <Trophy className="h-5 w-5 text-amber-800" />
+          <Card className="bg-white rounded-xl shadow-lg border border-yellow-100 overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-yellow-50 to-yellow-100 border-b border-yellow-200">
+              <CardTitle className="text-lg font-semibold text-yellow-900 flex items-center gap-2">
+                <Trophy className="h-5 w-5" />
                 성취 현황
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 gap-3">
-                <div className="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <span className="text-sm font-medium">완주율</span>
+              <div className="grid grid-cols-1 gap-4">
+                <div className="flex justify-between items-center p-4 bg-gradient-to-r from-green-50 to-green-100 rounded-xl shadow-inner border border-green-200">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-green-600 rounded-full">
+                      <CheckCircle className="h-4 w-4 text-white" />
+                    </div>
+                    <span className="text-sm font-semibold text-green-800">완주율</span>
                   </div>
-                  <span className="font-bold text-slate-800">
+                  <span className="text-xl font-bold text-green-900">
                     {((planProgress.completedDays / selectedPlan!.totalDays) * 100).toFixed(1)}%
                   </span>
                 </div>
                 
-                <div className="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-blue-600" />
-                    <span className="text-sm font-medium">평균 청취시간</span>
+                <div className="flex justify-between items-center p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl shadow-inner border border-blue-200">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-blue-600 rounded-full">
+                      <Clock className="h-4 w-4 text-white" />
+                    </div>
+                    <span className="text-sm font-semibold text-blue-800">평균 청취시간</span>
                   </div>
-                  <span className="font-bold text-slate-800">
+                  <span className="text-lg font-bold text-blue-900">
                     {planProgress.completedDays > 0 
                       ? formatTime(Math.round(planProgress.totalListeningTime / planProgress.completedDays))
                       : '0분'
