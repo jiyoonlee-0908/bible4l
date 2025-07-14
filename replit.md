@@ -32,6 +32,10 @@ Commercial use: Prioritize cost-free solutions using public domain content.
 ✓ Selected darker wood tone design (option 2) with optimal text sizing and spacing
 ✓ Applied consistent dark wood tone color palette throughout entire UI/UX
 ✓ Updated CSS custom properties for wood-inspired design theme matching the icon
+✓ Integrated Kakao AdFit advertising system with strategic placement (home, player, settings)
+✓ Implemented subscription management system (월 990원) with ad removal functionality
+✓ Added subscription tab in settings with premium vs. free status management
+✓ Created AdFitBanner component with subscription-aware conditional rendering
 
 ## System Architecture
 

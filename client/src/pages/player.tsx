@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Play, Pause, SkipForward, SkipBack, Volume2, Loader2, Repeat, Repeat1, Plus, Minus } from 'lucide-react';
 import { useBible } from '@/hooks/useBible';
 import { useSpeech } from '@/hooks/useSpeech';
+import { useSubscription } from '@/hooks/useSubscription';
+import { AdFitBanner } from '@/components/AdFitBanner';
 import { Storage } from '@/lib/storage';
 import { Language, Settings, languageConfig } from '@shared/schema';
 import { useToast } from '@/hooks/use-toast';
@@ -32,6 +34,7 @@ export default function Player() {
   } = useBible();
   
   const { audioState, speak, toggle, stop, setSpeed } = useSpeech();
+  const { isSubscribed } = useSubscription();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -325,6 +328,15 @@ export default function Player() {
 
           </CardContent>
         </Card>
+
+        {/* 플레이어 하단 광고 */}
+        <AdFitBanner
+          adUnit="DAN-your-player-bottom-unit"
+          adWidth={320}
+          adHeight={50}
+          isSubscribed={isSubscribed}
+          className="player-bottom-ad"
+        />
       </div>
       
       <BottomNavigation
