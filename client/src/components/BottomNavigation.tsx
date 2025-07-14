@@ -1,4 +1,4 @@
-import { Home, Play, Bookmark, Settings } from 'lucide-react';
+import { Home, Play, Bookmark, Settings, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -11,6 +11,7 @@ export function BottomNavigation({ currentPath, onNavigate }: BottomNavigationPr
   const navItems = [
     { path: '/', icon: Home, label: '홈' },
     { path: '/player', icon: Play, label: '플레이어' },
+    { path: '/progress', icon: TrendingUp, label: '통독진도' },
     { path: '/bookmarks', icon: Bookmark, label: '북마크' },
     { path: '/settings', icon: Settings, label: '설정' },
   ];

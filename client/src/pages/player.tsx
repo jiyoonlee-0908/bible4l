@@ -111,6 +111,11 @@ export default function Player() {
       />
       
       <div className="max-w-md mx-auto px-4 py-4 space-y-4">
+        <BibleSelector
+          onSelect={handleBibleSelect}
+          selectedLanguage={currentLanguage}
+        />
+        
         <Card className="bg-white rounded-xl shadow-sm border border-slate-200">
           <CardContent className="p-4">
             <div className="mb-3">
@@ -142,11 +147,6 @@ export default function Player() {
             </div>
           </CardContent>
         </Card>
-        
-        <BibleSelector
-          onSelect={handleBibleSelect}
-          selectedLanguage={currentLanguage}
-        />
         
         <Card className="bg-white rounded-2xl shadow-lg border border-slate-200">
           <CardHeader>
