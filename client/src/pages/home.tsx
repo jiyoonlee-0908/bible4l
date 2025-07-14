@@ -73,18 +73,8 @@ export default function Home() {
         onSettingsClick={() => setLocation('/settings')}
       />
       
-      <div className="max-w-md mx-auto px-4 py-4 space-y-4">
-        <LanguageToggle
-          selectedLanguage={settings.selectedLanguage}
-          onLanguageChange={handleLanguageChange}
-        />
-        
-        <ModeToggle
-          mode={settings.displayMode}
-          onModeChange={handleModeChange}
-        />
-        
-        {/* Bible Selector */}
+      <div className="max-w-md mx-auto px-4 py-3 space-y-3">
+        {/* Bible Selector - First */}
         <BibleSelector
           onSelect={(book, chapter, verse) => {
             setVerse(book, chapter, verse);
@@ -95,6 +85,22 @@ export default function Home() {
           }}
           selectedLanguage={currentLanguage}
         />
+
+        {/* Language and Mode Controls - Compact Row */}
+        <div className="flex gap-3">
+          <div className="flex-1">
+            <LanguageToggle
+              selectedLanguage={settings.selectedLanguage}
+              onLanguageChange={handleLanguageChange}
+            />
+          </div>
+          <div className="flex-1">
+            <ModeToggle
+              mode={settings.displayMode}
+              onModeChange={handleModeChange}
+            />
+          </div>
+        </div>
 
         {currentVerseData && (
           <VerseCard

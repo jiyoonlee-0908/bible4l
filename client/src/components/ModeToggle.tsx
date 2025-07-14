@@ -8,33 +8,35 @@ interface ModeToggleProps {
 
 export function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
   return (
-    <Card className="bg-white rounded-2xl shadow-sm border border-slate-200">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-sm font-medium text-slate-700">표시 모드</CardTitle>
-      </CardHeader>
-      <CardContent className="pt-0">
-        <div className="flex bg-slate-100 rounded-xl p-1">
+    <Card className="bg-white rounded-xl shadow-sm border border-slate-200">
+      <CardContent className="p-3">
+        <div className="mb-2">
+          <h3 className="text-xs font-medium text-slate-600">표시 모드</h3>
+        </div>
+        <div className="flex gap-1">
           <Button
-            variant="ghost"
             onClick={() => onModeChange('single')}
-            className={`flex-1 py-2 px-3 rounded-lg transition-all duration-200 ${
+            variant={mode === 'single' ? 'default' : 'outline'}
+            size="sm"
+            className={`flex-1 h-7 text-xs transition-colors ${
               mode === 'single'
-                ? 'bg-white shadow-sm text-slate-800'
-                : 'text-slate-600 hover:text-slate-800'
+                ? 'bg-violet-600 text-white hover:bg-violet-700'
+                : 'bg-white text-slate-700 hover:bg-slate-50'
             }`}
           >
-            <span className="text-sm font-medium">단일 모드</span>
+            1줄
           </Button>
           <Button
-            variant="ghost"
             onClick={() => onModeChange('double')}
-            className={`flex-1 py-2 px-3 rounded-lg transition-all duration-200 ${
+            variant={mode === 'double' ? 'default' : 'outline'}
+            size="sm"
+            className={`flex-1 h-7 text-xs transition-colors ${
               mode === 'double'
-                ? 'bg-white shadow-sm text-slate-800'
-                : 'text-slate-600 hover:text-slate-800'
+                ? 'bg-emerald-600 text-white hover:bg-emerald-700'
+                : 'bg-white text-slate-700 hover:bg-slate-50'
             }`}
           >
-            <span className="text-sm font-medium">교차 모드</span>
+            교차
           </Button>
         </div>
       </CardContent>

@@ -9,43 +9,27 @@ interface LanguageToggleProps {
 
 export function LanguageToggle({ selectedLanguage, onLanguageChange }: LanguageToggleProps) {
   return (
-    <Card className="bg-white rounded-2xl shadow-sm border border-slate-200">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-sm font-medium text-slate-700">언어 선택</CardTitle>
-      </CardHeader>
-      <CardContent className="pt-0">
-        <div className="grid grid-cols-2 gap-2">
+    <Card className="bg-white rounded-xl shadow-sm border border-slate-200">
+      <CardContent className="p-3">
+        <div className="mb-2">
+          <h3 className="text-xs font-medium text-slate-600">언어 선택</h3>
+        </div>
+        <div className="grid grid-cols-2 gap-1">
           {(Object.entries(languageConfig) as [Language, typeof languageConfig[Language]][]).map(([code, config]) => {
             const isSelected = selectedLanguage === code;
             return (
               <Button
                 key={code}
-                variant="ghost"
+                variant={isSelected ? 'default' : 'outline'}
                 onClick={() => onLanguageChange(code)}
-                className={`flex items-center space-x-3 p-3 h-auto rounded-xl transition-all duration-200 ${
+                size="sm"
+                className={`h-7 text-xs transition-colors ${
                   isSelected
-                    ? `bg-[${config.color}]/10 border-2 hover:bg-[${config.color}]/20`
-                    : 'bg-slate-50 border-2 border-slate-200 hover:bg-slate-100'
+                    ? 'bg-blue-600 text-white hover:bg-blue-700'
+                    : 'bg-white text-slate-700 hover:bg-slate-50'
                 }`}
-                style={{
-                  backgroundColor: isSelected ? `${config.color}10` : undefined,
-                  borderColor: isSelected ? config.color : undefined,
-                }}
               >
-                <div 
-                  className="w-6 h-6 rounded-full flex items-center justify-center"
-                  style={{ backgroundColor: isSelected ? config.color : '#94a3b8' }}
-                >
-                  <span className="text-white text-xs font-medium">{config.short}</span>
-                </div>
-                <span 
-                  className={`text-sm font-medium ${
-                    isSelected ? 'font-semibold' : 'text-slate-600'
-                  }`}
-                  style={{ color: isSelected ? config.color : undefined }}
-                >
-                  {config.name}
-                </span>
+                {config.name}
               </Button>
             );
           })}

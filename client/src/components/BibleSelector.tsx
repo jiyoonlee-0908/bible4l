@@ -180,65 +180,67 @@ export function BibleSelector({ onSelect, selectedLanguage }: BibleSelectorProps
   };
 
   return (
-    <Card className="bg-white rounded-2xl shadow-sm border border-slate-200">
-      <CardHeader>
-        <CardTitle className="text-lg font-semibold text-slate-800">성경 선택</CardTitle>
+    <Card className="bg-white rounded-xl shadow-sm border border-slate-200">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base font-semibold text-slate-800">성경 선택</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-700">성경책</label>
-          <Select value={selectedBook} onValueChange={setSelectedBook}>
-            <SelectTrigger>
-              <SelectValue placeholder="성경책을 선택하세요" />
-            </SelectTrigger>
-            <SelectContent>
-              {books.map((book) => (
-                <SelectItem key={book.id} value={book.id}>
-                  {book.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+      <CardContent className="space-y-3 pt-0">
+        <div className="grid grid-cols-3 gap-2">
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-slate-600">성경책</label>
+            <Select value={selectedBook} onValueChange={setSelectedBook}>
+              <SelectTrigger className="h-9 text-xs">
+                <SelectValue placeholder="선택" />
+              </SelectTrigger>
+              <SelectContent>
+                {books.map((book) => (
+                  <SelectItem key={book.id} value={book.id}>
+                    {book.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {selectedBook && (
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-600">장</label>
+              <Select value={selectedChapter} onValueChange={setSelectedChapter}>
+                <SelectTrigger className="h-9 text-xs">
+                  <SelectValue placeholder="장" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({ length: maxChapters }, (_, i) => i + 1).map((chapter) => (
+                    <SelectItem key={chapter} value={chapter.toString()}>
+                      {chapter}장
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          {selectedChapter && (
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-600">절</label>
+              <Select value={selectedVerse} onValueChange={setSelectedVerse}>
+                <SelectTrigger className="h-9 text-xs">
+                  <SelectValue placeholder="절" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({ length: 31 }, (_, i) => i + 1).map((verse) => (
+                    <SelectItem key={verse} value={verse.toString()}>
+                      {verse}절
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
         </div>
 
-        {selectedBook && (
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">장</label>
-            <Select value={selectedChapter} onValueChange={setSelectedChapter}>
-              <SelectTrigger>
-                <SelectValue placeholder="장을 선택하세요" />
-              </SelectTrigger>
-              <SelectContent>
-                {Array.from({ length: maxChapters }, (_, i) => i + 1).map((chapter) => (
-                  <SelectItem key={chapter} value={chapter.toString()}>
-                    {chapter}장
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        )}
-
-        {selectedChapter && (
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">절</label>
-            <Select value={selectedVerse} onValueChange={setSelectedVerse}>
-              <SelectTrigger>
-                <SelectValue placeholder="절을 선택하세요" />
-              </SelectTrigger>
-              <SelectContent>
-                {Array.from({ length: 31 }, (_, i) => i + 1).map((verse) => (
-                  <SelectItem key={verse} value={verse.toString()}>
-                    {verse}절
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        )}
-
         {selectedBook && selectedChapter && selectedVerse && (
-          <Button onClick={handleSubmit} className="w-full">
+          <Button onClick={handleSubmit} className="w-full h-8 text-sm">
             이 구절부터 재생하기
           </Button>
         )}
