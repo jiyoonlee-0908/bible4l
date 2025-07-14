@@ -107,7 +107,7 @@ export default function ProgressPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-amber-50">
       <Header
-        onBookmarksClick={() => setLocation('/bookmarks')}
+        onFontSizeClick={() => setLocation('/bookmarks')}
         onSettingsClick={() => setLocation('/settings')}
       />
       
@@ -176,6 +176,9 @@ export default function ProgressPage() {
                 </CardContent>
               </Card>
             </div>
+
+            {/* Bible Grid */}
+            <BibleGrid listeningStats={listeningStats} />
           </>
         )}
 

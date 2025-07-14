@@ -78,7 +78,7 @@ export default function Settings() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <Header
-        onBookmarksClick={() => setLocation('/bookmarks')}
+        onFontSizeClick={() => setLocation('/bookmarks')}
         onSettingsClick={() => setLocation('/settings')}
       />
       
@@ -92,7 +92,7 @@ export default function Settings() {
                 onClick={() => setActiveTab('audio')}
                 className={`flex-1 py-2 px-3 rounded-lg transition-all duration-200 ${
                   activeTab === 'audio'
-                    ? 'bg-white shadow-sm text-slate-800'
+                    ? 'bg-amber-800 shadow-sm text-white'
                     : 'text-slate-600 hover:text-slate-800'
                 }`}
               >
@@ -103,7 +103,7 @@ export default function Settings() {
                 onClick={() => setActiveTab('plans')}
                 className={`flex-1 py-2 px-3 rounded-lg transition-all duration-200 ${
                   activeTab === 'plans'
-                    ? 'bg-white shadow-sm text-slate-800'
+                    ? 'bg-amber-800 shadow-sm text-white'
                     : 'text-slate-600 hover:text-slate-800'
                 }`}
               >
@@ -114,7 +114,7 @@ export default function Settings() {
                 onClick={() => setActiveTab('badges')}
                 className={`flex-1 py-2 px-3 rounded-lg transition-all duration-200 ${
                   activeTab === 'badges'
-                    ? 'bg-white shadow-sm text-slate-800'
+                    ? 'bg-amber-800 shadow-sm text-white'
                     : 'text-slate-600 hover:text-slate-800'
                 }`}
               >

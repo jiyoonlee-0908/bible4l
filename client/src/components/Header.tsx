@@ -1,12 +1,12 @@
-import { Bookmark, Settings } from 'lucide-react';
+import { Search, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface HeaderProps {
-  onBookmarksClick: () => void;
+  onFontSizeClick: () => void;
   onSettingsClick: () => void;
 }
 
-export function Header({ onBookmarksClick, onSettingsClick }: HeaderProps) {
+export function Header({ onFontSizeClick, onSettingsClick }: HeaderProps) {
   return (
     <header className="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50">
       <div className="max-w-md mx-auto px-4 py-3">
@@ -22,10 +22,11 @@ export function Header({ onBookmarksClick, onSettingsClick }: HeaderProps) {
             <Button
               variant="ghost"
               size="icon"
-              onClick={onBookmarksClick}
+              onClick={onFontSizeClick}
               className="w-10 h-10 bg-amber-50 hover:bg-amber-100 rounded-full"
+              title="글자 크기 조절"
             >
-              <Bookmark className="h-5 w-5 text-amber-800" />
+              <Search className="h-5 w-5 text-amber-800" />
             </Button>
             <Button
               variant="ghost"

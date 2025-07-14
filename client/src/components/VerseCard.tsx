@@ -27,13 +27,23 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
       const verseKey = `${verse.bookId}-${verse.chapterId}-${verse.verseId}-${language}`;
       
       // Check if this exact verse in this language was already recorded recently (within 5 minutes)
+      // Also prioritize home reading over player listening for the same verse
       const recentRecord = listeningStats.find((stat: any) => {
         const statKey = `${stat.book}-${stat.chapter}-${stat.verse}-${stat.language}`;
         const timeDiff = new Date().getTime() - new Date(stat.timestamp).getTime();
         return statKey === verseKey && timeDiff < 5 * 60 * 1000; // 5 minutes
       });
       
-      if (!recentRecord) {
+      // If there's a listen record for the same verse, don't add read record
+      const hasListenRecord = listeningStats.some((stat: any) => 
+        stat.book === verse.bookId && 
+        stat.chapter === parseInt(verse.chapterId) && 
+        stat.verse === verse.verseId && 
+        stat.language === language && 
+        stat.type === 'listen'
+      );
+      
+      if (!recentRecord && !hasListenRecord) {
         const newStat = {
           book: verse.bookId,
           chapter: parseInt(verse.chapterId),

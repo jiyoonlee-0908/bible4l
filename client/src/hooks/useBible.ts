@@ -7,9 +7,9 @@ import { Storage } from '@/lib/storage';
 
 export function useBible() {
   const [currentLanguage, setCurrentLanguage] = useState<Language>('ko');
-  const [currentBook, setCurrentBook] = useState<string>('John');
-  const [currentChapter, setCurrentChapter] = useState<number>(3);
-  const [currentVerse, setCurrentVerse] = useState<number>(16);
+  const [currentBook, setCurrentBook] = useState<string>('Genesis');
+  const [currentChapter, setCurrentChapter] = useState<number>(1);
+  const [currentVerse, setCurrentVerse] = useState<number>(1);
 
   useEffect(() => {
     const settings = Storage.getSettings();
