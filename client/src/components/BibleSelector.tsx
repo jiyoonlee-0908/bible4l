@@ -3,10 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Language } from '@shared/schema';
+import { ModeToggle } from './ModeToggle';
 
 interface BibleSelectorProps {
   onSelect: (book: string, chapter: number, verse: number) => void;
   selectedLanguage: Language;
+  displayMode: 'single' | 'double';
+  onModeChange: (mode: 'single' | 'double') => void;
 }
 
 const BIBLE_BOOKS = {
@@ -164,12 +167,13 @@ const BIBLE_BOOKS = {
   ]
 };
 
-export function BibleSelector({ onSelect, selectedLanguage }: BibleSelectorProps) {
+export function BibleSelector({ onSelect, selectedLanguage, displayMode, onModeChange }: BibleSelectorProps) {
   const [selectedBook, setSelectedBook] = useState<string>('');
   const [selectedChapter, setSelectedChapter] = useState<string>('');
   const [selectedVerse, setSelectedVerse] = useState<string>('');
 
-  const books = BIBLE_BOOKS[selectedLanguage] || BIBLE_BOOKS.ko;
+  // Always use Korean book names for consistency
+  const books = BIBLE_BOOKS.ko;
   const selectedBookData = books.find(book => book.id === selectedBook);
   const maxChapters = selectedBookData?.chapters || 0;
 
@@ -244,6 +248,39 @@ export function BibleSelector({ onSelect, selectedLanguage }: BibleSelectorProps
             이 구절부터 재생하기
           </Button>
         )}
+        
+        {/* Display Mode Toggle - Integrated Design */}
+        <div className="border-t pt-3 mt-3">
+          <div className="flex items-center justify-between mb-2">
+            <label className="text-xs font-medium text-slate-600">표시 모드</label>
+          </div>
+          <div className="flex bg-slate-100 rounded-lg p-1">
+            <Button
+              onClick={() => onModeChange('single')}
+              variant="ghost"
+              size="sm"
+              className={`flex-1 h-7 text-xs rounded-md transition-all ${
+                displayMode === 'single'
+                  ? 'bg-white shadow-sm text-slate-800 font-medium'
+                  : 'text-slate-600 hover:text-slate-800'
+              }`}
+            >
+              단일언어
+            </Button>
+            <Button
+              onClick={() => onModeChange('double')}
+              variant="ghost"
+              size="sm"
+              className={`flex-1 h-7 text-xs rounded-md transition-all ${
+                displayMode === 'double'
+                  ? 'bg-white shadow-sm text-slate-800 font-medium'
+                  : 'text-slate-600 hover:text-slate-800'
+              }`}
+            >
+              교차모드
+            </Button>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
