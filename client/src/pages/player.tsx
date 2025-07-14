@@ -5,7 +5,7 @@ import { BottomNavigation } from '@/components/BottomNavigation';
 import { BibleSelector } from '@/components/BibleSelector';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, SkipForward, SkipBack, Volume2, Loader2 } from 'lucide-react';
+import { Play, Pause, SkipForward, SkipBack, Volume2, Loader2, Repeat } from 'lucide-react';
 import { useBible } from '@/hooks/useBible';
 import { useSpeech } from '@/hooks/useSpeech';
 import { Storage } from '@/lib/storage';
@@ -17,6 +17,7 @@ export default function Player() {
   const [settings, setSettings] = useState<Settings>(Storage.getSettings());
   const [isLoading, setIsLoading] = useState(false);
   const [continuousMode, setContinuousMode] = useState(true);
+  const [isPlayingContinuous, setIsPlayingContinuous] = useState(false);
   
   const {
     currentLanguage,
@@ -39,6 +40,15 @@ export default function Player() {
     setCurrentLanguage(savedSettings.selectedLanguage);
   }, []);
 
+  // Auto-play when verse changes in continuous mode
+  useEffect(() => {
+    if (isPlayingContinuous && currentVerseData && !audioState.isPlaying) {
+      setTimeout(() => {
+        playCurrentVerse();
+      }, 500); // Small delay to ensure verse is loaded
+    }
+  }, [currentVerseData, isPlayingContinuous]);
+
   const handleLanguageChange = (language: Language) => {
     const newSettings = { ...settings, selectedLanguage: language };
     setSettings(newSettings);
@@ -54,60 +64,68 @@ export default function Player() {
     });
   };
 
+  const playCurrentVerse = () => {
+    if (!currentVerseData) return;
+    
+    const voiceMapping = {
+      ko: 'ko-KR',
+      en: 'en-US',
+      zh: 'zh-CN', 
+      ja: 'ja-JP'
+    };
+    
+    const langCode = voiceMapping[currentLanguage] || 'en-US';
+    speak(currentVerseData.text, { 
+      rate: audioState.speed, 
+      lang: langCode,
+      onEnd: () => {
+        setIsLoading(false);
+        
+        // Save listening statistics
+        const listeningStats = JSON.parse(localStorage.getItem('listeningStats') || '[]');
+        const verseKey = `${currentBook}-${currentChapter}-${currentVerse}-${currentLanguage}`;
+        
+        // Check if this exact verse in this language was already recorded recently (within 5 minutes)
+        const recentRecord = listeningStats.find((stat: any) => {
+          const statKey = `${stat.book}-${stat.chapter}-${stat.verse}-${stat.language}`;
+          const timeDiff = new Date().getTime() - new Date(stat.timestamp).getTime();
+          return statKey === verseKey && timeDiff < 5 * 60 * 1000; // 5 minutes
+        });
+        
+        if (!recentRecord) {
+          const newStat = {
+            book: currentBook,
+            chapter: currentChapter,
+            verse: currentVerse,
+            language: currentLanguage,
+            timestamp: new Date().toISOString(),
+            duration: Math.round(currentVerseData.text.length / 15), // Estimate duration based on text length
+            type: 'listen'
+          };
+          listeningStats.push(newStat);
+          localStorage.setItem('listeningStats', JSON.stringify(listeningStats));
+        }
+        
+        if (continuousMode && isPlayingContinuous) {
+          // Auto advance to next verse after 1 second
+          setTimeout(() => {
+            navigateVerse('next');
+          }, 1000);
+        } else {
+          setIsPlayingContinuous(false);
+        }
+      }
+    });
+  };
+
   const handlePlay = () => {
     if (audioState.isPlaying) {
       toggle();
+      setIsPlayingContinuous(false);
     } else if (currentVerseData) {
       setIsLoading(true);
-      
-      // Player mode only uses single language playback
-      const voiceMapping = {
-        ko: 'ko-KR',
-        en: 'en-US',
-        zh: 'zh-CN', 
-        ja: 'ja-JP'
-      };
-      
-      const langCode = voiceMapping[currentLanguage] || 'en-US';
-      speak(currentVerseData.text, { 
-        rate: audioState.speed, 
-        lang: langCode,
-        onEnd: () => {
-          setIsLoading(false);
-          
-          // Save listening statistics
-          const listeningStats = JSON.parse(localStorage.getItem('listeningStats') || '[]');
-          const verseKey = `${currentBook}-${currentChapter}-${currentVerse}-${currentLanguage}`;
-          
-          // Check if this exact verse in this language was already recorded recently (within 5 minutes)
-          const recentRecord = listeningStats.find((stat: any) => {
-            const statKey = `${stat.book}-${stat.chapter}-${stat.verse}-${stat.language}`;
-            const timeDiff = new Date().getTime() - new Date(stat.timestamp).getTime();
-            return statKey === verseKey && timeDiff < 5 * 60 * 1000; // 5 minutes
-          });
-          
-          if (!recentRecord) {
-            const newStat = {
-              book: currentBook,
-              chapter: currentChapter,
-              verse: currentVerse,
-              language: currentLanguage,
-              timestamp: new Date().toISOString(),
-              duration: Math.round(currentVerseData.text.length / 15), // Estimate duration based on text length
-              type: 'listen'
-            };
-            listeningStats.push(newStat);
-            localStorage.setItem('listeningStats', JSON.stringify(listeningStats));
-          }
-          
-          if (continuousMode) {
-            // Auto advance to next verse after 1 second
-            setTimeout(() => {
-              navigateVerse('next');
-            }, 1000);
-          }
-        }
-      });
+      setIsPlayingContinuous(true);
+      playCurrentVerse();
       setIsLoading(false);
     }
   };
@@ -237,16 +255,23 @@ export default function Player() {
               </Button>
             </div>
             
-            <div className="text-center">
+            {/* Continuous Play Toggle */}
+            <div className="flex justify-center">
               <Button
                 onClick={() => setContinuousMode(!continuousMode)}
                 variant="ghost"
-                className="text-sm"
+                size="sm"
+                className={`text-xs px-3 py-1 rounded-full transition-colors ${
+                  continuousMode 
+                    ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' 
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
               >
-                <Volume2 className="h-4 w-4 mr-2" />
-                {continuousMode ? '연속 재생 중' : '단일 재생 모드'}
+                <Repeat className={`h-3 w-3 mr-1 ${continuousMode ? 'text-amber-600' : 'text-slate-500'}`} />
+                {continuousMode ? '연속재생 켜짐' : '연속재생 꺼짐'}
               </Button>
             </div>
+
           </CardContent>
         </Card>
       </div>
