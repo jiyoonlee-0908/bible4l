@@ -8,6 +8,7 @@ import Player from "@/pages/player";
 import Bookmarks from "@/pages/bookmarks";
 import Progress from "@/pages/progress";
 import Settings from "@/pages/settings";
+import IconPreview from "@/pages/icon-preview";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -18,6 +19,7 @@ function Router() {
       <Route path="/progress" component={Progress} />
       <Route path="/bookmarks" component={Bookmarks} />
       <Route path="/settings" component={Settings} />
+      <Route path="/icon-preview" component={IconPreview} />
       <Route component={NotFound} />
     </Switch>
   );
