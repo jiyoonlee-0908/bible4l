@@ -1,0 +1,106 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="wood3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B4513;stop-opacity:1" />
+      <stop offset="20%" style="stop-color:#A0522D;stop-opacity:1" />
+      <stop offset="60%" style="stop-color:#D2691E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#CD853F;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="woodDark3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A2C2A;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#654321;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8B4513;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gold3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFC107;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF8F00;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow3">
+      <feDropShadow dx="8" dy="10" stdDeviation="10" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+    <filter id="textShadow">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+  
+  <!-- Book with rounded corners and deep shadow -->
+  <rect x="90" y="90" width="332" height="332" rx="18" ry="18" fill="url(#wood3)" filter="url(#shadow3)"/>
+  <rect x="75" y="90" width="35" height="332" rx="17" ry="17" fill="url(#woodDark3)"/>
+  <rect x="105" y="105" width="302" height="302" rx="10" fill="url(#woodDark3)" opacity="0.25"/>
+  
+  <!-- Decorative wood grain lines -->
+  <g stroke="url(#woodDark3)" stroke-width="1" opacity="0.3">
+    <line x1="120" y1="120" x2="392" y2="120"/>
+    <line x1="120" y1="140" x2="392" y2="140"/>
+    <line x1="120" y1="380" x2="392" y2="380"/>
+    <line x1="120" y1="400" x2="392" y2="400"/>
+  </g>
+  
+  <!-- 2x2 Flag grid with accurate designs -->
+  <g transform="translate(150, 160)">
+    <!-- Korea Flag (정확한 태극기) -->
+    <rect x="0" y="0" width="90" height="60" fill="#ffffff" rx="4" stroke="#ccc" stroke-width="1"/>
+    <!-- 태극 원 -->
+    <circle cx="45" cy="30" r="15" fill="none"/>
+    <path d="M 30 30 A 15 15 0 0 1 60 30 A 15 15 0 0 0 30 30" fill="#ff0000"/>
+    <path d="M 30 30 A 15 15 0 0 0 60 30 A 15 15 0 0 1 30 30" fill="#0000ff"/>
+    <!-- 건 (상좌) -->
+    <g stroke="#000000" stroke-width="2">
+      <line x1="15" y1="12" x2="15" y2="20"/>
+      <line x1="18" y1="12" x2="18" y2="20"/>
+      <line x1="21" y1="12" x2="21" y2="20"/>
+    </g>
+    <!-- 곤 (하우) -->
+    <g stroke="#000000" stroke-width="2">
+      <line x1="69" y1="40" x2="69" y2="48"/>
+      <line x1="72" y1="40" x2="72" y2="43"/>
+      <line x1="72" y1="45" x2="72" y2="48"/>
+      <line x1="75" y1="40" x2="75" y2="48"/>
+    </g>
+    <text x="45" y="78" font-size="15" text-anchor="middle" fill="#FFD700" font-weight="bold" filter="url(#textShadow)">한국</text>
+    
+    <!-- USA Flag -->
+    <rect x="102" y="0" width="90" height="60" fill="#ffffff" rx="4" stroke="#ccc" stroke-width="1"/>
+    <!-- 13 stripes -->
+    <rect x="102" y="0" width="90" height="4.6" fill="#B22234"/>
+    <rect x="102" y="9.2" width="90" height="4.6" fill="#B22234"/>
+    <rect x="102" y="18.4" width="90" height="4.6" fill="#B22234"/>
+    <rect x="102" y="27.6" width="90" height="4.6" fill="#B22234"/>
+    <rect x="102" y="36.8" width="90" height="4.6" fill="#B22234"/>
+    <rect x="102" y="46" width="90" height="4.6" fill="#B22234"/>
+    <rect x="102" y="55.2" width="90" height="4.8" fill="#B22234"/>
+    <!-- Blue canton -->
+    <rect x="102" y="0" width="36" height="32" fill="#3C3B6E"/>
+    <!-- Stars -->
+    <g fill="#ffffff">
+      <circle cx="111" cy="4" r="1.2"/>
+      <circle cx="120" cy="4" r="1.2"/>
+      <circle cx="129" cy="4" r="1.2"/>
+      <circle cx="115" cy="8" r="1.2"/>
+      <circle cx="124" cy="8" r="1.2"/>
+      <circle cx="133" cy="8" r="1.2"/>
+    </g>
+    <text x="147" y="78" font-size="15" text-anchor="middle" fill="#FFD700" font-weight="bold" filter="url(#textShadow)">영어</text>
+    
+    <!-- China Flag -->
+    <rect x="0" y="75" width="90" height="60" fill="#DE2910" rx="4" stroke="#ccc" stroke-width="1"/>
+    <!-- Large star -->
+    <polygon points="22,85 26,95 36,95 28,101 32,111 22,105 12,111 16,101 8,95 18,95" fill="#FFDE00"/>
+    <!-- Four small stars -->
+    <polygon points="40,88 41,91 44,91 42,93 43,96 40,94 37,96 38,93 36,91 39,91" fill="#FFDE00"/>
+    <polygon points="46,98 47,101 50,101 48,103 49,106 46,104 43,106 44,103 42,101 45,101" fill="#FFDE00"/>
+    <polygon points="46,115 47,118 50,118 48,120 49,123 46,121 43,123 44,120 42,118 45,118" fill="#FFDE00"/>
+    <polygon points="40,125 41,128 44,128 42,130 43,133 40,131 37,133 38,130 36,128 39,128" fill="#FFDE00"/>
+    <text x="45" y="153" font-size="15" text-anchor="middle" fill="#FFD700" font-weight="bold" filter="url(#textShadow)">중국</text>
+    
+    <!-- Japan Flag -->
+    <rect x="102" y="75" width="90" height="60" fill="#ffffff" rx="4" stroke="#ccc" stroke-width="1"/>
+    <circle cx="147" cy="105" r="20" fill="#BC002D"/>
+    <text x="147" y="153" font-size="15" text-anchor="middle" fill="#FFD700" font-weight="bold" filter="url(#textShadow)">일본</text>
+  </g>
+  
+  <!-- Main text with stronger shadow -->
+  <text x="256" y="370" font-family="Arial, sans-serif" font-size="85" font-weight="bold" text-anchor="middle" fill="url(#gold3)" stroke="#4A2C2A" stroke-width="4" filter="url(#textShadow)">성경</text>
+  <text x="256" y="430" font-family="Arial, sans-serif" font-size="85" font-weight="bold" text-anchor="middle" fill="url(#gold3)" stroke="#4A2C2A" stroke-width="4" filter="url(#textShadow)">듣기</text>
+</svg>

@@ -1,0 +1,95 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="wood1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B4513;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#CD853F;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#D2691E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8B4513;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="woodDark1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#654321;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#8B4513;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A0522D;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gold1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow1">
+      <feDropShadow dx="4" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+  
+  <!-- Book base -->
+  <rect x="80" y="80" width="352" height="352" rx="20" ry="20" fill="url(#wood1)" filter="url(#shadow1)"/>
+  <rect x="65" y="80" width="35" height="352" rx="17" ry="17" fill="url(#woodDark1)"/>
+  <rect x="95" y="95" width="322" height="322" rx="10" fill="url(#woodDark1)" opacity="0.3"/>
+  
+  <!-- 2x2 Flag grid -->
+  <g transform="translate(140, 140)">
+    <!-- Top row: Korea and USA -->
+    <!-- Korea Flag (태극기) -->
+    <rect x="0" y="0" width="80" height="50" fill="#ffffff" rx="3" stroke="#ddd" stroke-width="1"/>
+    <!-- Taegeuk circle -->
+    <path d="M 40 25 A 12 12 0 0 1 28 25 A 12 12 0 0 0 40 25" fill="#ff0000"/>
+    <path d="M 40 25 A 12 12 0 0 0 52 25 A 12 12 0 0 1 40 25" fill="#0000ff"/>
+    <!-- Trigrams -->
+    <g stroke="#000000" stroke-width="1.5">
+      <line x1="15" y1="10" x2="15" y2="16"/>
+      <line x1="17" y1="10" x2="17" y2="16"/>
+      <line x1="19" y1="10" x2="19" y2="16"/>
+      <line x1="65" y1="34" x2="65" y2="40"/>
+      <line x1="67" y1="34" x2="67" y2="37"/>
+      <line x1="67" y1="37" x2="67" y2="40"/>
+      <line x1="69" y1="34" x2="69" y2="40"/>
+    </g>
+    <text x="40" y="65" font-size="14" text-anchor="middle" fill="#FFD700" font-weight="bold">한국</text>
+    
+    <!-- USA Flag (성조기) -->
+    <rect x="90" y="0" width="80" height="50" fill="#ffffff" rx="3" stroke="#ddd" stroke-width="1"/>
+    <!-- Red stripes -->
+    <rect x="90" y="0" width="80" height="4" fill="#B22234"/>
+    <rect x="90" y="8" width="80" height="4" fill="#B22234"/>
+    <rect x="90" y="16" width="80" height="4" fill="#B22234"/>
+    <rect x="90" y="24" width="80" height="4" fill="#B22234"/>
+    <rect x="90" y="32" width="80" height="4" fill="#B22234"/>
+    <rect x="90" y="40" width="80" height="4" fill="#B22234"/>
+    <rect x="90" y="46" width="80" height="4" fill="#B22234"/>
+    <!-- Blue canton -->
+    <rect x="90" y="0" width="32" height="26" fill="#3C3B6E"/>
+    <!-- Stars (simplified as dots) -->
+    <g fill="#ffffff">
+      <circle cx="98" cy="4" r="1"/>
+      <circle cx="106" cy="4" r="1"/>
+      <circle cx="114" cy="4" r="1"/>
+      <circle cx="102" cy="8" r="1"/>
+      <circle cx="110" cy="8" r="1"/>
+      <circle cx="118" cy="8" r="1"/>
+      <circle cx="98" cy="12" r="1"/>
+      <circle cx="106" cy="12" r="1"/>
+      <circle cx="114" cy="12" r="1"/>
+    </g>
+    <text x="130" y="65" font-size="14" text-anchor="middle" fill="#FFD700" font-weight="bold">영어</text>
+    
+    <!-- Bottom row: China and Japan -->
+    <!-- China Flag (오성홍기) -->
+    <rect x="0" y="80" width="80" height="50" fill="#DE2910" rx="3" stroke="#ddd" stroke-width="1"/>
+    <!-- Large star -->
+    <polygon points="20,90 23,99 32,99 25,104 28,113 20,108 12,113 15,104 8,99 17,99" fill="#FFDE00"/>
+    <!-- Four small stars -->
+    <polygon points="35,93 36,95 38,95 37,96 37,98 35,97 33,98 34,96 33,95 34,95" fill="#FFDE00"/>
+    <polygon points="40,100 41,102 43,102 42,103 42,105 40,104 38,105 39,103 38,102 39,102" fill="#FFDE00"/>
+    <polygon points="40,110 41,112 43,112 42,113 42,115 40,114 38,115 39,113 38,112 39,112" fill="#FFDE00"/>
+    <polygon points="35,117 36,119 38,119 37,120 37,122 35,121 33,122 34,120 33,119 34,119" fill="#FFDE00"/>
+    <text x="40" y="145" font-size="14" text-anchor="middle" fill="#FFD700" font-weight="bold">중국</text>
+    
+    <!-- Japan Flag (일장기) -->
+    <rect x="90" y="80" width="80" height="50" fill="#ffffff" rx="3" stroke="#ddd" stroke-width="1"/>
+    <circle cx="130" cy="105" r="18" fill="#BC002D"/>
+    <text x="130" y="145" font-size="14" text-anchor="middle" fill="#FFD700" font-weight="bold">일본</text>
+  </g>
+  
+  <!-- Main text -->
+  <text x="256" y="350" font-family="Arial, sans-serif" font-size="85" font-weight="bold" text-anchor="middle" fill="url(#gold1)" stroke="#654321" stroke-width="3">성경</text>
+  <text x="256" y="410" font-family="Arial, sans-serif" font-size="85" font-weight="bold" text-anchor="middle" fill="url(#gold1)" stroke="#654321" stroke-width="3">듣기</text>
+</svg>

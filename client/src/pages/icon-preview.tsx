@@ -9,11 +9,9 @@ export default function IconPreview() {
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
 
   const icons = [
-    { id: 'bible-icon-1', name: '아이콘 1', description: '상단 4개 국기 배치' },
-    { id: 'bible-icon-2', name: '아이콘 2', description: '모서리 국기 배치' },
-    { id: 'bible-icon-3', name: '아이콘 3', description: '2x2 국기 배치, 전체 우드색' },
-    { id: 'bible-icon-4', name: '아이콘 4', description: '헤드폰 + 가로 국기 배치' },
-    { id: 'bible-icon-5', name: '아이콘 5', description: '큰 헤드폰 + 격자 국기 배치' },
+    { id: 'bible-icon-new1', name: '아이콘 1', description: '정확한 국기, 균등한 성경듣기 텍스트' },
+    { id: 'bible-icon-new2', name: '아이콘 2', description: '십자가 장식, 진한 우드톤' },
+    { id: 'bible-icon-new3', name: '아이콘 3', description: '고급 그림자, 최고 가독성' },
   ];
 
   const handleSelectIcon = (iconId: string) => {
