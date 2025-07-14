@@ -26,7 +26,8 @@ export default function Player() {
     currentBook,
     currentChapter,
     currentVerse,
-    setVerse
+    setVerse,
+    navigateVerse
   } = useBible();
   
   const { audioState, speak, toggle, stop } = useSpeech();
@@ -76,21 +77,33 @@ export default function Player() {
           
           // Save listening statistics
           const listeningStats = JSON.parse(localStorage.getItem('listeningStats') || '[]');
-          const newStat = {
-            book: currentBook,
-            chapter: currentChapter,
-            verse: currentVerse,
-            language: currentLanguage,
-            timestamp: new Date().toISOString(),
-            duration: Math.round(currentVerseData.text.length / 15) // Estimate duration based on text length
-          };
-          listeningStats.push(newStat);
-          localStorage.setItem('listeningStats', JSON.stringify(listeningStats));
+          const verseKey = `${currentBook}-${currentChapter}-${currentVerse}-${currentLanguage}`;
+          
+          // Check if this exact verse in this language was already recorded recently (within 5 minutes)
+          const recentRecord = listeningStats.find((stat: any) => {
+            const statKey = `${stat.book}-${stat.chapter}-${stat.verse}-${stat.language}`;
+            const timeDiff = new Date().getTime() - new Date(stat.timestamp).getTime();
+            return statKey === verseKey && timeDiff < 5 * 60 * 1000; // 5 minutes
+          });
+          
+          if (!recentRecord) {
+            const newStat = {
+              book: currentBook,
+              chapter: currentChapter,
+              verse: currentVerse,
+              language: currentLanguage,
+              timestamp: new Date().toISOString(),
+              duration: Math.round(currentVerseData.text.length / 15), // Estimate duration based on text length
+              type: 'listen'
+            };
+            listeningStats.push(newStat);
+            localStorage.setItem('listeningStats', JSON.stringify(listeningStats));
+          }
           
           if (continuousMode) {
             // Auto advance to next verse after 1 second
             setTimeout(() => {
-              handleNext();
+              navigateVerse('next');
             }, 1000);
           }
         }
@@ -102,19 +115,11 @@ export default function Player() {
 
 
   const handleNext = () => {
-    if (currentVerse < 31) {
-      setVerse(currentBook, currentChapter, currentVerse + 1);
-    } else {
-      setVerse(currentBook, currentChapter + 1, 1);
-    }
+    navigateVerse('next');
   };
 
   const handlePrevious = () => {
-    if (currentVerse > 1) {
-      setVerse(currentBook, currentChapter, currentVerse - 1);
-    } else if (currentChapter > 1) {
-      setVerse(currentBook, currentChapter - 1, 31);
-    }
+    navigateVerse('prev');
   };
 
   return (

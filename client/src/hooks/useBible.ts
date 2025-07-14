@@ -43,25 +43,29 @@ export function useBible() {
   });
 
   const navigateVerse = (direction: 'prev' | 'next') => {
+    const newVerse = direction === 'next' ? currentVerse + 1 : currentVerse - 1;
+    const newChapter = direction === 'next' ? currentChapter + 1 : currentChapter - 1;
+    
     if (direction === 'next') {
-      if (currentVerse < 31) { // Assume max 31 verses per chapter
-        setCurrentVerse(prev => prev + 1);
-        Storage.saveCurrentVerse(currentBook, currentChapter, currentVerse + 1);
+      if (verses && newVerse <= verses.length) {
+        // Stay in current chapter
+        setCurrentVerse(newVerse);
+        Storage.saveCurrentVerse(currentBook, currentChapter, newVerse);
       } else {
         // Move to next chapter
-        setCurrentChapter(prev => prev + 1);
+        setCurrentChapter(newChapter);
         setCurrentVerse(1);
-        Storage.saveCurrentVerse(currentBook, currentChapter + 1, 1);
+        Storage.saveCurrentVerse(currentBook, newChapter, 1);
       }
     } else {
       if (currentVerse > 1) {
-        setCurrentVerse(prev => prev - 1);
-        Storage.saveCurrentVerse(currentBook, currentChapter, currentVerse - 1);
+        setCurrentVerse(newVerse);
+        Storage.saveCurrentVerse(currentBook, currentChapter, newVerse);
       } else if (currentChapter > 1) {
-        // Move to previous chapter
-        setCurrentChapter(prev => prev - 1);
-        setCurrentVerse(31); // Start from end of previous chapter
-        Storage.saveCurrentVerse(currentBook, currentChapter - 1, 31);
+        // Move to previous chapter - we'll need to find the last verse
+        setCurrentChapter(newChapter);
+        setCurrentVerse(1); // Will be updated when verses load
+        Storage.saveCurrentVerse(currentBook, newChapter, 1);
       }
     }
   };

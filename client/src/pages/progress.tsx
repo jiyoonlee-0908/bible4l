@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { Header } from '@/components/Header';
 import { BottomNavigation } from '@/components/BottomNavigation';
+import { BibleGrid } from '@/components/BibleGrid';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -220,6 +221,11 @@ export default function ProgressPage() {
           </Card>
         )}
 
+        {/* Bible Grid */}
+        {listeningStats.length > 0 && (
+          <BibleGrid listeningStats={listeningStats} />
+        )}
+
         {/* Recent Listening */}
         {listeningStats.length > 0 && (
           <Card className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
@@ -243,6 +249,14 @@ export default function ProgressPage() {
                         </Badge>
                         <span>•</span>
                         <span>{formatTime(stat.duration)}</span>
+                        {stat.type && (
+                          <>
+                            <span>•</span>
+                            <span className={stat.type === 'listen' ? 'text-blue-600' : 'text-green-600'}>
+                              {stat.type === 'listen' ? '청취' : '읽기'}
+                            </span>
+                          </>
+                        )}
                       </div>
                     </div>
                     <div className="text-right text-xs text-slate-500">

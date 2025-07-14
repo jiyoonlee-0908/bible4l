@@ -6,6 +6,7 @@ import { Language } from '@shared/schema';
 import { useSpeech } from '@/hooks/useSpeech';
 import { useBookmarks } from '@/hooks/useBookmarks';
 import { useToast } from '@/hooks/use-toast';
+import { useEffect } from 'react';
 
 interface VerseCardProps {
   verse: BibleVerse;
@@ -18,6 +19,39 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
   const { audioState, speak, toggle, stop, setSpeed, setPitch } = useSpeech();
   const { isBookmarked, toggleBookmark } = useBookmarks();
   const { toast } = useToast();
+
+  // Save reading statistics when viewing verse
+  useEffect(() => {
+    const saveReadingStats = () => {
+      const listeningStats = JSON.parse(localStorage.getItem('listeningStats') || '[]');
+      const verseKey = `${verse.bookId}-${verse.chapterId}-${verse.verseId}-${language}`;
+      
+      // Check if this exact verse in this language was already recorded recently (within 5 minutes)
+      const recentRecord = listeningStats.find((stat: any) => {
+        const statKey = `${stat.book}-${stat.chapter}-${stat.verse}-${stat.language}`;
+        const timeDiff = new Date().getTime() - new Date(stat.timestamp).getTime();
+        return statKey === verseKey && timeDiff < 5 * 60 * 1000; // 5 minutes
+      });
+      
+      if (!recentRecord) {
+        const newStat = {
+          book: verse.bookId,
+          chapter: parseInt(verse.chapterId),
+          verse: verse.verseId,
+          language: language,
+          timestamp: new Date().toISOString(),
+          duration: 1, // 1 minute for reading
+          type: 'read'
+        };
+        listeningStats.push(newStat);
+        localStorage.setItem('listeningStats', JSON.stringify(listeningStats));
+      }
+    };
+
+    // Save after 3 seconds of viewing
+    const timer = setTimeout(saveReadingStats, 3000);
+    return () => clearTimeout(timer);
+  }, [verse.bookId, verse.chapterId, verse.verseId, language]);
 
   const handlePlay = () => {
     if (audioState.isPlaying) {
