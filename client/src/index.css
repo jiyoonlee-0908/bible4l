@@ -3,25 +3,26 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(0, 0%, 100%);
-  --foreground: hsl(20, 14.3%, 4.1%);
-  --muted: hsl(60, 4.8%, 95.9%);
-  --muted-foreground: hsl(25, 5.3%, 44.7%);
-  --popover: hsl(0, 0%, 100%);
-  --popover-foreground: hsl(20, 14.3%, 4.1%);
-  --card: hsl(0, 0%, 100%);
-  --card-foreground: hsl(20, 14.3%, 4.1%);
-  --border: hsl(20, 5.9%, 90%);
-  --input: hsl(20, 5.9%, 90%);
-  --primary: hsl(207, 90%, 54%);
-  --primary-foreground: hsl(211, 100%, 99%);
-  --secondary: hsl(60, 4.8%, 95.9%);
-  --secondary-foreground: hsl(24, 9.8%, 10%);
-  --accent: hsl(60, 4.8%, 95.9%);
-  --accent-foreground: hsl(24, 9.8%, 10%);
+  /* Wood-tone inspired palette matching the icon */
+  --background: hsl(35, 25%, 96%); /* Very light warm wood */
+  --foreground: hsl(25, 40%, 15%); /* Dark wood brown */
+  --muted: hsl(35, 20%, 88%); /* Light wood muted */
+  --muted-foreground: hsl(25, 25%, 45%); /* Medium wood text */
+  --popover: hsl(35, 30%, 94%); /* Light wood popover */
+  --popover-foreground: hsl(25, 40%, 15%);
+  --card: hsl(38, 25%, 97%); /* Very light wood cards */
+  --card-foreground: hsl(25, 40%, 15%);
+  --border: hsl(30, 20%, 82%); /* Wood border */
+  --input: hsl(30, 20%, 82%);
+  --primary: hsl(25, 50%, 30%); /* Rich dark wood */
+  --primary-foreground: hsl(45, 80%, 95%); /* Light cream */
+  --secondary: hsl(35, 25%, 85%); /* Light wood accent */
+  --secondary-foreground: hsl(25, 40%, 15%);
+  --accent: hsl(40, 55%, 50%); /* Warm wood accent */
+  --accent-foreground: hsl(45, 80%, 95%);
   --destructive: hsl(0, 84.2%, 60.2%);
   --destructive-foreground: hsl(60, 9.1%, 97.8%);
-  --ring: hsl(20, 14.3%, 4.1%);
+  --ring: hsl(25, 40%, 15%);
   --radius: 0.5rem;
 
   /* Language specific colors */
@@ -32,25 +33,26 @@
 }
 
 .dark {
-  --background: hsl(240, 10%, 3.9%);
-  --foreground: hsl(0, 0%, 98%);
-  --muted: hsl(240, 3.7%, 15.9%);
-  --muted-foreground: hsl(240, 5%, 64.9%);
-  --popover: hsl(240, 10%, 3.9%);
-  --popover-foreground: hsl(0, 0%, 98%);
-  --card: hsl(240, 10%, 3.9%);
-  --card-foreground: hsl(0, 0%, 98%);
-  --border: hsl(240, 3.7%, 15.9%);
-  --input: hsl(240, 3.7%, 15.9%);
-  --primary: hsl(207, 90%, 54%);
-  --primary-foreground: hsl(211, 100%, 99%);
-  --secondary: hsl(240, 3.7%, 15.9%);
-  --secondary-foreground: hsl(0, 0%, 98%);
-  --accent: hsl(240, 3.7%, 15.9%);
-  --accent-foreground: hsl(0, 0%, 98%);
+  /* Dark wood-tone palette matching the icon */
+  --background: hsl(25, 35%, 8%); /* Very dark wood like icon */
+  --foreground: hsl(45, 80%, 92%); /* Light cream text */
+  --muted: hsl(25, 25%, 18%); /* Dark wood muted */
+  --muted-foreground: hsl(35, 30%, 65%); /* Medium wood text */
+  --popover: hsl(25, 30%, 12%); /* Dark wood popover */
+  --popover-foreground: hsl(45, 80%, 92%);
+  --card: hsl(25, 30%, 12%); /* Dark wood cards */
+  --card-foreground: hsl(45, 80%, 92%);
+  --border: hsl(25, 25%, 22%); /* Dark wood border */
+  --input: hsl(25, 25%, 22%);
+  --primary: hsl(45, 80%, 92%); /* Light cream primary */
+  --primary-foreground: hsl(25, 35%, 8%); /* Dark wood text on light */
+  --secondary: hsl(25, 25%, 18%); /* Dark wood secondary */
+  --secondary-foreground: hsl(45, 80%, 92%);
+  --accent: hsl(35, 45%, 35%); /* Medium wood accent */
+  --accent-foreground: hsl(45, 80%, 92%);
   --destructive: hsl(0, 62.8%, 30.6%);
   --destructive-foreground: hsl(0, 0%, 98%);
-  --ring: hsl(240, 4.9%, 83.9%);
+  --ring: hsl(45, 80%, 92%);
   --radius: 0.5rem;
 }
 
@@ -81,22 +83,22 @@
     font-size: var(--font-size-small, 14px);
   }
 
-  /* Custom scrollbar */
+  /* Custom scrollbar with wood tones */
   ::-webkit-scrollbar {
     width: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    background: hsl(0, 0%, 95%);
+    background: hsl(35, 20%, 88%);
   }
 
   ::-webkit-scrollbar-thumb {
-    background: hsl(0, 0%, 80%);
+    background: hsl(30, 30%, 65%);
     border-radius: 3px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(0, 0%, 70%);
+    background: hsl(25, 35%, 55%);
   }
 }
 
