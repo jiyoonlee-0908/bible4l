@@ -21,13 +21,23 @@ export const bookmarkSchema = z.object({
   createdAt: z.string(),
 });
 
-// User settings schema
+// User settings schema with DSP
 export const settingsSchema = z.object({
   selectedLanguage: z.enum(['ko', 'en', 'zh', 'ja']).default('ko'),
   displayMode: z.enum(['single', 'double']).default('single'),
-  playbackSpeed: z.number().min(0.5).max(2.0).default(1.0),
+  playbackSpeed: z.number().min(0.8).max(1.5).default(1.0),
+  pitch: z.number().min(-4).max(4).default(0), // semitones
   autoPlay: z.boolean().default(false),
   voice: z.string().optional(),
+  dsp: z.object({
+    echo: z.boolean().default(false),
+    reverb: z.boolean().default(false),
+    eq: z.object({
+      low: z.number().min(-10).max(10).default(0),
+      mid: z.number().min(-10).max(10).default(0),
+      high: z.number().min(-10).max(10).default(0),
+    }).default({}),
+  }).default({}),
 });
 
 // Audio state schema
@@ -35,7 +45,8 @@ export const audioStateSchema = z.object({
   isPlaying: z.boolean().default(false),
   currentPosition: z.number().default(0),
   duration: z.number().default(0),
-  speed: z.number().min(0.5).max(2.0).default(1.0),
+  speed: z.number().min(0.8).max(1.5).default(1.0),
+  pitch: z.number().min(-4).max(4).default(0),
 });
 
 export type Verse = z.infer<typeof verseSchema>;
@@ -43,31 +54,35 @@ export type Bookmark = z.infer<typeof bookmarkSchema>;
 export type Settings = z.infer<typeof settingsSchema>;
 export type AudioState = z.infer<typeof audioStateSchema>;
 
-// Language configuration
+// Language configuration with public domain translations
 export const languageConfig = {
   ko: {
     name: '한국어',
     short: '한',
     color: 'hsl(0, 84%, 60%)', // red
-    bibleId: 'de4e12af7f28f599-02', // Korean Bible ID
+    translation: 'KJV', // Using KJV for Korean (will be localized)
+    voiceLang: 'ko-KR',
   },
   en: {
     name: 'English',
     short: 'EN',
     color: 'hsl(217, 91%, 60%)', // blue
-    bibleId: 'de4e12af7f28f599-01', // English Bible ID
+    translation: 'KJV', // King James Version (Public Domain)
+    voiceLang: 'en-US',
   },
   zh: {
     name: '中文',
     short: '中',
     color: 'hsl(43, 96%, 56%)', // amber
-    bibleId: 'de4e12af7f28f599-03', // Chinese Bible ID
+    translation: 'CUV', // Chinese Union Version (Public Domain)
+    voiceLang: 'zh-CN',
   },
   ja: {
     name: '日本語',
     short: '日',
     color: 'hsl(262, 83%, 58%)', // violet
-    bibleId: 'de4e12af7f28f599-04', // Japanese Bible ID
+    translation: 'JEB', // Japanese (Public Domain)
+    voiceLang: 'ja-JP',
   },
 } as const;
 

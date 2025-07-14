@@ -7,6 +7,8 @@ import { VerseCard } from '@/components/VerseCard';
 import { Navigation } from '@/components/Navigation';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { useBible } from '@/hooks/useBible';
+import { useBadges } from '@/hooks/useBadges';
+import { useBookmarks } from '@/hooks/useBookmarks';
 import { Storage } from '@/lib/storage';
 import { Language, Settings } from '@shared/schema';
 
@@ -22,12 +24,25 @@ export default function Home() {
     currentChapter,
     currentVerse,
   } = useBible();
+  
+  const { checkAndUnlockBadge } = useBadges();
+  const { bookmarks } = useBookmarks();
 
   useEffect(() => {
     const savedSettings = Storage.getSettings();
     setSettings(savedSettings);
     setCurrentLanguage(savedSettings.selectedLanguage);
-  }, [setCurrentLanguage]);
+  }, []); // Only run once on mount
+
+  useEffect(() => {
+    // Check for badges when bookmarks change
+    if (bookmarks.length > 0) {
+      checkAndUnlockBadge('first_listen');
+    }
+    if (bookmarks.length >= 10) {
+      checkAndUnlockBadge('bookmark_10', bookmarks.length);
+    }
+  }, [bookmarks.length]); // Only when bookmark count changes
 
   const handleLanguageChange = (language: Language) => {
     const newSettings = { ...settings, selectedLanguage: language };

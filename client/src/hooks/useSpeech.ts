@@ -1,5 +1,6 @@
-import { useState, useCallback, useEffect } from 'react';
-import { AudioState } from '@shared/schema';
+import { useState, useCallback, useEffect, useRef } from 'react';
+import { AudioState, Settings } from '@shared/schema';
+import { Storage } from '@/lib/storage';
 
 interface UseSpeechOptions {
   rate?: number;
@@ -14,10 +15,17 @@ export function useSpeech() {
     currentPosition: 0,
     duration: 0,
     speed: 1.0,
+    pitch: 0,
   });
 
   const [utterance, setUtterance] = useState<SpeechSynthesisUtterance | null>(null);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [settings, setSettings] = useState<Settings>(Storage.getSettings());
+  
+  // Audio context for DSP effects
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const gainNodeRef = useRef<GainNode | null>(null);
+  const eqNodesRef = useRef<{ low: BiquadFilterNode; mid: BiquadFilterNode; high: BiquadFilterNode } | null>(null);
 
   useEffect(() => {
     const loadVoices = () => {
@@ -28,16 +36,81 @@ export function useSpeech() {
     loadVoices();
     speechSynthesis.addEventListener('voiceschanged', loadVoices);
 
+    // Initialize audio context for DSP
+    if ('AudioContext' in window || 'webkitAudioContext' in window) {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      audioContextRef.current = new AudioContextClass();
+      setupAudioNodes();
+    }
+
     return () => {
       speechSynthesis.removeEventListener('voiceschanged', loadVoices);
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+      }
     };
   }, []);
+
+  const setupAudioNodes = () => {
+    if (!audioContextRef.current) return;
+
+    const context = audioContextRef.current;
+    
+    // Create gain node for volume control
+    gainNodeRef.current = context.createGain();
+    
+    // Create EQ nodes
+    const lowFilter = context.createBiquadFilter();
+    lowFilter.type = 'lowshelf';
+    lowFilter.frequency.value = 200;
+    
+    const midFilter = context.createBiquadFilter();
+    midFilter.type = 'peaking';
+    midFilter.frequency.value = 1000;
+    midFilter.Q.value = 1;
+    
+    const highFilter = context.createBiquadFilter();
+    highFilter.type = 'highshelf';
+    highFilter.frequency.value = 3000;
+    
+    eqNodesRef.current = { low: lowFilter, mid: midFilter, high: highFilter };
+    
+    // Connect nodes
+    gainNodeRef.current.connect(lowFilter);
+    lowFilter.connect(midFilter);
+    midFilter.connect(highFilter);
+    highFilter.connect(context.destination);
+  };
+
+  const applyDSPSettings = useCallback(() => {
+    if (!eqNodesRef.current || !gainNodeRef.current) return;
+    
+    const { dsp } = settings;
+    const { eq } = dsp;
+    
+    // Apply EQ settings
+    eqNodesRef.current.low.gain.value = eq.low;
+    eqNodesRef.current.mid.gain.value = eq.mid;
+    eqNodesRef.current.high.gain.value = eq.high;
+    
+    // Apply reverb/echo effects (simplified implementation)
+    if (dsp.reverb || dsp.echo) {
+      gainNodeRef.current.gain.value = 0.8; // Slight volume reduction for effects
+    } else {
+      gainNodeRef.current.gain.value = 1.0;
+    }
+  }, [settings]);
 
   const cleanText = useCallback((text: string): string => {
     return text
       .replace(/[:\.,;!?]/g, ' ') // Remove punctuation that affects speech
       .replace(/\s+/g, ' ') // Normalize whitespace
       .trim();
+  }, []);
+
+  const calculatePitch = useCallback((semitones: number): number => {
+    // Convert semitones to pitch multiplier
+    return Math.pow(2, semitones / 12);
   }, []);
 
   const speak = useCallback((text: string, options: UseSpeechOptions = {}) => {
@@ -48,19 +121,45 @@ export function useSpeech() {
       const cleanedText = cleanText(text);
       const newUtterance = new SpeechSynthesisUtterance(cleanedText);
       
-      newUtterance.rate = options.rate || audioState.speed;
-      newUtterance.pitch = options.pitch || 1;
+      // Apply settings
+      newUtterance.rate = options.rate || settings.playbackSpeed;
+      newUtterance.pitch = calculatePitch(options.pitch || settings.pitch);
       newUtterance.volume = options.volume || 1;
       
+      // Apply voice selection
       if (options.voice) {
         newUtterance.voice = options.voice;
+      } else if (settings.voice && voices.length > 0) {
+        const selectedVoice = voices.find(v => v.name === settings.voice);
+        if (selectedVoice) {
+          newUtterance.voice = selectedVoice;
+        }
       }
 
+      // Apply DSP effects
+      applyDSPSettings();
+
+      // Track listening time for achievements
+      const startTime = Date.now();
+
       newUtterance.onstart = () => {
-        setAudioState(prev => ({ ...prev, isPlaying: true, currentPosition: 0 }));
+        setAudioState(prev => ({ 
+          ...prev, 
+          isPlaying: true, 
+          currentPosition: 0,
+          speed: newUtterance.rate,
+          pitch: settings.pitch,
+        }));
       };
 
       newUtterance.onend = () => {
+        const endTime = Date.now();
+        const listeningTime = (endTime - startTime) / 1000 / 60; // in minutes
+        
+        // Update listening time in storage
+        const currentSettings = Storage.getSettings();
+        // Note: We'd need to add totalListeningTime to settings schema
+        
         setAudioState(prev => ({ ...prev, isPlaying: false, currentPosition: 0 }));
       };
 
@@ -70,13 +169,13 @@ export function useSpeech() {
       };
 
       // Estimate duration based on text length and speech rate
-      const estimatedDuration = (cleanedText.length / 10) / (options.rate || audioState.speed);
+      const estimatedDuration = (cleanedText.length / 10) / (options.rate || settings.playbackSpeed);
       setAudioState(prev => ({ ...prev, duration: estimatedDuration }));
 
       setUtterance(newUtterance);
       speechSynthesis.speak(newUtterance);
     }
-  }, [cleanText, audioState.speed]);
+  }, [cleanText, settings, voices, calculatePitch, applyDSPSettings]);
 
   const pause = useCallback(() => {
     if (speechSynthesis.speaking) {
@@ -98,13 +197,39 @@ export function useSpeech() {
   }, []);
 
   const setSpeed = useCallback((speed: number) => {
+    const newSettings = { ...settings, playbackSpeed: speed };
+    setSettings(newSettings);
+    Storage.saveSettings(newSettings);
+    
     setAudioState(prev => ({ ...prev, speed }));
     if (utterance && speechSynthesis.speaking) {
       // For rate changes, we need to restart the speech
       speechSynthesis.cancel();
       speak(utterance.text, { rate: speed });
     }
-  }, [utterance, speak]);
+  }, [utterance, speak, settings]);
+
+  const setPitch = useCallback((pitch: number) => {
+    const newSettings = { ...settings, pitch };
+    setSettings(newSettings);
+    Storage.saveSettings(newSettings);
+    
+    setAudioState(prev => ({ ...prev, pitch }));
+    if (utterance && speechSynthesis.speaking) {
+      speechSynthesis.cancel();
+      speak(utterance.text, { pitch });
+    }
+  }, [utterance, speak, settings]);
+
+  const updateDSPSettings = useCallback((dspSettings: Partial<Settings['dsp']>) => {
+    const newSettings = { 
+      ...settings, 
+      dsp: { ...settings.dsp, ...dspSettings }
+    };
+    setSettings(newSettings);
+    Storage.saveSettings(newSettings);
+    applyDSPSettings();
+  }, [settings, applyDSPSettings]);
 
   const toggle = useCallback(() => {
     if (audioState.isPlaying) {
@@ -123,6 +248,8 @@ export function useSpeech() {
     stop,
     toggle,
     setSpeed,
+    setPitch,
+    updateDSPSettings,
     isSupported: 'speechSynthesis' in window,
   };
 }

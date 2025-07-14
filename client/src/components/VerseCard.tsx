@@ -1,9 +1,8 @@
-import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, Star, Share2, Minus, Plus } from 'lucide-react';
 import { BibleVerse } from '@/types/bible';
-import { Language, languageConfig } from '@shared/schema';
+import { Language } from '@shared/schema';
 import { useSpeech } from '@/hooks/useSpeech';
 import { useBookmarks } from '@/hooks/useBookmarks';
 import { useToast } from '@/hooks/use-toast';
@@ -16,7 +15,7 @@ interface VerseCardProps {
 }
 
 export function VerseCard({ verse, language, mode, secondaryVerse }: VerseCardProps) {
-  const { audioState, speak, toggle, stop, setSpeed } = useSpeech();
+  const { audioState, speak, toggle, stop, setSpeed, setPitch } = useSpeech();
   const { isBookmarked, toggleBookmark } = useBookmarks();
   const { toast } = useToast();
 
@@ -75,8 +74,13 @@ export function VerseCard({ verse, language, mode, secondaryVerse }: VerseCardPr
   };
 
   const adjustSpeed = (delta: number) => {
-    const newSpeed = Math.max(0.5, Math.min(2.0, audioState.speed + delta));
+    const newSpeed = Math.max(0.8, Math.min(1.5, audioState.speed + delta));
     setSpeed(newSpeed);
+  };
+
+  const adjustPitch = (delta: number) => {
+    const newPitch = Math.max(-4, Math.min(4, audioState.pitch + delta));
+    setPitch(newPitch);
   };
 
   const formatTime = (seconds: number) => {
@@ -163,25 +167,55 @@ export function VerseCard({ verse, language, mode, secondaryVerse }: VerseCardPr
             </Button>
             
             <div className="flex items-center space-x-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => adjustSpeed(-0.1)}
-                className="w-8 h-8 bg-slate-200 hover:bg-slate-300 rounded-full"
-              >
-                <Minus className="h-3 w-3 text-slate-600" />
-              </Button>
-              <span className="text-sm font-medium text-slate-700 min-w-12 text-center">
-                {audioState.speed.toFixed(1)}x
-              </span>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => adjustSpeed(0.1)}
-                className="w-8 h-8 bg-slate-200 hover:bg-slate-300 rounded-full"
-              >
-                <Plus className="h-3 w-3 text-slate-600" />
-              </Button>
+              <div className="flex flex-col items-center space-y-1">
+                <div className="flex items-center space-x-1">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => adjustSpeed(-0.1)}
+                    className="w-6 h-6 bg-slate-200 hover:bg-slate-300 rounded-full"
+                  >
+                    <Minus className="h-2 w-2 text-slate-600" />
+                  </Button>
+                  <span className="text-xs font-medium text-slate-700 min-w-8 text-center">
+                    {audioState.speed.toFixed(1)}x
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => adjustSpeed(0.1)}
+                    className="w-6 h-6 bg-slate-200 hover:bg-slate-300 rounded-full"
+                  >
+                    <Plus className="h-2 w-2 text-slate-600" />
+                  </Button>
+                </div>
+                <span className="text-xs text-slate-500">속도</span>
+              </div>
+              
+              <div className="flex flex-col items-center space-y-1">
+                <div className="flex items-center space-x-1">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => adjustPitch(-1)}
+                    className="w-6 h-6 bg-amber-200 hover:bg-amber-300 rounded-full"
+                  >
+                    <Minus className="h-2 w-2 text-amber-700" />
+                  </Button>
+                  <span className="text-xs font-medium text-amber-700 min-w-8 text-center">
+                    {audioState.pitch > 0 ? '+' : ''}{audioState.pitch}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => adjustPitch(1)}
+                    className="w-6 h-6 bg-amber-200 hover:bg-amber-300 rounded-full"
+                  >
+                    <Plus className="h-2 w-2 text-amber-700" />
+                  </Button>
+                </div>
+                <span className="text-xs text-amber-600">음높이</span>
+              </div>
             </div>
           </div>
           

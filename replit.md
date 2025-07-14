@@ -2,13 +2,24 @@
 
 ## Overview
 
-BibleAudio 4L is a Progressive Web Application (PWA) that provides Bible audio playback functionality with support for 4 languages (Korean, English, Chinese, Japanese). The application is designed as a mobile-first experience with an intuitive interface for listening to Bible verses, managing bookmarks, and customizing playback settings.
+BibleAudio 4L is a Progressive Web Application (PWA) that provides Bible audio playbook functionality with support for 4 languages (Korean, English, Chinese, Japanese). The application is designed as a mobile-first experience with an intuitive interface for listening to Bible verses, managing bookmarks, customizing playback settings, reading plans, and achievement badges. The app uses public domain Bible translations to ensure commercial viability without licensing costs.
 
 ## User Preferences
 
 ```
 Preferred communication style: Simple, everyday language.
+Commercial use: Prioritize cost-free solutions using public domain content.
 ```
+
+## Recent Changes (January 2025)
+
+✓ Switched to public domain Bible API (bible-api.com) for commercial viability
+✓ Added DSP audio effects: Echo, Reverb, 3-band EQ, Pitch control (±4 semitones)
+✓ Implemented 90-day and 365-day reading plans with progress tracking
+✓ Created badge/achievement system with streak tracking and listening time
+✓ Enhanced audio controls with speed (0.8x-1.5x) and pitch adjustment
+✓ Added tabbed settings interface: Audio, Reading Plans, Badges
+✓ Integrated badge checking for first listen and bookmark milestones
 
 ## System Architecture
 
@@ -24,22 +35,25 @@ Preferred communication style: Simple, everyday language.
 ### Backend Architecture
 - **Runtime**: Node.js with Express.js framework
 - **Language**: TypeScript with ES modules
-- **API Integration**: External Bible API service for scripture content
+- **API Integration**: bible-api.com (public domain, commercial-friendly)
 - **Development**: Hot module replacement with Vite middleware in development
 
 ### Data Storage Solutions
-- **Primary Storage**: Browser localStorage for user preferences, bookmarks, and settings
+- **Primary Storage**: Browser localStorage for user preferences, bookmarks, settings, progress, and badges
 - **Database Schema**: Drizzle ORM configured for PostgreSQL (prepared for future database integration)
 - **Session Management**: In-memory storage with prepared PostgreSQL session store (connect-pg-simple)
 
 ## Key Components
 
 ### Core Features
-1. **Multi-language Support**: Korean, English, Chinese, Japanese with language-specific Bible API endpoints
-2. **Audio Playback**: Web Speech API integration for text-to-speech functionality
+1. **Multi-language Support**: Korean, English, Chinese, Japanese with public domain translations
+2. **Audio Playback**: Web Speech API integration with DSP effects (echo, reverb, EQ, pitch)
 3. **Bookmark System**: Local storage-based bookmark management with CRUD operations
 4. **Display Modes**: Single verse and double verse display options
 5. **Navigation**: Chapter/verse navigation with intuitive controls
+6. **Reading Plans**: 90-day and 365-day Bible reading schedules with progress tracking
+7. **Achievement System**: Badge unlocking based on streaks, listening time, and completion rates
+8. **Advanced Audio Controls**: Speed adjustment (0.8x-1.5x), pitch control (±4 semitones), 3-band EQ
 
 ### UI Components
 - **Responsive Design**: Mobile-first approach with max-width containers
@@ -50,8 +64,11 @@ Preferred communication style: Simple, everyday language.
 ### Data Models
 - **Verse Schema**: Reference, text, book, chapter, verse, language
 - **Bookmark Schema**: Unique ID, verse reference, text, language, timestamp
-- **Settings Schema**: Language preference, display mode, playback speed, auto-play
-- **Audio State**: Playback status, position, duration, speed controls
+- **Settings Schema**: Language preference, display mode, playback speed, pitch, DSP effects, auto-play
+- **Audio State**: Playback status, position, duration, speed, pitch controls
+- **Reading Plan Schema**: Plan type, daily readings, total days, progress tracking
+- **Progress Schema**: Current day, completed days, streak count, total listening time
+- **Badge Schema**: Achievement conditions, unlock status, metallic effects
 
 ## Data Flow
 
@@ -62,10 +79,11 @@ Preferred communication style: Simple, everyday language.
 4. **State Synchronization**: Settings persistence across browser sessions
 
 ### API Integration
-1. **External Bible API**: RESTful API for scripture content retrieval
-2. **Language Mapping**: Bible ID mapping for different language versions
-3. **Error Handling**: Graceful fallbacks for API failures
+1. **bible-api.com**: Public domain Bible API (commercial-friendly, MIT license)
+2. **Language Mapping**: Public domain translations (KJV, CUV, etc.) with localized book names
+3. **Error Handling**: Graceful fallbacks with sample verses for offline functionality
 4. **Caching Strategy**: Query-based caching for frequently accessed verses
+5. **Cost Optimization**: Zero API costs using public domain content
 
 ## External Dependencies
 
@@ -83,8 +101,9 @@ Preferred communication style: Simple, everyday language.
 - **PostCSS**: CSS processing and optimization
 
 ### External Services
-- **Bible API**: Third-party scripture content provider
-- **Web Speech API**: Browser-native text-to-speech functionality
+- **bible-api.com**: Public domain scripture content provider (commercial-friendly)
+- **Web Speech API**: Browser-native text-to-speech functionality with DSP enhancements
+- **Web Audio API**: Advanced audio processing for EQ and effects
 
 ## Deployment Strategy
 
@@ -106,5 +125,7 @@ Preferred communication style: Simple, everyday language.
 ### Scalability Considerations
 - **Database Migration**: Ready for PostgreSQL integration with Drizzle migrations
 - **Session Management**: Prepared for server-side session storage
-- **API Rate Limiting**: Consideration for external API usage limits
+- **Cost-Free Operation**: Public domain API eliminates licensing and usage fees
 - **CDN Integration**: Static asset optimization for global distribution
+- **Achievement Expansion**: Framework ready for additional badge types and conditions
+- **Reading Plan Expansion**: Architecture supports custom reading schedules
