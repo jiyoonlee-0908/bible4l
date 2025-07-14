@@ -31,76 +31,19 @@
   
   <!-- Decorative wood grain lines -->
   <g stroke="url(#woodDark3)" stroke-width="1" opacity="0.3">
-    <line x1="120" y1="120" x2="392" y2="120"/>
-    <line x1="120" y1="140" x2="392" y2="140"/>
-    <line x1="120" y1="380" x2="392" y2="380"/>
-    <line x1="120" y1="400" x2="392" y2="400"/>
+    <line x1="120" y1="180" x2="392" y2="180"/>
+    <line x1="120" y1="200" x2="392" y2="200"/>
+    <line x1="120" y1="320" x2="392" y2="320"/>
+    <line x1="120" y1="340" x2="392" y2="340"/>
   </g>
   
-  <!-- 2x2 Flag grid with accurate designs -->
-  <g transform="translate(150, 160)">
-    <!-- Korea Flag (정확한 태극기) -->
-    <rect x="0" y="0" width="90" height="60" fill="#ffffff" rx="4" stroke="#ccc" stroke-width="1"/>
-    <!-- 태극 원 -->
-    <circle cx="45" cy="30" r="15" fill="none"/>
-    <path d="M 30 30 A 15 15 0 0 1 60 30 A 15 15 0 0 0 30 30" fill="#ff0000"/>
-    <path d="M 30 30 A 15 15 0 0 0 60 30 A 15 15 0 0 1 30 30" fill="#0000ff"/>
-    <!-- 건 (상좌) -->
-    <g stroke="#000000" stroke-width="2">
-      <line x1="15" y1="12" x2="15" y2="20"/>
-      <line x1="18" y1="12" x2="18" y2="20"/>
-      <line x1="21" y1="12" x2="21" y2="20"/>
-    </g>
-    <!-- 곤 (하우) -->
-    <g stroke="#000000" stroke-width="2">
-      <line x1="69" y1="40" x2="69" y2="48"/>
-      <line x1="72" y1="40" x2="72" y2="43"/>
-      <line x1="72" y1="45" x2="72" y2="48"/>
-      <line x1="75" y1="40" x2="75" y2="48"/>
-    </g>
-    <text x="45" y="78" font-size="15" text-anchor="middle" fill="#FFD700" font-weight="bold" filter="url(#textShadow)">한국</text>
-    
-    <!-- USA Flag -->
-    <rect x="102" y="0" width="90" height="60" fill="#ffffff" rx="4" stroke="#ccc" stroke-width="1"/>
-    <!-- 13 stripes -->
-    <rect x="102" y="0" width="90" height="4.6" fill="#B22234"/>
-    <rect x="102" y="9.2" width="90" height="4.6" fill="#B22234"/>
-    <rect x="102" y="18.4" width="90" height="4.6" fill="#B22234"/>
-    <rect x="102" y="27.6" width="90" height="4.6" fill="#B22234"/>
-    <rect x="102" y="36.8" width="90" height="4.6" fill="#B22234"/>
-    <rect x="102" y="46" width="90" height="4.6" fill="#B22234"/>
-    <rect x="102" y="55.2" width="90" height="4.8" fill="#B22234"/>
-    <!-- Blue canton -->
-    <rect x="102" y="0" width="36" height="32" fill="#3C3B6E"/>
-    <!-- Stars -->
-    <g fill="#ffffff">
-      <circle cx="111" cy="4" r="1.2"/>
-      <circle cx="120" cy="4" r="1.2"/>
-      <circle cx="129" cy="4" r="1.2"/>
-      <circle cx="115" cy="8" r="1.2"/>
-      <circle cx="124" cy="8" r="1.2"/>
-      <circle cx="133" cy="8" r="1.2"/>
-    </g>
-    <text x="147" y="78" font-size="15" text-anchor="middle" fill="#FFD700" font-weight="bold" filter="url(#textShadow)">영어</text>
-    
-    <!-- China Flag -->
-    <rect x="0" y="75" width="90" height="60" fill="#DE2910" rx="4" stroke="#ccc" stroke-width="1"/>
-    <!-- Large star -->
-    <polygon points="22,85 26,95 36,95 28,101 32,111 22,105 12,111 16,101 8,95 18,95" fill="#FFDE00"/>
-    <!-- Four small stars -->
-    <polygon points="40,88 41,91 44,91 42,93 43,96 40,94 37,96 38,93 36,91 39,91" fill="#FFDE00"/>
-    <polygon points="46,98 47,101 50,101 48,103 49,106 46,104 43,106 44,103 42,101 45,101" fill="#FFDE00"/>
-    <polygon points="46,115 47,118 50,118 48,120 49,123 46,121 43,123 44,120 42,118 45,118" fill="#FFDE00"/>
-    <polygon points="40,125 41,128 44,128 42,130 43,133 40,131 37,133 38,130 36,128 39,128" fill="#FFDE00"/>
-    <text x="45" y="153" font-size="15" text-anchor="middle" fill="#FFD700" font-weight="bold" filter="url(#textShadow)">중국</text>
-    
-    <!-- Japan Flag -->
-    <rect x="102" y="75" width="90" height="60" fill="#ffffff" rx="4" stroke="#ccc" stroke-width="1"/>
-    <circle cx="147" cy="105" r="20" fill="#BC002D"/>
-    <text x="147" y="153" font-size="15" text-anchor="middle" fill="#FFD700" font-weight="bold" filter="url(#textShadow)">일본</text>
-  </g>
+  <!-- Ornamental border -->
+  <rect x="120" y="220" width="272" height="120" rx="8" fill="none" stroke="url(#gold3)" stroke-width="2" opacity="0.3"/>
   
-  <!-- Main text with stronger shadow -->
-  <text x="256" y="370" font-family="Arial, sans-serif" font-size="85" font-weight="bold" text-anchor="middle" fill="url(#gold3)" stroke="#4A2C2A" stroke-width="4" filter="url(#textShadow)">성경</text>
-  <text x="256" y="430" font-family="Arial, sans-serif" font-size="85" font-weight="bold" text-anchor="middle" fill="url(#gold3)" stroke="#4A2C2A" stroke-width="4" filter="url(#textShadow)">듣기</text>
+  <!-- Main text with optimal spacing -->
+  <text x="256" y="270" font-family="Arial, sans-serif" font-size="90" font-weight="bold" text-anchor="middle" fill="url(#gold3)" stroke="#4A2C2A" stroke-width="4" filter="url(#textShadow)">성경</text>
+  <text x="256" y="340" font-family="Arial, sans-serif" font-size="90" font-weight="bold" text-anchor="middle" fill="url(#gold3)" stroke="#4A2C2A" stroke-width="4" filter="url(#textShadow)">듣기</text>
+  
+  <!-- Language indicators precisely aligned -->
+  <text x="256" y="390" font-family="Arial, sans-serif" font-size="46" font-weight="bold" text-anchor="middle" fill="url(#gold3)" stroke="#4A2C2A" stroke-width="2" filter="url(#textShadow)" letter-spacing="10px">한/영/중/일</text>
 </svg>
