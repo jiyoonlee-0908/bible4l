@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Book, ChevronDown, ChevronUp } from 'lucide-react';
 
@@ -8,7 +7,7 @@ interface BibleGridProps {
 }
 
 export function BibleGrid({ listeningStats }: BibleGridProps) {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
 
   // Bible books in order
   const bibleBooks = [
@@ -67,27 +66,24 @@ export function BibleGrid({ listeningStats }: BibleGridProps) {
   const completionRate = ((listenedBooks / totalBooks) * 100).toFixed(1);
 
   return (
-    <Card className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
-      <CardHeader 
-        className="bg-gradient-to-r from-indigo-50 to-indigo-100 border-b border-indigo-200 cursor-pointer"
+    <div>
+      <div 
+        className="bg-gradient-to-r from-amber-50 to-amber-100 border-b border-amber-200 cursor-pointer p-4 rounded-t-lg"
         onClick={() => setExpanded(!expanded)}
       >
-        <CardTitle className="text-lg font-semibold text-indigo-900 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Book className="h-5 w-5" />
-            성경 전체 진도
-          </div>
+        <div className="text-lg font-semibold text-amber-900 flex items-center justify-between">
+          <span>진도 요약</span>
           <div className="flex items-center gap-3">
-            <Badge variant="secondary" className="bg-indigo-800 text-indigo-50">
+            <Badge variant="secondary" className="bg-amber-700 text-amber-50">
               {listenedBooks}/{totalBooks} ({completionRate}%)
             </Badge>
             {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </div>
-        </CardTitle>
-      </CardHeader>
+        </div>
+      </div>
       
       {expanded && (
-        <CardContent className="p-4">
+        <div className="p-4 bg-white rounded-b-lg border-t-0">
           <div className="grid grid-cols-6 gap-1 text-xs">
             {bibleBooks.map((book, index) => {
               const progress = getBookProgress(book);
@@ -148,8 +144,8 @@ export function BibleGrid({ listeningStats }: BibleGridProps) {
               <span className="text-slate-600">신약 (미청취)</span>
             </div>
           </div>
-        </CardContent>
+        </div>
       )}
-    </Card>
+    </div>
   );
 }

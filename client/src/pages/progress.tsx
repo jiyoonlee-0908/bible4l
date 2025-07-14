@@ -178,8 +178,6 @@ export default function ProgressPage() {
               </Card>
             </div>
 
-            {/* Bible Grid */}
-            <BibleGrid listeningStats={listeningStats} />
           </>
         )}
 
