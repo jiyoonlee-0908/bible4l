@@ -30,8 +30,8 @@ export function LanguageToggle({ selectedLanguage, onLanguageChange, displayMode
                 size="sm"
                 className={`h-10 text-sm transition-colors flex items-center gap-2 ${
                   isSelected
-                    ? 'bg-gradient-to-r from-amber-500 to-yellow-600 text-white hover:from-amber-600 hover:to-yellow-700 shadow-md'
-                    : 'bg-white text-slate-700 hover:bg-slate-50 border-slate-200'
+                    ? 'bg-gradient-to-r from-amber-800 to-amber-900 text-amber-50 hover:from-amber-900 hover:to-amber-950 shadow-md'
+                    : 'bg-white text-amber-800 hover:bg-amber-50 border-amber-200'
                 }`}
               >
                 <span className="text-base">{flagEmoji}</span>
@@ -53,8 +53,8 @@ export function LanguageToggle({ selectedLanguage, onLanguageChange, displayMode
               size="sm"
               className={`flex-1 h-8 text-sm rounded-md transition-all ${
                 displayMode === 'single'
-                  ? 'bg-white shadow-md text-slate-800 font-semibold'
-                  : 'text-slate-600 hover:text-slate-800 hover:bg-slate-50'
+                  ? 'bg-white shadow-md text-amber-800 font-semibold'
+                  : 'text-amber-700 hover:text-amber-800 hover:bg-amber-50'
               }`}
             >
               단일언어
@@ -65,8 +65,8 @@ export function LanguageToggle({ selectedLanguage, onLanguageChange, displayMode
               size="sm"
               className={`flex-1 h-8 text-sm rounded-md transition-all ${
                 displayMode === 'double'
-                  ? 'bg-white shadow-md text-slate-800 font-semibold'
-                  : 'text-slate-600 hover:text-slate-800 hover:bg-slate-50'
+                  ? 'bg-white shadow-md text-amber-800 font-semibold'
+                  : 'text-amber-700 hover:text-amber-800 hover:bg-amber-50'
               }`}
             >
               교차모드
