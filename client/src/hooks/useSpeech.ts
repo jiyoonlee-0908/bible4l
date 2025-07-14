@@ -7,6 +7,7 @@ interface UseSpeechOptions {
   pitch?: number;
   volume?: number;
   voice?: SpeechSynthesisVoice;
+  lang?: string;
 }
 
 export function useSpeech() {
@@ -82,6 +83,17 @@ export function useSpeech() {
     highFilter.connect(context.destination);
   };
 
+  const getCurrentLanguageCode = useCallback(() => {
+    const currentSettings = Storage.getSettings();
+    const langMap = {
+      ko: 'ko-KR',
+      en: 'en-US', 
+      zh: 'zh-CN',
+      ja: 'ja-JP'
+    };
+    return langMap[currentSettings.selectedLanguage] || 'en-US';
+  }, []);
+
   const applyDSPSettings = useCallback(() => {
     if (!eqNodesRef.current || !gainNodeRef.current) return;
     
@@ -109,8 +121,10 @@ export function useSpeech() {
   }, []);
 
   const calculatePitch = useCallback((semitones: number): number => {
-    // Convert semitones to pitch multiplier
-    return Math.pow(2, semitones / 12);
+    // Convert semitones to pitch multiplier (0.5 to 2.0 range)
+    const pitch = Math.pow(2, semitones / 12);
+    // Ensure the value is finite and within browser limits
+    return Math.max(0.1, Math.min(10, isFinite(pitch) ? pitch : 1));
   }, []);
 
   const speak = useCallback((text: string, options: UseSpeechOptions = {}) => {
@@ -121,19 +135,32 @@ export function useSpeech() {
       const cleanedText = cleanText(text);
       const newUtterance = new SpeechSynthesisUtterance(cleanedText);
       
-      // Apply settings
-      newUtterance.rate = options.rate || settings.playbackSpeed;
-      newUtterance.pitch = calculatePitch(options.pitch || settings.pitch);
+      // Apply settings with safe defaults
+      newUtterance.rate = options.rate || settings.playbackSpeed || 1.0;
+      const pitchValue = options.pitch !== undefined ? options.pitch : settings.pitch || 0;
+      newUtterance.pitch = calculatePitch(pitchValue);
       newUtterance.volume = options.volume || 1;
       
-      // Apply voice selection
+      // Apply voice selection based on current or specified language
       if (options.voice) {
         newUtterance.voice = options.voice;
-      } else if (settings.voice && voices.length > 0) {
-        const selectedVoice = voices.find(v => v.name === settings.voice);
-        if (selectedVoice) {
-          newUtterance.voice = selectedVoice;
+      } else {
+        // Auto-select voice based on specified or current language
+        const targetLang = options.lang || getCurrentLanguageCode();
+        const languageVoices = voices.filter(v => v.lang.startsWith(targetLang.split('-')[0]));
+        if (languageVoices.length > 0) {
+          newUtterance.voice = languageVoices[0];
+        } else if (settings.voice && voices.length > 0) {
+          const selectedVoice = voices.find(v => v.name === settings.voice);
+          if (selectedVoice) {
+            newUtterance.voice = selectedVoice;
+          }
         }
+      }
+      
+      // Set language for the utterance
+      if (options.lang) {
+        newUtterance.lang = options.lang;
       }
 
       // Apply DSP effects

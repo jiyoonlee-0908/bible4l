@@ -26,7 +26,17 @@ export function VerseCard({ verse, language, mode, secondaryVerse }: VerseCardPr
       const textToSpeak = mode === 'double' && secondaryVerse 
         ? `${verse.text}. ${secondaryVerse.text}`
         : verse.text;
-      speak(textToSpeak, { rate: audioState.speed });
+      
+      // Get the appropriate voice for current language
+      const voiceMapping = {
+        ko: 'ko-KR',
+        en: 'en-US',
+        zh: 'zh-CN', 
+        ja: 'ja-JP'
+      };
+      
+      const langCode = voiceMapping[language] || 'en-US';
+      speak(textToSpeak, { rate: audioState.speed, lang: langCode });
     }
   };
 
