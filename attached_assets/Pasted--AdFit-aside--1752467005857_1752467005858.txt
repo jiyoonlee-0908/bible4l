@@ -1,0 +1,319 @@
+# 카카오 AdFit 광고, 내 웹사이트에 쏙! 넣어보기
+
+<aside>
+💡
+
+안녕하세요! 👋 웹사이트를 운영하며 "어떻게 하면 수익을 얻을 수 있을까?" 고민 중이신가요? 카카오 AdFit은 웹사이트에 광고를 간단히 추가해 수익을 창출할 수 있는 훌륭한 플랫폼이에요. 😊 이 가이드에서는 AdFit 광고 코드를 웹사이트에 적용하는 방법을, 순수 JavaScript와 React 환경에 맞춰 차근차근 알려드릴게요! 🚀 
+
+</aside>
+
+---
+
+## 1. 카카오 AdFit 시작하기 🚀
+
+AdFit을 시작하려면 먼저 계정을 만들고, 웹사이트가 광고 게재 승인을 받아야 해요. 아래 단계를 따라 준비를 마쳐봅시다
+
+[](https://adfit.github.io/)
+
+### **단계별 준비 과정:**
+
+1. **AdFit 계정 만들고 승인받기 ✅:**
+    - [**카카오 AdFit 홈페이지**](https://adfit.kakao.com/)에 접속해 계정을 신청하세요.
+    - 웹사이트 정보를 등록한 뒤, AdFit 팀의 심사를 기다립니다. 심사는 SDK나 광고 스크립트가 정상적으로 설치되어 광고 요청이 확인된 후 진행되니, 아래 단계를 차근히 따라주세요. 심사에는 며칠에서 몇 주가 걸릴 수 있으니 여유롭게 기다려주세요! ☕
+2. **광고 단위 발급받기 💌:**
+    - 승인 후, AdFit 대시보드에서 **광고관리** 메뉴로 이동해 광고를 노출할 웹사이트를 등록하세요.
+    - 등록한 웹사이트에 맞는 **광고 단위**를 발급받아요. AdFit은 배너 타입 광고를 지원하며, 지원 사이즈는 160x600, 250x250, 300x250, 320x100, 320x50, 728x90 등이 있어요.
+    - 발급받은 광고 단위 코드는 `<ins>` 태그와 `<script>` 태그로 구성되며, 이 코드를 웹사이트에 삽입하면 광고가 표시됩니다.
+
+<aside>
+💡
+
+**중요 포인트:** AdFit 코드는 계정과 웹사이트마다 고유하게 생성돼요. 광고 단위 정보를 절대 수정하거나 코드를 임의로 변경하면 광고 요청이 실패할 수 있으니, AdFit에서 제공한 코드를 그대로 사용하세요! 🙏
+
+</aside>
+
+---
+
+## 2. 순수 JavaScript 웹사이트에 AdFit 광고 코드 심기 📜
+
+HTML, CSS, JavaScript로 만든 웹사이트에 AdFit 광고를 추가하는 방법을 알아볼게요! 😊
+
+### **2-1. AdFit 광고 코드 삽입: 원하는 위치에 쏙! ✨**
+
+AdFit은 자동 광고 기능이 없으므로, 광고를 표시할 위치에 직접 광고 단위 코드를 삽입해야 해요. AdFit 대시보드에서 발급받은 코드를 사용하며, 아래는 예시입니다.
+
+**예시: 블로그 본문 중간에 300x250 배너 광고 넣기**
+
+```html
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>🌟 내 멋진 웹사이트 🌟</title>
+</head>
+<body>
+    <h1>오늘의 꿀팁 대방출! 🍯</h1>
+    <p>첫 번째 문단 내용입니다. 정말 유용한 정보가 가득하죠? 😊</p>
+
+    <!-- AdFit 광고 단위 코드 -->
+    <div style="margin: 20px 0; text-align: center;">
+        <ins class="kakao_ad_area"
+             style="display:none;width:100%;"
+             data-ad-unit="YOUR_AD_UNIT_ID" <!-- AdFit에서 발급받은 광고 단위 ID -->
+             data-ad-width="300"
+             data-ad-height="250"></ins>
+        <script async type="text/javascript" charset="utf-8"
+                src="<https://t1.daumcdn.net/kas/static/ba.min.js>"></script>
+    </div>
+    <!-- 광고 단위 끝! 👍 -->
+
+    <p>두 번째 문단 내용입니다. 이야기가 점점 더 흥미진진해지네요! 🤩</p>
+</body>
+</html>
+
+```
+
+- `YOUR_AD_UNIT_ID`를 AdFit 대시보드에서 발급받은 실제 광고 단위 ID로 바꿔주세요.
+- `<ins>` 태그의 `data-ad-width`와 `data-ad-height`는 선택한 광고 사이즈에 맞게 설정하세요.
+- `<div>`로 감싸서 광고를 가운데 정렬하거나 여백을 추가하면 더 예쁘게 보일 거예요! 😊
+
+### **2-2. 광고 로드 실패 처리 (선택 사항) 🎯**
+
+광고 요청이 실패하거나 표시할 광고가 없을 때 대체 동작을 설정하고 싶다면, `data-ad-onfail` 속성을 사용해 콜백 함수를 추가할 수 있어요.
+
+**예시: 광고 실패 시 대체 광고 삽입**
+
+```html
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>🌟 내 멋진 웹사이트 🌟</title>
+    <script type="text/javascript">
+        function callBackFunc(elm) {
+            console.log("AdFit 광고 로드 실패! 대체 광고를 삽입합니다.");
+            elm.innerHTML = '<img src="<https://via.placeholder.com/300x250>" alt="대체 광고">';
+        }
+    </script>
+</head>
+<body>
+    <h1>오늘의 꿀팁 대방출! 🍯</h1>
+    <p>첫 번째 문단 내용입니다. 정말 유용한 정보가 가득하죠? 😊</p>
+
+    <!-- AdFit 광고 단위 코드 -->
+    <div style="margin: 20px 0; text-align: center;">
+        <ins class="kakao_ad_area"
+             style="display:none;width:100%;"
+             data-ad-unit="YOUR_AD_UNIT_ID"
+             data-ad-width="300"
+             data-ad-height="250"
+             data-ad-onfail="callBackFunc"></ins>
+        <script async type="text/javascript" charset="utf-8"
+                src="<https://t1.daumcdn.net/kas/static/ba.min.js>"></script>
+    </div>
+    <!-- 광고 단위 끝! 👍 -->
+
+    <p>두 번째 문단 내용입니다. 이야기가 점점 더 흥미진진해지네요! 🤩</p>
+</body>
+</html>
+
+```
+
+- `callBackFunc`은 광고 로드 실패 시 호출되며, `<ins>` 태그 객체를 인자로 받습니다.
+- 위 예시는 실패 시 300x250 크기의 대체 이미지를 삽입하지만, 원하는 대체 콘텐츠로 커스터마이징할 수 있어요.
+
+---
+
+## 3. React 웹사이트에 AdFit 광고 코드 심기 ⚛️
+
+React로 만든 SPA(Single Page Application)에 AdFit 광고를 추가하는 방법을 알아볼게요! React에서는 동적 렌더링 때문에 광고를 깔끔히 관리할 컴포넌트를 만드는 게 좋아요. 😊
+
+### **3-1. AdFit 기본 스크립트 로드: 앱 전체에 필수! 👍**
+
+AdFit 광고를 표시하려면 `ba.min.js` 스크립트가 로드되어야 해요. React 앱의 `<head>`에 이 스크립트를 추가하는 가장 쉬운 방법은 `public/index.html`을 수정하거나 `react-helmet-async`를 사용하는 거예요.
+
+**방법 A: `public/index.html`에 스크립트 추가**
+
+`public/index.html`의 `<head>`에 아래 코드를 추가하세요.
+
+```html
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>🌟 내 React 웹사이트 🌟</title>
+    <!-- AdFit 기본 스크립트 -->
+    <script async type="text/javascript" charset="utf-8"
+            src="<https://t1.daumcdn.net/kas/static/ba.min.js>"></script>
+</head>
+<body>
+    <div id="root"></div>
+</body>
+</html>
+
+```
+
+**방법 B: `react-helmet-async`로 동적 로드**
+
+더 세련되게 관리하고 싶다면 `react-helmet-async`를 사용하세요. 먼저 설치부터:
+
+```bash
+npm install react-helmet-async
+
+```
+
+그리고 `App.js`에 스크립트를 추가합니다.
+
+```jsx
+import React from 'react';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
+
+function App() {
+  return (
+    <HelmetProvider>
+      <div>
+        <Helmet>
+          <script async type="text/javascript" charset="utf-8"
+                  src="<https://t1.daumcdn.net/kas/static/ba.min.js>" />
+        </Helmet>
+        {/* 나머지 앱 콘텐츠 */}
+      </div>
+    </HelmetProvider>
+  );
+}
+
+export default App;
+
+```
+
+### **3-2. React 컴포넌트로 AdFit 광고 단위 표시 🖼️**
+
+광고 단위를 깔끔히 렌더링하는 컴포넌트를 만들어 특정 위치에 광고를 표시해봅시다. React의 동적 렌더링을 고려해 `useEffect`로 광고를 초기화해야 해요.
+
+**AdFit 광고 컴포넌트 만들기 (AdFitBanner.js)**
+
+```jsx
+import React, { useEffect } from 'react';
+
+const AdFitBanner = ({ adUnit, adWidth, adHeight, onFailCallback = null }) => {
+  useEffect(() => {
+    try {
+      // AdFit 광고 초기화
+      if (window.kakao_ad_area) {
+        window.kakao_ad_area.push({});
+      }
+      console.log(`AdFit 광고 [${adUnit}] 로드 요청! 😊`);
+    } catch (e) {
+      console.error("AdFit 광고 로드 중 오류 발생! 😱:", e);
+    }
+  }, [adUnit]); // adUnit 변경 시 재로드
+
+  const insProps = {
+    className: 'kakao_ad_area',
+    style: { display: 'none', width: '100%' },
+    'data-ad-unit': adUnit,
+    'data-ad-width': adWidth,
+    'data-ad-height': adHeight,
+  };
+
+  if (onFailCallback) {
+    insProps['data-ad-onfail'] = onFailCallback;
+  }
+
+  return (
+    <div style={{ margin: '20px 0', textAlign: 'center' }}>
+      <ins {...insProps}></ins>
+    </div>
+  );
+};
+
+export default AdFitBanner;
+
+```
+
+**광고 컴포넌트 사용하기 (MyPage.js)**
+
+```jsx
+import React from 'react';
+import AdFitBanner from './AdFitBanner';
+
+function MyPage() {
+  const MY_AD_UNIT_ID = 'YOUR_AD_UNIT_ID'; // AdFit에서 발급받은 광고 단위 ID
+
+  return (
+    <div>
+      <h1>🌟 내 React 페이지에 오신 것을 환영합니다! 🌟</h1>
+      <p>여기에 재미있는 페이지 콘텐츠가 쏙쏙! 들어갑니다. 😊</p>
+
+      {/* AdFit 광고 단위 */}
+      <AdFitBanner
+        adUnit={MY_AD_UNIT_ID}
+        adWidth="300"
+        adHeight="250"
+      />
+
+      <p>더 많은 흥미로운 콘텐츠가 여러분을 기다리고 있어요! 🤩</p>
+    </div>
+  );
+}
+
+export default MyPage;
+
+```
+
+- `YOUR_AD_UNIT_ID`를 실제 광고 단위 ID로 교체하세요.
+- `adWidth`와 `adHeight`는 선택한 광고 사이즈에 맞게 설정하세요.
+- React Router를 사용할 경우, 페이지 이동 시 광고를 새로 로드하려면 `useLocation` Hook을 활용해 경로 변경을 감지하도록 설정할 수 있지만, AdFit 정책상 과도한 요청은 피해야 해요.
+
+**더 쉬운 방법! 🤩 react-adfit-web-component 사용**
+
+React 환경에서 AdFit 광고를 더 쉽게 추가하려면 `react-adfit-web-component` 라이브러리를 추천해요. 설치 및 사용법은 아래와 같아요:
+
+```bash
+npm install react-adfit-web-component
+
+```
+
+```jsx
+import React from 'react';
+import AdFit from 'react-adfit-web-component';
+
+function MyPage() {
+  return (
+    <div>
+      <h1>🌟 내 React 페이지에 오신 것을 환영합니다! 🌟</h1>
+      <p>여기에 재미있는 페이지 콘텐츠가 쏙쏙! 들어갑니다. 😊</p>
+
+      <AdFit
+        adUnit="YOUR_AD_UNIT_ID"
+        adWidth="300"
+        adHeight="250"
+      />
+
+      <p>더 많은 흥미로운 콘텐츠가 여러분을 기다리고 있어요! 🤩</p>
+    </div>
+  );
+}
+
+export default MyPage;
+
+```
+
+---
+
+## 4. AdFit 광고, 이것만은 꼭! 알아두세요 💡
+
+- **AdFit 정책 준수 필수! 📜:** AdFit의 [운영 정책](https://adfit.kakao.com/web/html/use_kakao.html)을 꼭 읽고 지켜주세요. 부적절한 광고 사용은 수익 지급 거절로 이어질 수 있어요. 예: 광고를 임의로 수정하거나, 부적절한 콘텐츠에 광고를 노출하면 안 돼요! 🙅‍♀️
+- **광고 로드 시간 ⏳:** 광고가 표시되기까지 약간의 시간이 걸릴 수 있어요. 바로 안 보인다고 당황하지 말고 잠시 기다려주세요! 😊
+- **광고 차단기 주의 😭:** 일부 사용자가 광고 차단기를 사용하면 광고가 표시되지 않을 수 있어요. 이는 어쩔 수 없는 부분이니 이해해주세요!
+- **테스트 환경 🤔:** 개발 환경에서는 테스트 광고가 표시되거나 광고가 안 보일 수 있어요. 실제 광고는 웹사이트를 배포한 후 확인하세요.
+- **사이트 성능 🚀:** 광고를 너무 많이 추가하면 웹사이트 속도가 느려질 수 있어요. 적절한 개수의 광고로 사용자 경험을 지켜주세요! 😉
+- **수익 확인 💰:** AdFit 대시보드에서 광고 수익을 확인할 수 있어요. 두근두근! 🥰
+- **지원 브라우저 🌐:** AdFit은 Internet Explorer 10 이상, Chrome 브라우저에서 정상 작동해요.
+
+<aside>
+📢
+
+**학생 여러분!** AdFit 광고로 웹사이트를 더욱 빛나게 만들어보세요! 궁금한 점이 있다면 언제든 질문 주세요. 함께 멋진 웹사이트를 만들어가요! 🌟
+
+</aside>
