@@ -9,9 +9,8 @@ export default function IconPreview() {
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
 
   const icons = [
-    { id: 'bible-icon-option1', name: '1번 기본', description: '깔끔한 기본 디자인' },
-    { id: 'bible-icon-option2', name: '2번 어두운 성경책', description: '더 어두운 우드톤' },
-    { id: 'bible-icon-option3', name: '3번 두꺼운 글씨', description: '어두운 성경책 + 두꺼운 글씨' },
+    { id: 'bible-icon-option2', name: '2번 선택됨', description: '어두운 우드톤 + 50px 한영중일' },
+    { id: 'bible-icon-option2-plus', name: '2번 플러스', description: '글씨 자체를 더 두껍게 (font-weight: 900)' },
   ];
 
   const handleSelectIcon = (iconId: string) => {

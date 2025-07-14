@@ -25,10 +25,10 @@
   <rect x="65" y="80" width="35" height="352" rx="17" ry="17" fill="url(#woodVeryDark)"/>
   <rect x="95" y="95" width="322" height="322" rx="10" fill="url(#woodVeryDark)" opacity="0.3"/>
   
-  <!-- Main text layout - same as option 1 -->
-  <text x="256" y="213" font-family="Arial, sans-serif" font-size="100" font-weight="bold" text-anchor="middle" fill="url(#gold2)" stroke="#654321" stroke-width="5">성경</text>
-  <text x="256" y="313" font-family="Arial, sans-serif" font-size="100" font-weight="bold" text-anchor="middle" fill="url(#gold2)" stroke="#654321" stroke-width="5">듣기</text>
+  <!-- Main text layout - thicker font weight -->
+  <text x="256" y="213" font-family="Arial, sans-serif" font-size="100" font-weight="900" text-anchor="middle" fill="url(#gold2)" stroke="#654321" stroke-width="5">성경</text>
+  <text x="256" y="313" font-family="Arial, sans-serif" font-size="100" font-weight="900" text-anchor="middle" fill="url(#gold2)" stroke="#654321" stroke-width="5">듣기</text>
   
-  <!-- Language indicators -->
-  <text x="256" y="395" font-family="Arial, sans-serif" font-size="50" font-weight="bold" text-anchor="middle" fill="#FFFFFF" stroke="#4A2C2A" stroke-width="3" letter-spacing="8px">한 영 중 일</text>
+  <!-- Language indicators - thicker font weight -->
+  <text x="256" y="395" font-family="Arial, sans-serif" font-size="50" font-weight="900" text-anchor="middle" fill="#FFFFFF" stroke="#4A2C2A" stroke-width="3" letter-spacing="8px">한 영 중 일</text>
 </svg>

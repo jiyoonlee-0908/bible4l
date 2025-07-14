@@ -13,7 +13,7 @@ export function Header({ onFontSizeClick, onSettingsClick }: HeaderProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <div className="w-10 h-10 rounded-lg flex items-center justify-center">
-              <img src="/bible-icon-3.svg" alt="성경" className="w-10 h-10 rounded-lg" />
+              <img src="/bible-icon-option2.svg" alt="성경" className="w-10 h-10 rounded-lg" />
             </div>
             <h1 className="text-lg font-semibold text-slate-800">BibleAudio 4L</h1>
           </div>
