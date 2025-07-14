@@ -36,16 +36,16 @@ export function Navigation({
             <Button
               variant="ghost"
               onClick={onChapterSelect}
-              className="px-4 py-3 bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors"
+              className="px-4 py-3 bg-amber-50 hover:bg-amber-100 rounded-xl transition-colors"
             >
-              <span className="text-sm font-medium text-blue-700">{currentChapter}장</span>
+              <span className="text-sm font-medium text-amber-800">{currentChapter}장</span>
             </Button>
             <Button
               variant="ghost"
               onClick={onVerseSelect}
-              className="px-4 py-3 bg-violet-50 hover:bg-violet-100 rounded-xl transition-colors"
+              className="px-4 py-3 bg-amber-100 hover:bg-amber-200 rounded-xl transition-colors"
             >
-              <span className="text-sm font-medium text-violet-700">{currentVerse}절</span>
+              <span className="text-sm font-medium text-amber-900">{currentVerse}절</span>
             </Button>
           </div>
           

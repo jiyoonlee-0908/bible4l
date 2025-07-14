@@ -137,11 +137,11 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
   return (
     <Card className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
       {/* Verse Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-violet-600 px-6 py-4">
+      <div className="bg-gradient-to-r from-amber-800 to-amber-900 px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-white text-lg font-semibold">{verse.reference}</h3>
-            <p className="text-blue-100 text-sm">성경</p>
+            <p className="text-amber-100 text-sm">성경</p>
           </div>
           <div className="flex space-x-2">
             <Button
@@ -184,7 +184,7 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
                 {verse.text}
               </div>
               {koreanVerse && (
-                <div className="text-slate-600 text-base leading-relaxed border-l-4 border-blue-200 pl-4">
+                <div className="text-slate-600 text-base leading-relaxed border-l-4 border-amber-200 pl-4">
                   <div className="text-xs text-slate-500 mb-1">한국어</div>
                   {koreanVerse.text}
                 </div>
@@ -200,7 +200,7 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
           <div className="flex items-center space-x-4">
             <Button
               onClick={handlePlay}
-              className="w-12 h-12 bg-blue-600 hover:bg-blue-700 rounded-full shadow-lg transition-all duration-200 transform hover:scale-105"
+              className="w-12 h-12 bg-amber-800 hover:bg-amber-900 rounded-full shadow-lg transition-all duration-200 transform hover:scale-105"
             >
               {audioState.isPlaying ? (
                 <Pause className="h-5 w-5 text-white" />
@@ -269,7 +269,7 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
             {audioState.isPlaying && (
               <div className="w-16 bg-slate-200 rounded-full h-1">
                 <div 
-                  className="bg-blue-600 h-1 rounded-full transition-all duration-300" 
+                  className="bg-amber-800 h-1 rounded-full transition-all duration-300" 
                   style={{ width: `${progressPercentage}%` }}
                 />
               </div>

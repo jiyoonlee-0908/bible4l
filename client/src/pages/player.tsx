@@ -3,14 +3,13 @@ import { useLocation } from 'wouter';
 import { Header } from '@/components/Header';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { BibleSelector } from '@/components/BibleSelector';
-import { LanguageToggle } from '@/components/LanguageToggle';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, SkipForward, SkipBack, Volume2, Loader2 } from 'lucide-react';
 import { useBible } from '@/hooks/useBible';
 import { useSpeech } from '@/hooks/useSpeech';
 import { Storage } from '@/lib/storage';
-import { Language, Settings } from '@shared/schema';
+import { Language, Settings, languageConfig } from '@shared/schema';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Player() {
@@ -60,68 +59,33 @@ export default function Player() {
     } else if (currentVerseData) {
       setIsLoading(true);
       
-      if (settings.displayMode === 'double' && koreanVerseData) {
-        // Cross mode: speak both languages
-        speakCrossMode();
-      } else {
-        // Single mode
-        const voiceMapping = {
-          ko: 'ko-KR',
-          en: 'en-US',
-          zh: 'zh-CN', 
-          ja: 'ja-JP'
-        };
-        
-        const langCode = voiceMapping[currentLanguage] || 'en-US';
-        speak(currentVerseData.text, { 
-          rate: audioState.speed, 
-          lang: langCode,
-          onEnd: () => {
-            setIsLoading(false);
-            if (continuousMode) {
-              // Auto advance to next verse after 1 second
-              setTimeout(() => {
-                handleNext();
-              }, 1000);
-            }
+      // Player mode only uses single language playback
+      const voiceMapping = {
+        ko: 'ko-KR',
+        en: 'en-US',
+        zh: 'zh-CN', 
+        ja: 'ja-JP'
+      };
+      
+      const langCode = voiceMapping[currentLanguage] || 'en-US';
+      speak(currentVerseData.text, { 
+        rate: audioState.speed, 
+        lang: langCode,
+        onEnd: () => {
+          setIsLoading(false);
+          if (continuousMode) {
+            // Auto advance to next verse after 1 second
+            setTimeout(() => {
+              handleNext();
+            }, 1000);
           }
-        });
-      }
+        }
+      });
       setIsLoading(false);
     }
   };
 
-  const speakCrossMode = () => {
-    if (!currentVerseData || !koreanVerseData) return;
-    
-    const voiceMapping = {
-      ko: 'ko-KR',
-      en: 'en-US',
-      zh: 'zh-CN', 
-      ja: 'ja-JP'
-    };
 
-    const primaryLangCode = voiceMapping[currentLanguage] || 'en-US';
-    speak(currentVerseData.text, { 
-      rate: audioState.speed, 
-      lang: primaryLangCode,
-      onEnd: () => {
-        // Speak Korean after the first language finishes
-        speak(koreanVerseData.text, { 
-          rate: audioState.speed, 
-          lang: 'ko-KR',
-          onEnd: () => {
-            if (continuousMode) {
-              // Auto advance to next verse after 1 second
-              setTimeout(() => {
-                handleNext();
-              }, 1000);
-            }
-          }
-        });
-      }
-    });
-  };
 
   const handleNext = () => {
     if (currentVerse < 31) {
@@ -147,16 +111,37 @@ export default function Player() {
       />
       
       <div className="max-w-md mx-auto px-4 py-4 space-y-4">
-        <LanguageToggle
-          selectedLanguage={currentLanguage}
-          onLanguageChange={handleLanguageChange}
-          displayMode={settings.displayMode}
-          onModeChange={(mode) => {
-            const newSettings = { ...settings, displayMode: mode };
-            setSettings(newSettings);
-            Storage.saveSettings(newSettings);
-          }}
-        />
+        <Card className="bg-white rounded-xl shadow-sm border border-slate-200">
+          <CardContent className="p-4">
+            <div className="mb-3">
+              <h3 className="text-sm font-medium text-slate-700">언어 선택</h3>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {(Object.entries(languageConfig) as [Language, typeof languageConfig[Language]][]).map(([code, config]) => {
+                const isSelected = currentLanguage === code;
+                const flagEmoji = code === 'ko' ? '🇰🇷' : 
+                                 code === 'en' ? '🇺🇸' : 
+                                 code === 'zh' ? '🇨🇳' : '🇯🇵';
+                return (
+                  <Button
+                    key={code}
+                    variant={isSelected ? 'default' : 'outline'}
+                    onClick={() => handleLanguageChange(code)}
+                    size="sm"
+                    className={`h-10 text-sm transition-colors flex items-center gap-2 ${
+                      isSelected
+                        ? 'bg-gradient-to-r from-amber-800 to-amber-900 text-amber-50 hover:from-amber-900 hover:to-amber-950 shadow-md'
+                        : 'bg-white text-amber-800 hover:bg-amber-50 border-amber-200'
+                    }`}
+                  >
+                    <span className="text-base">{flagEmoji}</span>
+                    {config.name}
+                  </Button>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
         
         <BibleSelector
           onSelect={handleBibleSelect}
@@ -182,9 +167,19 @@ export default function Player() {
             </div>
             
             {currentVerseData && (
-              <div className="text-center text-slate-600 text-sm leading-relaxed">
-                {currentVerseData.text}
-              </div>
+              <>
+                <div className="text-center text-slate-600 text-sm leading-relaxed">
+                  {currentVerseData.text}
+                </div>
+                
+                {/* Force single mode for player - show Korean if available for non-Korean languages */}
+                {currentLanguage !== 'ko' && koreanVerseData && (
+                  <div className="text-center text-slate-500 text-xs leading-relaxed mt-3 pt-3 border-t border-amber-100">
+                    <div className="text-xs text-amber-600 mb-1">한국어</div>
+                    {koreanVerseData.text}
+                  </div>
+                )}
+              </>
             )}
             
             <div className="flex justify-center items-center space-x-4">
@@ -192,15 +187,15 @@ export default function Player() {
                 onClick={handlePrevious}
                 variant="ghost"
                 size="icon"
-                className="w-12 h-12 bg-slate-100 hover:bg-slate-200 rounded-full"
+                className="w-12 h-12 bg-amber-100 hover:bg-amber-200 rounded-full"
                 disabled={isLoading}
               >
-                <SkipBack className="h-5 w-5 text-slate-600" />
+                <SkipBack className="h-5 w-5 text-amber-800" />
               </Button>
               
               <Button
                 onClick={handlePlay}
-                className="w-16 h-16 bg-blue-600 hover:bg-blue-700 rounded-full shadow-lg"
+                className="w-16 h-16 bg-amber-800 hover:bg-amber-900 rounded-full shadow-lg"
                 disabled={isLoading || !currentVerseData}
               >
                 {isLoading ? (
@@ -216,10 +211,10 @@ export default function Player() {
                 onClick={handleNext}
                 variant="ghost"
                 size="icon"
-                className="w-12 h-12 bg-slate-100 hover:bg-slate-200 rounded-full"
+                className="w-12 h-12 bg-amber-100 hover:bg-amber-200 rounded-full"
                 disabled={isLoading}
               >
-                <SkipForward className="h-5 w-5 text-slate-600" />
+                <SkipForward className="h-5 w-5 text-amber-800" />
               </Button>
             </div>
             

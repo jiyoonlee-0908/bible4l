@@ -29,18 +29,18 @@ export function BottomNavigation({ currentPath, onNavigate }: BottomNavigationPr
                   onClick={() => onNavigate(path)}
                   className={`flex flex-col items-center py-3 px-4 rounded-xl transition-colors ${
                     isActive
-                      ? 'bg-blue-50 hover:bg-blue-100'
+                      ? 'bg-amber-50 hover:bg-amber-100'
                       : 'hover:bg-slate-50'
                   }`}
                 >
                   <Icon 
                     className={`text-lg h-5 w-5 ${
-                      isActive ? 'text-blue-600' : 'text-slate-500'
+                      isActive ? 'text-amber-800' : 'text-slate-500'
                     }`} 
                   />
                   <span 
                     className={`text-xs font-medium mt-1 ${
-                      isActive ? 'text-blue-700' : 'text-slate-600'
+                      isActive ? 'text-amber-800' : 'text-slate-600'
                     }`}
                   >
                     {label}

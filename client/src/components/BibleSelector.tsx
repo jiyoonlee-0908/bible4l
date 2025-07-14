@@ -244,7 +244,7 @@ export function BibleSelector({ onSelect, selectedLanguage }: BibleSelectorProps
         {selectedBook && selectedChapter && selectedVerse && (
           <Button 
             onClick={handleSubmit} 
-            className="w-full h-9 text-sm bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white shadow-md font-medium"
+            className="w-full h-9 text-sm bg-gradient-to-r from-amber-800 to-amber-900 hover:from-amber-900 hover:to-amber-950 text-amber-50 shadow-md font-medium"
           >
             이 구절부터 재생하기
           </Button>

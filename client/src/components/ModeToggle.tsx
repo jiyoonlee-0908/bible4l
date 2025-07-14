@@ -20,8 +20,8 @@ export function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
             size="sm"
             className={`flex-1 h-7 text-xs transition-colors ${
               mode === 'single'
-                ? 'bg-violet-600 text-white hover:bg-violet-700'
-                : 'bg-white text-slate-700 hover:bg-slate-50'
+                ? 'bg-amber-800 text-amber-50 hover:bg-amber-900'
+                : 'bg-white text-amber-800 hover:bg-amber-50'
             }`}
           >
             1줄
@@ -32,8 +32,8 @@ export function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
             size="sm"
             className={`flex-1 h-7 text-xs transition-colors ${
               mode === 'double'
-                ? 'bg-emerald-600 text-white hover:bg-emerald-700'
-                : 'bg-white text-slate-700 hover:bg-slate-50'
+                ? 'bg-amber-800 text-amber-50 hover:bg-amber-900'
+                : 'bg-white text-amber-800 hover:bg-amber-50'
             }`}
           >
             교차
