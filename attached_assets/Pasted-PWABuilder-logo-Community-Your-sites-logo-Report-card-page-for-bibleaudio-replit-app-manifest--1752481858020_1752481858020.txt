@@ -1,0 +1,111 @@
+PWABuilder logo
+Community
+Your sites logo
+성경 Report card page for 성경
+bibleaudio.replit.app/manifest.json
+
+4개 언어 지원 성경 음성 앱 - 한국어, 영어, 중국어, 일본어
+
+Share score
+
+Last tested 2 minutes ago
+
+retest site
+Package For Stores
+
+Download Test Package
+
+Available stores:
+
+WindowsiOSAndroidMeta Quest
+Action Items
+invalid result icon
+2
+
+yield result icon
+13
+
+enhancement result icon
+8
+
+retest site icon
+We've noticed you've updated your Manifest. Make sure to add your new Manifest to your server and retest your site!
+
+yield result icon
+Seperate Icons are needed for both maskable and any
+
+info symbol, additional information available on hover
+yield result icon
+short_name is required and must be a string with a length >= 3
+
+info symbol, additional information available on hover
+yield result icon
+Add Service Worker to Base Package (SW not found before detection tests timed out)
+
+yield result icon
+id must be a string with a length > 0
+
+info symbol, additional information available on hover
+
+active dotinactive dotinactive dotinactive dotinactive dot
+
+Action Items Page 1 of 5
+Manifest
+PWABuilder has analyzed your Web Manifest. You have one or more fields that need to be updated before you can package. Use our Manifest Editor to edit and update those fields. You can package for the store once you have a valid manifest.
+
+Edit Your Manifest
+Manifest Documentation
+
+arrow
+
+Service Worker
+PWABuilder has analyzed your site and did not find a Service Worker. Having a Service Worker is highly recommended by PWABuilder as it enables an array of features that can enhance your PWA. You can generate a Service Worker below or use our documentation to make your own.
+
+Has Service Worker icon
+Has Service Worker
+
+Background Sync icon
+Background Sync
+
+Periodic Sync icon
+Periodic Sync
+
+Push Notifications icon
+Push Notifications
+
+Offline Support icon
+Offline Support
+
+Generate Service Worker
+Service Worker Documentation
+
+arrow
+App Capabilities
+PWABuilder has analyzed your PWA and has identified some app capabilities that could enhance your PWA
+
+Display Override icon
+Display Override
+
+Edge Side Panel icon
+Edge Side Panel
+
+File Handlers icon
+File Handlers
+
+Handle Links icon
+Handle Links
+
+Protocol Handlers icon
+Protocol Handlers
+
+Share Target icon
+Share Target
+
+Shortcuts icon
+Shortcuts
+
+Widgets icon
+Widgets
+
+App Capabilities documentation
+
