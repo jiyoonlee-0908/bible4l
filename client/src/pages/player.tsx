@@ -16,9 +16,8 @@ export default function Player() {
   const [location, setLocation] = useLocation();
   const [settings, setSettings] = useState<Settings>(Storage.getSettings());
   const [isLoading, setIsLoading] = useState(false);
-  const [continuousMode, setContinuousMode] = useState(true);
+  const [playMode, setPlayMode] = useState<'single' | 'continuous'>('continuous');
   const [isPlayingContinuous, setIsPlayingContinuous] = useState(false);
-  const [repeatMode, setRepeatMode] = useState(false);
   
   const {
     currentLanguage,
@@ -107,12 +106,12 @@ export default function Player() {
           localStorage.setItem('listeningStats', JSON.stringify(listeningStats));
         }
         
-        if (repeatMode) {
-          // Repeat current verse
+        if (playMode === 'single') {
+          // Repeat current verse in single mode
           setTimeout(() => {
             playCurrentVerse();
           }, 500);
-        } else if (continuousMode && isPlayingContinuous) {
+        } else if (playMode === 'continuous' && isPlayingContinuous) {
           // Auto advance to next verse after 1 second
           setTimeout(() => {
             navigateVerse('next');
@@ -291,35 +290,37 @@ export default function Player() {
               </div>
             </div>
 
-            {/* Play Mode Toggles */}
-            <div className="flex justify-center gap-2">
-              <Button
-                onClick={() => setContinuousMode(!continuousMode)}
-                variant="ghost"
-                size="sm"
-                className={`text-xs px-3 py-1 rounded-full transition-colors ${
-                  continuousMode 
-                    ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' 
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }`}
-              >
-                <Repeat className={`h-3 w-3 mr-1 ${continuousMode ? 'text-amber-600' : 'text-slate-500'}`} />
-                연속재생
-              </Button>
-              
-              <Button
-                onClick={() => setRepeatMode(!repeatMode)}
-                variant="ghost"
-                size="sm"
-                className={`text-xs px-3 py-1 rounded-full transition-colors ${
-                  repeatMode 
-                    ? 'bg-blue-100 text-blue-800 hover:bg-blue-200' 
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }`}
-              >
-                <Repeat1 className={`h-3 w-3 mr-1 ${repeatMode ? 'text-blue-600' : 'text-slate-500'}`} />
-                반복재생
-              </Button>
+            {/* Play Mode Toggle */}
+            <div className="flex justify-center">
+              <div className="bg-muted rounded-full p-1 flex">
+                <Button
+                  onClick={() => setPlayMode('single')}
+                  variant="ghost"
+                  size="sm"
+                  className={`text-xs px-4 py-1 rounded-full transition-colors ${
+                    playMode === 'single'
+                      ? 'bg-primary text-primary-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  <Repeat1 className="h-3 w-3 mr-1" />
+                  한 곡 반복
+                </Button>
+                
+                <Button
+                  onClick={() => setPlayMode('continuous')}
+                  variant="ghost"
+                  size="sm"
+                  className={`text-xs px-4 py-1 rounded-full transition-colors ${
+                    playMode === 'continuous'
+                      ? 'bg-primary text-primary-foreground shadow-sm'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  <Repeat className="h-3 w-3 mr-1" />
+                  연속 재생
+                </Button>
+              </div>
             </div>
 
           </CardContent>

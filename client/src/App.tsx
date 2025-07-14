@@ -3,6 +3,8 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { GlobalAudioProvider } from '@/hooks/useGlobalAudio';
+import { GlobalAudioBar } from '@/components/GlobalAudioBar';
 import Home from "@/pages/home";
 import Player from "@/pages/player";
 import Bookmarks from "@/pages/bookmarks";
@@ -28,10 +30,13 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-      </TooltipProvider>
+      <GlobalAudioProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+          <GlobalAudioBar />
+        </TooltipProvider>
+      </GlobalAudioProvider>
     </QueryClientProvider>
   );
 }
