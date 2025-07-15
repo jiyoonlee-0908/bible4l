@@ -6,6 +6,7 @@ import { FontSizeModal } from "@/components/FontSizeModal";
 import { DSPControls } from "@/components/DSPControls";
 import { ReadingPlanCard } from "@/components/ReadingPlanCard";
 import { BadgeDisplay } from "@/components/BadgeDisplay";
+import { VoicePackageButton } from "@/components/VoicePackageGuide";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -222,6 +223,9 @@ export default function Settings() {
                     </div>
                   </div>
                 </div>
+
+                {/* Voice Package Download Guide */}
+                <VoicePackageButton />
 
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-slate-700">
