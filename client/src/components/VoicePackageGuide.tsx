@@ -14,7 +14,7 @@ export function VoicePackageGuide({ onClose, onNeverShow }: VoicePackageGuidePro
     <div className="bg-white rounded-2xl shadow-lg border border-amber-200 max-h-[85vh] flex flex-col">
       <CardHeader className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-t-2xl flex-shrink-0">
         <CardTitle className="flex items-center gap-2 text-amber-800">
-          <Volume2 className="h-5 w-5" />
+          <Download className="h-5 w-5" />
           <span className="text-lg font-semibold">고품질 음성 다운로드 안내</span>
         </CardTitle>
       </CardHeader>
@@ -23,10 +23,7 @@ export function VoicePackageGuide({ onClose, onNeverShow }: VoicePackageGuidePro
         <div className="space-y-4">
           {/* 안내 메시지 */}
           <div className="text-center p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
-            <div className="text-lg font-semibold text-blue-800 mb-1">
-              🎙️ 더 자연스러운 음성으로 성경 듣기
-            </div>
-            <div className="text-sm text-blue-700">
+            <div className="text-sm font-bold text-blue-700">
               기기에 언어팩을 다운로드하면 고품질 음성을 사용할 수 있습니다
             </div>
           </div>
@@ -35,7 +32,7 @@ export function VoicePackageGuide({ onClose, onNeverShow }: VoicePackageGuidePro
           <div className="p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border-2 border-green-300">
             <div className="text-center mb-2">
               <div className="text-lg font-bold text-green-800 mb-1">
-                [필수] 4개 언어 다운로드
+                4개 언어 다운로드
               </div>
             </div>
             <div className="grid grid-cols-2 gap-2">
@@ -137,7 +134,7 @@ export function VoicePackageButton({ isHeaderButton = false }: { isHeaderButton?
             className="w-10 h-10 bg-amber-200/50 hover:bg-amber-300/50 rounded-full"
             title="음성 다운로드 안내"
           >
-            <Volume2 className="h-5 w-5 text-amber-800" />
+            <Download className="h-5 w-5 text-amber-800" />
           </Button>
         </DialogTrigger>
         <DialogContent className="max-w-md max-h-[90vh] p-0">

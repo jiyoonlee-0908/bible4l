@@ -1,4 +1,4 @@
-import { Type, Settings, Volume2 } from 'lucide-react';
+import { Type, Settings, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLocation } from 'wouter';
 import { VoicePackageButton } from '@/components/VoicePackageGuide';
