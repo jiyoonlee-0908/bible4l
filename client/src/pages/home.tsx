@@ -6,7 +6,7 @@ import { ModeToggle } from '@/components/ModeToggle';
 import { VerseCard } from '@/components/VerseCard';
 import { Navigation } from '@/components/Navigation';
 import { BottomNavigation } from '@/components/BottomNavigation';
-import { ChapterVerseSelector } from '@/components/ChapterVerseSelector';
+
 import { BibleSelector } from '@/components/BibleSelector';
 import { VoicePackageInitialPopup } from '@/components/VoicePackageGuide';
 import { useBible } from '@/hooks/useBible';
@@ -17,11 +17,12 @@ import { useBookmarks } from '@/hooks/useBookmarks';
 import { Storage } from '@/lib/storage';
 import { Language, Settings } from '@shared/schema';
 import { useToast } from '@/hooks/use-toast';
+import { getKoreanBookName } from '@/lib/bible-books';
 
 export default function Home() {
   const [location, setLocation] = useLocation();
   const [settings, setSettings] = useState<Settings>(Storage.getSettings());
-  const [showChapterVerseSelector, setShowChapterVerseSelector] = useState(false);
+
   const [showBibleSelector, setShowBibleSelector] = useState(false);
   const [showFontSizeModal, setShowFontSizeModal] = useState(false);
   const [fontLevel, setFontLevel] = useState(0); // -2 to +3, 0 is base
@@ -163,24 +164,9 @@ export default function Home() {
           currentVerse={currentVerse}
           onPrevious={() => navigateVerse('prev')}
           onNext={() => navigateVerse('next')}
-          onChapterSelect={() => setShowChapterVerseSelector(true)}
-          onVerseSelect={() => setShowChapterVerseSelector(true)}
-        />
-
-        {/* Chapter/Verse Selector Modal */}
-        <ChapterVerseSelector
-          isOpen={showChapterVerseSelector}
-          onClose={() => setShowChapterVerseSelector(false)}
-          onSelect={(chapter, verse) => {
-            setVerse(currentBook, chapter, verse);
-            toast({
-              title: '구절 이동됨',
-              description: `${currentBook} ${chapter}:${verse}로 이동했습니다.`,
-            });
-          }}
-          currentChapter={currentChapter}
-          currentVerse={currentVerse}
-          maxChapters={150}
+          currentBook={getKoreanBookName(currentBook)}
+          verseText={currentVerseData?.text}
+          language={currentLanguage}
         />
 
         {/* Font Size Modal */}
