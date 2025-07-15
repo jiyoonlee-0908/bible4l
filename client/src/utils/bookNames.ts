@@ -402,7 +402,7 @@ export const bookNames: Record<string, Record<Language, string>> = {
 
 /**
  * 성경 책 이름을 지정된 언어로 번역
- * @param englishBookName 영어 책 이름
+ * @param englishBookName 영어 책 이름 (API에서 받은 bookId)
  * @param language 대상 언어
  * @returns 번역된 책 이름
  */
@@ -430,6 +430,8 @@ export function getLocalizedBookName(englishBookName: string, language: Language
   // 매칭 실패시 원본 반환
   return englishBookName;
 }
+
+
 
 /**
  * 모든 언어의 책 이름을 반환
