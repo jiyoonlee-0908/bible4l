@@ -1,10 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Download, Volume2, CheckCircle, X, ExternalLink } from 'lucide-react';
-import { isAndroidApp, openTTSSettings, checkTTSLanguages } from '@/utils/androidUtils';
-import { getLanguagePackStatus } from '@/utils/ttsPermissions';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Download, X } from 'lucide-react';
 
 interface VoicePackageGuideProps {
   onClose?: () => void;
@@ -12,38 +10,6 @@ interface VoicePackageGuideProps {
 }
 
 export function VoicePackageGuide({ onClose, onNeverShow }: VoicePackageGuideProps) {
-  const [isAndroid, setIsAndroid] = useState(false);
-  const [languageStatus, setLanguageStatus] = useState({
-    installed: [] as string[],
-    missing: [] as string[],
-    isComplete: false
-  });
-
-  useEffect(() => {
-    setIsAndroid(isAndroidApp());
-    
-    // TTS 언어 체크
-    const checkLanguages = () => {
-      const status = getLanguagePackStatus();
-      setLanguageStatus(status);
-    };
-    
-    checkLanguages();
-    
-    // 음성 목록이 로드될 때까지 대기
-    if (speechSynthesis.onvoiceschanged !== undefined) {
-      speechSynthesis.onvoiceschanged = checkLanguages;
-    }
-  }, []);
-
-  const handleDirectSettings = async () => {
-    const success = await openTTSSettings();
-    if (success) {
-      // 설정 페이지가 열렸으므로 팝업 닫기
-      onClose?.();
-    }
-  };
-
   return (
     <div className="bg-white rounded-2xl shadow-lg border border-amber-200 max-h-[85vh] flex flex-col">
       <CardHeader className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-t-2xl flex-shrink-0">
@@ -63,76 +29,39 @@ export function VoicePackageGuide({ onClose, onNeverShow }: VoicePackageGuidePro
             <div className="text-sm text-blue-700">
               기기에 언어팩을 다운로드하면 고품질 음성을 사용할 수 있습니다
             </div>
-            {languageStatus.isComplete && (
-              <div className="mt-2 text-sm text-green-700 font-medium">
-                ✅ 모든 언어팩이 설치되었습니다!
-              </div>
-            )}
           </div>
 
           {/* 다운로드할 언어팩 - 더 강조 */}
           <div className="p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border-2 border-green-300">
             <div className="text-center mb-2">
               <div className="text-lg font-bold text-green-800 mb-1">
-                4개 언어 다운로드
+                [필수] 4개 언어 다운로드
               </div>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              {[
-                { code: 'ko', name: '한국어' },
-                { code: 'en', name: '영어(미국)' },
-                { code: 'ja', name: '일본어' },
-                { code: 'zh', name: '중국어(중국 본토)' }
-              ].map((lang) => (
-                <div 
-                  key={lang.code}
-                  className={`p-1.5 rounded-lg text-center border ${
-                    languageStatus.installed.includes(lang.code)
-                      ? 'bg-green-100 border-green-300'
-                      : 'bg-white border-green-200'
-                  }`}
-                >
-                  <div className="flex items-center justify-center gap-1">
-                    <div className="text-sm font-medium text-green-800">{lang.name}</div>
-                    {languageStatus.installed.includes(lang.code) && (
-                      <CheckCircle className="h-3 w-3 text-green-600" />
-                    )}
-                  </div>
-                </div>
-              ))}
+              <div className="bg-white p-1.5 rounded-lg text-center border border-green-200">
+                <div className="text-sm font-medium text-green-800">한국어</div>
+              </div>
+              <div className="bg-white p-1.5 rounded-lg text-center border border-green-200">
+                <div className="text-sm font-medium text-green-800">영어(미국)</div>
+              </div>
+              <div className="bg-white p-1.5 rounded-lg text-center border border-green-200">
+                <div className="text-sm font-medium text-green-800">일본어</div>
+              </div>
+              <div className="bg-white p-1.5 rounded-lg text-center border border-green-200">
+                <div className="text-sm font-medium text-green-800">중국어(중국 본토)</div>
+              </div>
             </div>
           </div>
 
-          {/* 다운로드 방법 */}
+          {/* 다운로드 방법 - 더 간결하게 */}
           <div className="bg-slate-50 rounded-lg p-3">
             <div className="text-center mb-3">
               <h3 className="text-lg font-semibold text-slate-800">
                 다운로드 방법
               </h3>
             </div>
-            
-            {isAndroid ? (
-              <div className="space-y-3">
-                <div className="text-center">
-                  <Button 
-                    onClick={handleDirectSettings}
-                    className="w-full bg-green-600 hover:bg-green-700 text-white font-medium"
-                  >
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    음성 설정 열기
-                  </Button>
-                  <p className="text-xs text-slate-500 mt-2">
-                    설정 페이지에서 4개 언어를 다운로드하세요
-                  </p>
-                </div>
-                
-                <div className="text-center text-sm text-slate-600">
-                  <p>또는 수동으로:</p>
-                </div>
-              </div>
-            ) : null}
-            
-            <div className="space-y-2 mt-3">
+            <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 bg-amber-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
                   1
@@ -184,9 +113,8 @@ export function VoicePackageGuide({ onClose, onNeverShow }: VoicePackageGuidePro
         </Button>
         <Button
           onClick={onClose}
-          className="flex-1 bg-amber-600 hover:bg-amber-700 text-sm"
+          className="flex-1 bg-amber-700 hover:bg-amber-800 text-white text-sm"
         >
-          <CheckCircle className="h-4 w-4 mr-2" />
           확인
         </Button>
       </div>
