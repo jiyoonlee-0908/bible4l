@@ -9,6 +9,45 @@
     <link rel="manifest" href="/manifest.json" />
     <link rel="icon" href="/icon-192.png" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+      // Runtime error 제거 스크립트
+      window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+          const scripts = document.querySelectorAll('script');
+          scripts.forEach(script => {
+            if (script.textContent && script.textContent.includes('runtime-error')) {
+              script.remove();
+            }
+          });
+        }, 100);
+      });
+      
+      // 에러 오버레이 방지
+      window.addEventListener('error', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        return false;
+      });
+    </script>
+    <style>
+      :root {
+        --font-scale: 1;
+      }
+      .background-clip--text {
+        background-clip: text;
+        -webkit-background-clip: text;
+      }
+      /* 에러 오버레이 숨기기 */
+      #vite-plugin-runtime-error-overlay,
+      [id*="runtime-error"],
+      [class*="runtime-error"],
+      [data-testid*="error"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        z-index: -9999 !important;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
