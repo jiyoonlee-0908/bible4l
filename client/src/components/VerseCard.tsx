@@ -5,6 +5,7 @@ import { BibleVerse } from '@/types/bible';
 import { Language } from '@shared/schema';
 import { useSpeech } from '@/hooks/useSpeech';
 import { useBookmarks } from '@/hooks/useBookmarks';
+import { useSmartTTS } from '@/hooks/useSmartTTS';
 import { useToast } from '@/hooks/use-toast';
 import { useEffect } from 'react';
 
@@ -19,6 +20,7 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
   const { audioState, speak, toggle, stop, setSpeed, setPitch } = useSpeech();
   const { isBookmarked, toggleBookmark } = useBookmarks();
   const { toast } = useToast();
+  const { speakSmart, isReady } = useSmartTTS();
 
   // Save reading statistics when viewing verse
   useEffect(() => {
@@ -63,11 +65,36 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
     return () => clearTimeout(timer);
   }, [verse.bookId, verse.chapterId, verse.verseId, language]);
 
+  const saveListeningStats = () => {
+    const listeningStats = JSON.parse(localStorage.getItem('listeningStats') || '[]');
+    const newStat = {
+      book: verse.bookId,
+      chapter: parseInt(verse.chapterId),
+      verse: verse.verseId,
+      language: language,
+      timestamp: new Date().toISOString(),
+      duration: 2, // 2 minutes for listening
+      type: 'listen'
+    };
+    listeningStats.push(newStat);
+    localStorage.setItem('listeningStats', JSON.stringify(listeningStats));
+  };
+
   const handlePlay = () => {
     if (audioState.isPlaying) {
       toggle();
     } else {
-      if (mode === 'double' && koreanVerse) {
+      // Smart TTS를 우선 사용, 준비되지 않았으면 기본 TTS 사용
+      if (isReady && mode === 'single') {
+        speakSmart(verse.text, language, {
+          rate: 0.9,
+          volume: 0.8,
+          onEnd: () => {
+            // 듣기 통계 저장
+            saveListeningStats();
+          }
+        });
+      } else if (mode === 'double' && koreanVerse) {
         // For cross mode, speak first language then Korean with appropriate voices
         speakCrossMode(verse, koreanVerse, language);
       } else {

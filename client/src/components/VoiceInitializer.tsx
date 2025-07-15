@@ -207,85 +207,14 @@ export function VoiceInitializer({ isOpen, onClose, onComplete }: VoiceInitializ
                   <br />
                   자연스러운 발음과 억양으로 성경을 들을 수 있습니다.
                   
-                  {/* TTS 엔진 감지 */}
-                  <div className="mt-4">
-                    <TTSEngineDetector onEngineCheck={setTtsEngineInfo} />
-                  </div>
-                  
-                  {/* 언어별 음성 상태 체크 */}
-                  <div className="mt-4">
-                    <div className="text-sm font-semibold text-gray-800 mb-2">
-                      🎯 언어별 음성 상태 점검
-                    </div>
-                    <VoiceLanguageChecker onVoiceCheck={setVoiceStatus} />
-                  </div>
-                  <br />
-                  <div className="space-y-3 mt-3">
-                    {/* TTS 엔진 확인 및 변경 */}
-                    <div className="bg-yellow-50 p-3 rounded-lg border border-yellow-200">
-                      <div className="text-sm font-semibold text-yellow-800 mb-2">
-                        ⚠️ 중요: TTS 엔진 확인 필요
-                      </div>
-                      <div className="text-xs text-yellow-700 space-y-1">
-                        <div>• 삼성 기본 TTS: 중국어/일본어 지원 제한</div>
-                        <div>• Google TTS 권장: 모든 언어 지원</div>
-                      </div>
-                    </div>
-
-                    {/* 설정 이동 버튼들 */}
-                    <div className="grid grid-cols-1 gap-2">
-                      <Button 
-                        onClick={() => {
-                          // 다양한 방법으로 설정 열기 시도
-                          const attempts = [
-                            () => window.open('intent://com.android.settings/.tts.TextToSpeechSettings#Intent;scheme=android-app;end', '_self'),
-                            () => window.location.href = 'intent://com.android.settings/.tts.TextToSpeechSettings#Intent;scheme=android-app;end',
-                            () => window.open('intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;component=com.android.settings/.Settings$TextToSpeechSettingsActivity;end', '_self')
-                          ];
-                          
-                          let success = false;
-                          for (const attempt of attempts) {
-                            try {
-                              attempt();
-                              success = true;
-                              break;
-                            } catch (e) {
-                              continue;
-                            }
-                          }
-                          
-                          if (!success) {
-                            alert('수동으로 이동하세요:\n설정 > 손쉬운 사용 > 텍스트 음성 변환');
-                          }
-                        }}
-                        variant="outline" 
-                        size="sm"
-                        className="text-sm"
-                      >
-                        📱 TTS 설정 열기
-                      </Button>
-                      
-                      <Button 
-                        onClick={() => window.open('https://play.google.com/store/apps/details?id=com.google.android.tts', '_blank')}
-                        variant="outline" 
-                        size="sm"
-                        className="text-sm"
-                      >
-                        📦 Google TTS 앱 열기
-                      </Button>
-                    </div>
-
-                    {/* 상세 안내 */}
-                    <div className="bg-gray-50 p-3 rounded-lg text-xs text-gray-700">
-                      <strong>단계별 설정 방법:</strong>
+                  {/* 간단한 설명 */}
+                  <div className="bg-green-50 p-3 rounded-lg border border-green-200 mt-4">
+                    <div className="text-sm text-green-800">
+                      <strong>✨ 자동 최적화</strong>
                       <br />
-                      <strong>1단계:</strong> 설정 &gt; 손쉬운 사용 &gt; 텍스트 음성 변환
+                      앱이 자동으로 최적의 음성을 찾아서 사용합니다.
                       <br />
-                      <strong>2단계:</strong> 기본 TTS 엔진을 <span className="text-blue-600 font-semibold">"Google 텍스트 음성 변환"</span>으로 변경
-                      <br />
-                      <strong>3단계:</strong> Google TTS 설정 &gt; 언어에서 중국어/일본어 추가
-                      <br />
-                      <strong>4단계:</strong> 브라우저 새로고침 후 앱 재실행
+                      설정이 필요한 경우 우상단에 개선 버튼이 나타납니다.
                     </div>
                   </div>
                 </AlertDescription>
@@ -327,18 +256,10 @@ export function VoiceInitializer({ isOpen, onClose, onComplete }: VoiceInitializ
 
                 <div className="flex space-x-3">
                   <Button
-                    onClick={initializeVoices}
-                    className="flex-1 bg-amber-600 hover:bg-amber-700"
-                  >
-                    <Download className="w-4 h-4 mr-2" />
-                    음성 최적화 시작
-                  </Button>
-                  <Button
                     onClick={skipInitialization}
-                    variant="outline"
-                    className="flex-1"
+                    className="w-full bg-amber-600 hover:bg-amber-700"
                   >
-                    다시 보지 않기
+                    확인
                   </Button>
                 </div>
               </div>

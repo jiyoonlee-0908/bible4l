@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { GlobalAudioProvider } from '@/hooks/useGlobalAudio';
 import { GlobalAudioBar } from '@/components/GlobalAudioBar';
 import { VoiceInitializer } from '@/components/VoiceInitializer';
+import { SmartTTSIndicator } from '@/components/SmartTTSIndicator';
 import { Storage } from '@/lib/storage';
 import { useState, useEffect } from 'react';
 import React from 'react';
@@ -145,6 +146,7 @@ function App() {
             <Toaster />
             <Router />
             <GlobalAudioBar />
+            <SmartTTSIndicator />
             <VoiceInitializer 
               isOpen={showVoiceInitializer}
               onClose={() => setShowVoiceInitializer(false)}
