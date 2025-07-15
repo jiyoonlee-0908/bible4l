@@ -46,6 +46,7 @@ Ad-supported model: Keep only ad-supported version, Pro version to be developed 
 ✓ Data persistence confirmed: localStorage saves all user data permanently across app sessions
 ✓ Fixed Preview runtime errors with improved error handling and React import fixes
 ✓ Fixed "모든 데이터 삭제" to properly clear reading plan progress and reload page
+✓ Replaced hardcoded reading plan progress with actual data from useReadingPlan hook
 
 ## System Architecture
 
