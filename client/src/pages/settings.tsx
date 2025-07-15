@@ -135,7 +135,7 @@ export default function Settings() {
                     : "text-slate-600 hover:text-slate-800"
                 }`}
               >
-                <span className="text-sm font-medium">오디오</span>
+                <span className="text-sm font-medium">음성 설정</span>
               </Button>
               <Button
                 variant="ghost"
@@ -165,6 +165,47 @@ export default function Settings() {
 
         {/* Audio Tab */}
         {activeTab === "audio" && (
+          <>
+            {/* Voice Package Download Guide */}
+            <Card className="bg-white rounded-2xl shadow-sm border border-slate-200">
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold text-slate-800">
+                  음성 품질 향상
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <VoicePackageButton />
+                <p className="text-xs text-slate-500 mt-2 text-center">
+                  언어팩을 다운로드하면 더 자연스러운 음성을 들을 수 있습니다.
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Data Management */}
+            <Card className="bg-white rounded-2xl shadow-sm border border-slate-200">
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold text-slate-800">
+                  데이터 관리
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Button
+                  variant="destructive"
+                  onClick={clearAllData}
+                  className="w-full"
+                >
+                  모든 데이터 삭제
+                </Button>
+                <p className="text-xs text-slate-500 mt-2 text-center">
+                  설정, 북마크 등 모든 데이터가 삭제됩니다.
+                </p>
+              </CardContent>
+            </Card>
+          </>
+        )}
+
+        {/* Reading Plans Tab */}
+        {activeTab === "plans" && (
           <>
             {/* Basic Audio Settings */}
             <Card className="bg-white rounded-2xl shadow-sm border border-slate-200">
@@ -209,9 +250,6 @@ export default function Settings() {
                   />
                 </div>
 
-                {/* Voice Package Download Guide */}
-                <VoicePackageButton />
-
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-slate-700">
                     기본 언어
@@ -229,7 +267,7 @@ export default function Settings() {
                       <SelectItem value="ko">한국어</SelectItem>
                       <SelectItem value="en">English</SelectItem>
                       <SelectItem value="zh">中文</SelectItem>
-                      <SelectItem value="ja">日本語</SelectItem>
+                      <SelectItem value="ja">日본語</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -262,56 +300,32 @@ export default function Settings() {
               onUpdateSettings={updateSettings}
             />
 
-            {/* Data Management */}
-            <Card className="bg-white rounded-2xl shadow-sm border border-slate-200">
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold text-slate-800">
-                  데이터 관리
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Button
-                  variant="destructive"
-                  onClick={clearAllData}
-                  className="w-full"
-                >
-                  모든 데이터 삭제
-                </Button>
-                <p className="text-xs text-slate-500 mt-2 text-center">
-                  설정, 북마크 등 모든 데이터가 삭제됩니다.
-                </p>
-              </CardContent>
-            </Card>
-          </>
-        )}
-
-        {/* Reading Plans Tab */}
-        {activeTab === "plans" && (
-          <div className="space-y-4">
-            {readingPlan.availablePlans.map((plan) => (
-              <ReadingPlanCard
-                key={plan.id}
-                plan={plan}
-                progress={
-                  readingPlan.selectedPlan?.id === plan.id
-                    ? readingPlan.progress
-                    : undefined
-                }
-                onSelectPlan={() => readingPlan.selectPlan(plan.id as any)}
-                onMarkComplete={() => {
-                  const todaysReading = readingPlan.getTodaysReading();
-                  if (todaysReading) {
-                    readingPlan.markDayComplete(todaysReading.day);
+            <div className="space-y-4">
+              {readingPlan.availablePlans.map((plan) => (
+                <ReadingPlanCard
+                  key={plan.id}
+                  plan={plan}
+                  progress={
+                    readingPlan.selectedPlan?.id === plan.id
+                      ? readingPlan.progress
+                      : undefined
                   }
-                }}
-                todaysReading={
-                  readingPlan.selectedPlan?.id === plan.id
-                    ? readingPlan.getTodaysReading()
-                    : null
-                }
-              />
-            ))}
-          </div>
+                  onSelectPlan={() => readingPlan.selectPlan(plan.id as any)}
+                  onMarkComplete={() => {
+                    const todaysReading = readingPlan.getTodaysReading();
+                    if (todaysReading) {
+                      readingPlan.markDayComplete(todaysReading.day);
+                    }
+                  }}
+                  todaysReading={
+                    readingPlan.selectedPlan?.id === plan.id
+                      ? readingPlan.getTodaysReading()
+                      : null
+                  }
+                />
+              ))}
+            </div>
+          </>
         )}
 
         {/* Badges Tab */}

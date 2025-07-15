@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -136,8 +137,10 @@ export function VoicePackageGuide({ onClose, onNeverShow }: VoicePackageGuidePro
 
 // 설정 페이지에서 사용할 간단한 버튼 컴포넌트
 export function VoicePackageButton() {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button 
           variant="outline" 
@@ -148,7 +151,7 @@ export function VoicePackageButton() {
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-md max-h-[90vh] p-0">
-        <VoicePackageGuide />
+        <VoicePackageGuide onClose={() => setIsOpen(false)} />
       </DialogContent>
     </Dialog>
   );
