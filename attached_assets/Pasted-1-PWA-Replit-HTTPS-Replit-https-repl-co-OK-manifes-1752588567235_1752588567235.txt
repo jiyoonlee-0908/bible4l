@@ -1,0 +1,109 @@
+1 PWA 자격 갖추기 (Replit 내 작업)
+필수 항목	체크 방법
+HTTPS	Replit 기본 도메인 https://…repl.co 이면 OK
+웹 앱 매니페스트	/manifest.json에 name·short_name·start_url·display:"standalone"·icons(512×512 포함)
+서비스워커	오프라인 시 최소한 “연결이 끊겼습니다” 대체 화면 제공
+Lighthouse PWA 점수 90+	Chrome DevTools → Lighthouse 탭으로 확인
+
+Play 스토어 리뷰팀은 ‘설치형 PWA 기준(Lighthouse PWA 점수, 오프라인 대응)’을 통과한 웹앱만 Trusted Web Activity(TWA)로 허용합니다. 
+Google for Developers
+Chrome for Developers
+
+2 Android 패키지(AAB) 만들기
+Bubblewrap CLI 설치
+
+bash
+복사
+편집
+npm i -g @bubblewrap/cli
+초기화
+
+bash
+복사
+편집
+bubblewrap init --url https://your‑app.repl.co --manifest ./manifest.json
+질문에 따라 앱 이름·패키지명·색상·키스토어 생성 등을 입력.
+
+빌드 & 서명
+
+bash
+복사
+편집
+bubblewrap build
+bubblewrap install   # USB 연결 기기에서 테스트
+→ app-release.aab 생성.
+
+Bubblewrap은 구글이 공식 지원하는 TWA 프로젝트 생성 툴이며, 2025년 현재도 가장 보편적 방법입니다. 
+mobiloud.com
+GitHub
+
+3 도메인 신뢰(디지털 에셋 링크) 설정
+Bubblewrap이 출력한 SHA‑256 지문을 .well-known/assetlinks.json에 넣어야 합니다.
+
+json
+복사
+편집
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.example.app",
+    "sha256_cert_fingerprints": ["XX:YY:ZZ:…"]
+  }
+}]
+Replit 프로젝트 루트에 .well-known/assetlinks.json 폴더·파일을 만들고 배포 → https://your-app.repl.co/.well-known/assetlinks.json 가 열려야 함.
+
+Play 콘솔 측에서는 따로 설정할 필요가 없습니다.
+
+이 파일로 ‘앱 ↔ 사이트’ 소유권을 상호 검증해야만 TWA가 주소창 없이 전체 화면으로 열립니다. 
+Chrome for Developers
+
+4 Play 콘솔 등록 절차
+새 앱 생성 → 언어/국가 선택.
+
+앱 콘텐츠
+
+개인정보처리방침 URL(필수)
+
+Target Audience & Content: 어린이 포함 시 가족 정책 엄격 준수
+
+데이터 안전 폼 작성
+
+릴리스 관리
+
+‘프로덕션’(권장 전 내부 테스트 트랙으로 먼저 업로드)
+
+AAB 업로드(app-release.aab)
+
+스토어 등록정보
+
+512×512 아이콘, 1024×500 피처 그래픽, 최소 2장 스크린샷(폰·태블릿)
+
+앱 이름(30자), 간략 설명(80자), 전체 설명(4000자)
+
+콘텐츠 등급 설문 완료
+
+검토 요청 → 게시(평균 3‑7 일)
+
+2021년 이후 Play 스토어는 APK 대신 AAB(Android App Bundle)만 허용하며, 2025년 현재도 동일합니다. 
+netguru.com
+
+5 배포 후 유지보수
+할 일	주기
+버블랩으로 새 버전 빌드·업로드	기능 변경 때마다
+서비스워커 캐싱 정책·오프라인 페이지 점검	분기별
+Play 콘솔 “데이터 안전” 변경사항 반영	정책 업데이트 시
+사용자 피드백(리뷰) 모니터링	상시
+
+Replit → PWA → Play 스토어, 핵심 체크리스트
+ HTTPS 배포 & PWA 3대 요소(매니페스트, 서비스워커, 오프라인 UX)
+
+ Bubblewrap 또는 PWABuilder GUI(Bubblewrap 기반)로 AAB 생성
+
+ .well-known/assetlinks.json 배포 후 200 OK 확인
+
+ Play 콘솔: 아이콘·스크린샷·설문·데이터 안전·배포 트랙 완료
+
+ 내부 테스트 트랙에서 설치·동작·오프라인 검증 후 프로덕션 출시
+
+이 과정을 따르면 별도의 네이티브 코드 없이도 Replit에서 만든 웹앱을 **“설치형 PWA”**로 Play 스토어에 올릴 수 있습니다. 필요하면 Capacitor/Cordova로 WebView 래퍼를 만드는 방법도 있지만, TWA가 UX‧성능 모두 가장 권장되는 공식 경로입니다. 즐거운 배포 되세요!
