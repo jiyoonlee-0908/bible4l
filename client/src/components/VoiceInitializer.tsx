@@ -104,8 +104,8 @@ export function VoiceInitializer({ isOpen, onClose, onComplete }: VoiceInitializ
       setStep(4);
       setProgress(100);
       
-      // 초기화 완료 표시를 localStorage에 저장
-      localStorage.setItem('bible-voice-initialized', 'true');
+      // 음성 최적화 완료 표시를 localStorage에 저장
+      localStorage.setItem('bible-voice-initialized', 'optimized');
       localStorage.setItem('bible-voice-init-date', new Date().toISOString());
       
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -172,7 +172,7 @@ export function VoiceInitializer({ isOpen, onClose, onComplete }: VoiceInitializ
   };
 
   const skipInitialization = () => {
-    localStorage.setItem('bible-voice-initialized', 'skipped');
+    localStorage.setItem('bible-voice-initialized', 'completed');
     onComplete();
   };
 
@@ -280,7 +280,7 @@ export function VoiceInitializer({ isOpen, onClose, onComplete }: VoiceInitializ
                     variant="outline"
                     className="flex-1"
                   >
-                    나중에 하기
+                    다시 보지 않기
                   </Button>
                 </div>
               </div>

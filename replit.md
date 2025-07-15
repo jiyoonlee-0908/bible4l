@@ -61,6 +61,9 @@ Ad-supported model: Keep only ad-supported version, Pro version to be developed 
 ✓ Created TTSInstallGuide component with platform-specific Google TTS installation instructions
 ✓ Integrated missing language detection and automatic TTS download guidance system
 ✓ Added Android/iOS/Desktop-specific TTS installation workflows with direct store links
+✓ Modified TTS popup to show repeatedly until "다시 보지 않기" is clicked (not just first-time)
+✓ Improved Android TTS language addition with direct settings navigation and detailed instructions
+✓ Added comprehensive 3-method guidance for Chinese/Japanese voice installation
 
 ## Play Store Deployment Preparation (January 15, 2025)
 

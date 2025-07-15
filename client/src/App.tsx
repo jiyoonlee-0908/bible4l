@@ -101,9 +101,9 @@ function App() {
       const level = savedSettings.fontLevel || 0;
       setFontLevel(level);
       
-      // 음성 초기화 체크
+      // 음성 초기화 체크 (다시 보지 않기를 누를 때까지 계속 표시)
       const voiceInitialized = localStorage.getItem('bible-voice-initialized');
-      if (!voiceInitialized) {
+      if (voiceInitialized !== 'completed') {
         // 1초 후에 음성 초기화 모달 표시 (앱 로딩 완료 후)
         setTimeout(() => {
           setShowVoiceInitializer(true);
