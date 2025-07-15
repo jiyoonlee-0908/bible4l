@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { TrendingUp, Calendar, Clock, Trophy, BookOpen, Target, CheckCircle, Headphones, Book, Award } from 'lucide-react';
 import { Storage } from '@/lib/storage';
+import { AdFitBanner } from '@/components/AdFitBanner';
 
 interface ListeningStat {
   book: string;
@@ -334,6 +335,14 @@ export default function ProgressPage() {
             </CardContent>
           </Card>
         )}
+        
+        {/* 진도 페이지 광고 */}
+        <AdFitBanner
+          adUnit="DAN-your-progress-unit"
+          adWidth={300}
+          adHeight={250}
+          className="progress-ad"
+        />
       </div>
       
       <BottomNavigation

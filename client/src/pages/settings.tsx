@@ -17,7 +17,7 @@ import { useSpeech } from '@/hooks/useSpeech';
 import { useReadingPlan } from '@/hooks/useReadingPlan';
 import { useBadges } from '@/hooks/useBadges';
 
-import { AdFitBanner } from '@/components/AdFitBanner';
+
 import { useToast } from '@/hooks/use-toast';
 
 export default function Settings() {
@@ -272,13 +272,7 @@ export default function Settings() {
           />
         )}
 
-        {/* Settings 페이지 광고 */}
-        <AdFitBanner
-          adUnit="DAN-your-settings-unit"
-          adWidth={300}
-          adHeight={250}
-          className="settings-ad"
-        />
+
       </div>
       
       <BottomNavigation
