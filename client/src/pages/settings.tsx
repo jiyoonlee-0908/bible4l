@@ -7,6 +7,7 @@ import { DSPControls } from "@/components/DSPControls";
 import { ReadingPlanCard } from "@/components/ReadingPlanCard";
 import { BadgeDisplay } from "@/components/BadgeDisplay";
 import { VoiceSetupGuide } from "@/components/VoiceSetupGuide";
+import { VoiceDebugger } from "@/components/VoiceDebugger";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -213,6 +214,9 @@ export default function Settings() {
                     모바일에서 음성이 이상하면 클릭해서 확인해보세요
                   </p>
                 </div>
+
+                {/* 맥북 음성 디버거 */}
+                <VoiceDebugger />
 
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium text-slate-700">
