@@ -109,98 +109,22 @@ export function useSpeech() {
     
     if (languageVoices.length === 0) return null;
     
-    // 모바일에서 구글 음성 강제 사용을 위한 정확한 패턴 매칭
-    const googleVoicePatterns = {
-      ko: [
-        'Google 한국의',
-        'Google Korean',
-        'google ko',
-        'google korean',
-        'ko-KR-Standard-A',
-        'ko-KR-Standard-B',
-        'ko-KR-Standard-C',
-        'ko-KR-Standard-D'
-      ],
-      en: [
-        'Google US English',
-        'Google UK English Female',
-        'Google UK English Male', 
-        'Google English',
-        'google en',
-        'google english',
-        'en-US-Standard-A',
-        'en-US-Standard-B',
-        'en-US-Standard-C',
-        'en-US-Standard-D',
-        'en-US-Standard-E',
-        'en-US-Standard-F',
-        'en-US-Standard-G',
-        'en-US-Standard-H',
-        'en-US-Standard-I',
-        'en-US-Standard-J'
-      ],
-      zh: [
-        'Google 普通话（中国大陆）',
-        'Google Chinese (China)',
-        'Google Chinese',
-        'google zh',
-        'google chinese',
-        'zh-CN-Standard-A',
-        'zh-CN-Standard-B',
-        'zh-CN-Standard-C',
-        'zh-CN-Standard-D'
-      ],
-      ja: [
-        'Google 日本語',
-        'Google Japanese',
-        'google ja',
-        'google japanese',
-        'ja-JP-Standard-A',
-        'ja-JP-Standard-B',
-        'ja-JP-Standard-C',
-        'ja-JP-Standard-D'
-      ]
-    };
-    
-    const googlePatterns = googleVoicePatterns[langCode as keyof typeof googleVoicePatterns] || [];
-    
-    // 구글 음성 우선 검색 (정확한 매칭)
-    for (const pattern of googlePatterns) {
-      const voice = languageVoices.find(v => 
-        v.name === pattern || 
-        v.name.toLowerCase() === pattern.toLowerCase() ||
-        v.name.toLowerCase().includes(pattern.toLowerCase())
-      );
-      if (voice) {
-        console.log(`Selected Google voice: ${voice.name} for ${langCode}`);
-        return voice;
-      }
+    // 기기 기본 음성 사용 (가장 안정적)
+    const defaultVoice = languageVoices.find(v => v.default);
+    if (defaultVoice) {
+      console.log(`Using default voice: ${defaultVoice.name} for ${langCode}`);
+      return defaultVoice;
     }
     
-    // 구글 음성 완전 강제 검색 (모든 구글 관련 키워드)
-    const googleVoices = languageVoices.filter(v => {
-      const name = v.name.toLowerCase();
-      return name.includes('google') || 
-             name.includes('standard') || 
-             name.includes('wavenet') ||
-             name.includes('neural') ||
-             (v.voiceURI && v.voiceURI.toLowerCase().includes('google'));
-    });
-    
-    if (googleVoices.length > 0) {
-      console.log(`Fallback Google voice: ${googleVoices[0].name} for ${langCode}`);
-      return googleVoices[0];
+    // 로컬 음성 우선 (기기에 내장된 음성이 더 안정적)
+    const localVoices = languageVoices.filter(v => v.localService);
+    if (localVoices.length > 0) {
+      console.log(`Using local voice: ${localVoices[0].name} for ${langCode}`);
+      return localVoices[0];
     }
     
-    // 최후의 수단으로 원격 음성 우선 (구글 서비스 가능성 높음)
-    const remoteVoices = languageVoices.filter(v => !v.localService);
-    if (remoteVoices.length > 0) {
-      console.log(`Remote voice selected: ${remoteVoices[0].name} for ${langCode}`);
-      return remoteVoices[0];
-    }
-    
-    // 폴백
-    console.log(`Fallback voice selected: ${languageVoices[0].name} for ${langCode}`);
+    // 첫 번째 사용 가능한 음성 사용
+    console.log(`Using first available voice: ${languageVoices[0].name} for ${langCode}`);
     return languageVoices[0];
   }, [voices]);
 
@@ -268,15 +192,15 @@ export function useSpeech() {
 
       const newUtterance = new SpeechSynthesisUtterance(cleanedText);
         
-      // 구글 음성 강제 설정
+      // 기본 TTS 설정 (간단하게)
       const targetLang = options.lang || getCurrentLanguageCode();
       const selectedVoice = selectBestVoice(targetLang);
       
       if (selectedVoice) {
         newUtterance.voice = selectedVoice;
-        console.log(`Using voice: ${selectedVoice.name} (${selectedVoice.lang}) for text: ${cleanedText.substring(0, 50)}...`);
+        console.log(`Using voice: ${selectedVoice.name} for ${targetLang}`);
       } else {
-        console.warn(`No suitable voice found for language: ${targetLang}`);
+        console.log(`Using system default voice for ${targetLang}`);
       }
       
       // Apply settings with safe defaults
