@@ -23,35 +23,21 @@ export function useSimpleTTS() {
       return;
     }
 
-    // 사용자 제스처 확인
-    const hasUserGesture = document.hasStoredActivation || document.userActivation?.hasBeenActive;
-    console.log('🤝 User gesture available:', hasUserGesture);
-
-    // 이전 음성 완전 정지
+    // 이전 음성이 재생 중이면 중지하고 잠시 대기
     if (speechSynthesis.speaking) {
+      console.log('🛑 Stopping previous speech...');
       speechSynthesis.cancel();
-    }
-
-    // 음성 목록 확인
-    const voices = speechSynthesis.getVoices();
-    console.log('🔊 Available voices:', voices.length);
-    
-    if (voices.length === 0) {
-      console.log('⏳ No voices available, waiting...');
-      speechSynthesis.onvoiceschanged = () => {
-        console.log('🔄 Voices loaded, retrying...');
-        const newVoices = speechSynthesis.getVoices();
-        console.log('🔊 New voices count:', newVoices.length);
-        if (newVoices.length > 0) {
-          startSpeech();
-        }
-      };
+      setTimeout(() => {
+        startNewSpeech();
+      }, 300);
       return;
     }
 
-    startSpeech();
+    startNewSpeech();
 
-    function startSpeech() {
+    function startNewSpeech() {
+      console.log('🎵 Starting new speech...');
+      
       // 새 utterance 생성
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.rate = audioState.speed;
@@ -60,8 +46,8 @@ export function useSimpleTTS() {
       utterance.lang = lang;
 
       // 사용 가능한 음성 찾기
-      const availableVoices = speechSynthesis.getVoices();
-      const targetVoice = availableVoices.find(voice => 
+      const voices = speechSynthesis.getVoices();
+      const targetVoice = voices.find(voice => 
         voice.lang.startsWith(lang.split('-')[0]) || 
         voice.lang === lang
       );
@@ -89,8 +75,8 @@ export function useSimpleTTS() {
         
         if (event.error === 'not-allowed') {
           alert('음성 재생이 차단되었습니다. 브라우저 설정에서 음성 합성을 허용해주세요.\n\n설정 방법:\n1. 브라우저 주소창 옆의 자물쇠 아이콘 클릭\n2. 사운드 권한을 "허용"으로 변경\n3. 페이지 새로고침');
-        } else if (event.error === 'network') {
-          alert('네트워크 오류로 음성 재생에 실패했습니다.');
+        } else if (event.error === 'canceled') {
+          console.log('🔄 Speech was canceled (normal when switching)');
         } else {
           console.log('TTS 오류 상세:', event);
         }
@@ -103,7 +89,7 @@ export function useSimpleTTS() {
       console.log('🎤 Calling speechSynthesis.speak()...');
       speechSynthesis.speak(utterance);
       
-      // 재생 확인
+      // 재생 상태 확인
       setTimeout(() => {
         console.log('🔍 Speech synthesis status:', {
           speaking: speechSynthesis.speaking,
