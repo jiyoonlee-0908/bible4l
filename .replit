@@ -1,8 +1,0 @@
-run = "npm run dev"
-
-[interpreter]
-entrypoint = "index.html"
-
-[[ports]]
-localPort = 5000
-externalPort = 80
