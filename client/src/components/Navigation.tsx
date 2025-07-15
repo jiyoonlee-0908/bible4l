@@ -37,11 +37,36 @@ export function Navigation({
     if (speechSynthesis.paused) {
       resume();
     } else if (verseText) {
-      speak(verseText, {
-        lang: language === 'ko' ? 'ko-KR' : language === 'en' ? 'en-US' : language === 'zh' ? 'zh-CN' : 'ja-JP',
-        rate: currentSpeed,
-      });
+      // Check if in double mode (cross mode) and both verses exist
+      if (primaryVerse && secondaryVerse) {
+        speakCrossMode(primaryVerse, secondaryVerse, primaryVerse.language);
+      } else {
+        speak(verseText, {
+          lang: language === 'ko' ? 'ko-KR' : language === 'en' ? 'en-US' : language === 'zh' ? 'zh-CN' : 'ja-JP',
+          rate: currentSpeed,
+        });
+      }
     }
+  };
+
+  const speakCrossMode = (primaryVerse: any, secondaryVerse: any, primaryLang: Language) => {
+    const voiceMapping = {
+      ko: 'ko-KR',
+      en: 'en-US',
+      zh: 'zh-CN', 
+      ja: 'ja-JP'
+    };
+
+    // First speak in the primary language, then Korean when finished
+    const primaryLangCode = voiceMapping[primaryLang] || 'en-US';
+    speak(primaryVerse.text, { 
+      rate: currentSpeed, 
+      lang: primaryLangCode,
+      onEnd: () => {
+        // Speak Korean after the first language finishes
+        speak(secondaryVerse.text, { rate: currentSpeed, lang: 'ko-KR' });
+      }
+    });
   };
 
   const handlePause = () => {
