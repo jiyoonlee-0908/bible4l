@@ -203,39 +203,32 @@ export function VoiceInitializer({ isOpen, onClose, onComplete }: VoiceInitializ
                   <br />
                   자연스러운 발음과 억양으로 성경을 들을 수 있습니다.
                   <br />
-                  <div className="grid grid-cols-2 gap-2 mt-3">
+                  <div className="grid grid-cols-1 gap-2 mt-3">
                     <Button 
-                      onClick={() => window.open('https://play.google.com/store/apps/details?id=com.google.android.tts&hl=ko', '_blank')}
+                      onClick={() => {
+                        // Android TTS 설정으로 직접 이동 시도
+                        try {
+                          window.open('intent://com.android.settings/.tts.TextToSpeechSettings#Intent;scheme=android-app;end', '_self');
+                        } catch (e) {
+                          // 폴백: 구글 TTS 앱 열기
+                          window.open('https://play.google.com/store/apps/details?id=com.google.android.tts', '_blank');
+                        }
+                      }}
                       variant="outline" 
                       size="sm"
-                      className="text-xs"
+                      className="text-sm"
                     >
-                      🇰🇷 한국어
+                      📱 Android TTS 설정 열기
                     </Button>
-                    <Button 
-                      onClick={() => window.open('https://play.google.com/store/apps/details?id=com.google.android.tts&hl=en', '_blank')}
-                      variant="outline" 
-                      size="sm"
-                      className="text-xs"
-                    >
-                      🇺🇸 English
-                    </Button>
-                    <Button 
-                      onClick={() => window.open('https://play.google.com/store/apps/details?id=com.google.android.tts&hl=zh', '_blank')}
-                      variant="outline" 
-                      size="sm"
-                      className="text-xs"
-                    >
-                      🇨🇳 中文
-                    </Button>
-                    <Button 
-                      onClick={() => window.open('https://play.google.com/store/apps/details?id=com.google.android.tts&hl=ja', '_blank')}
-                      variant="outline" 
-                      size="sm"
-                      className="text-xs"
-                    >
-                      🇯🇵 日本語
-                    </Button>
+                    <div className="text-xs text-gray-600 mt-2">
+                      <strong>언어 추가 방법:</strong>
+                      <br />
+                      1. 설정 &gt; 손쉬운 사용 &gt; 텍스트 음성 변환
+                      <br />
+                      2. Google TTS 선택 &gt; 언어 &gt; 중국어/일본어 추가
+                      <br />
+                      3. 또는 Google TTS 앱에서 직접 언어 다운로드
+                    </div>
                   </div>
                 </AlertDescription>
               </Alert>

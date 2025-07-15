@@ -111,42 +111,34 @@ export function VoiceSetupGuide({ isOpen, onClose }: VoiceSetupGuideProps) {
               <br />
               자연스러운 발음과 억양으로 성경을 들을 수 있습니다.
               <br />
-              <div className="grid grid-cols-2 gap-2 mt-3">
+              <div className="grid grid-cols-1 gap-2 mt-3">
                 <Button 
-                  onClick={() => window.open('https://play.google.com/store/apps/details?id=com.google.android.tts&hl=ko', '_blank')}
+                  onClick={() => {
+                    // Android TTS 설정으로 직접 이동 시도
+                    try {
+                      window.open('intent://com.android.settings/.tts.TextToSpeechSettings#Intent;scheme=android-app;end', '_self');
+                    } catch (e) {
+                      alert('설정 > 손쉬운 사용 > 텍스트 음성 변환으로 이동하세요');
+                    }
+                  }}
                   variant="outline" 
                   size="sm"
-                  className="text-xs"
+                  className="text-sm"
                 >
-                  🇰🇷 한국어 다운로드
+                  📱 Android TTS 설정 열기
                 </Button>
-                <Button 
-                  onClick={() => window.open('https://play.google.com/store/apps/details?id=com.google.android.tts&hl=en', '_blank')}
-                  variant="outline" 
-                  size="sm"
-                  className="text-xs"
-                >
-                  🇺🇸 English 다운로드
-                </Button>
-                <Button 
-                  onClick={() => window.open('https://play.google.com/store/apps/details?id=com.google.android.tts&hl=zh', '_blank')}
-                  variant="outline" 
-                  size="sm"
-                  className="text-xs"
-                >
-                  🇨🇳 中文 다운로드
-                </Button>
-                <Button 
-                  onClick={() => window.open('https://play.google.com/store/apps/details?id=com.google.android.tts&hl=ja', '_blank')}
-                  variant="outline" 
-                  size="sm"
-                  className="text-xs"
-                >
-                  🇯🇵 日本語 다운로드
-                </Button>
+                <div className="bg-gray-50 p-3 rounded-lg text-xs text-gray-700 mt-2">
+                  <strong>중국어/일본어 음성 추가 방법:</strong>
+                  <br />
+                  <strong>방법 1:</strong> 설정 &gt; 손쉬운 사용 &gt; 텍스트 음성 변환 &gt; Google TTS &gt; 언어에서 추가
+                  <br />
+                  <strong>방법 2:</strong> Google TTS 앱을 직접 열어서 언어 다운로드
+                  <br />
+                  <strong>방법 3:</strong> Google 앱에서 "중국어 음성" 또는 "일본어 음성" 검색
+                </div>
               </div>
               <div className="text-xs text-gray-500 mt-2">
-                다운로드 후 브라우저를 새로고침하면 새로운 음성을 사용할 수 있습니다.
+                언어 추가 후 브라우저를 새로고침하면 새로운 음성을 사용할 수 있습니다.
               </div>
             </AlertDescription>
           </Alert>
