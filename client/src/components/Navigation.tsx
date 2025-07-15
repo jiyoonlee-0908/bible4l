@@ -1,8 +1,10 @@
-import { Play, Pause, SkipBack, SkipForward, Minus, Plus } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Minus, Plus, Bookmark as BookmarkIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useGlobalAudio } from '@/hooks/useGlobalAudio';
 import { useSpeech } from '@/hooks/useSpeech';
+import { useBookmarks } from '@/hooks/useBookmarks';
+import { Bookmark, Language } from '@shared/schema';
 
 interface NavigationProps {
   currentChapter: number;
@@ -29,6 +31,7 @@ export function Navigation({
 }: NavigationProps) {
   const { globalAudioState, toggleGlobalPlayback } = useGlobalAudio();
   const { isPlaying, speak, stop, pause, resume, settings, updateSettings } = useSpeech();
+  const { isBookmarked, toggleBookmark } = useBookmarks();
 
   const handlePlay = () => {
     if (speechSynthesis.paused) {
@@ -53,6 +56,26 @@ export function Navigation({
   };
 
   const currentSpeed = settings?.speed || 1.0;
+
+  const handleBookmarkToggle = () => {
+    if (primaryVerse && currentBook) {
+      const verseId = `${currentBook}.${currentChapter}.${currentVerse}`;
+      const bookmark: Bookmark = {
+        verseId,
+        reference: `${getBookName(currentBook, language)} ${currentChapter}:${currentVerse}`,
+        text: primaryVerse.text,
+        language: primaryVerse.language,
+        createdAt: new Date().toISOString(),
+      };
+      toggleBookmark(bookmark);
+    }
+  };
+
+  const isCurrentVerseBookmarked = () => {
+    if (!primaryVerse || !currentBook) return false;
+    const verseId = `${currentBook}.${currentChapter}.${currentVerse}`;
+    return isBookmarked(verseId, primaryVerse.language);
+  };
 
   // 언어별 성경 이름 표시
   const getBookName = (bookName: string, lang: string) => {
@@ -381,19 +404,12 @@ export function Navigation({
           <div className="flex space-x-2">
             <Button
               variant="ghost"
+              onClick={handleBookmarkToggle}
               className="p-2 bg-amber-700 hover:bg-amber-600 rounded-full transition-colors"
             >
-              <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-              </svg>
-            </Button>
-            <Button
-              variant="ghost"
-              className="p-2 bg-amber-700 hover:bg-amber-600 rounded-full transition-colors"
-            >
-              <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
-              </svg>
+              <BookmarkIcon 
+                className={`h-5 w-5 ${isCurrentVerseBookmarked() ? 'fill-yellow-400 text-yellow-400' : 'text-white'}`} 
+              />
             </Button>
           </div>
         </div>
