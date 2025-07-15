@@ -22,10 +22,10 @@ interface GlobalAudioContextType {
   toggleGlobalPlayback: () => void;
 }
 
-const GlobalAudioContext = createContext<GlobalAudioContextType | undefined>(undefined);
+const GlobalAudioContext = React.createContext<GlobalAudioContextType | undefined>(undefined);
 
 export function GlobalAudioProvider({ children }: { children: ReactNode }) {
-  const [globalAudioState, setGlobalAudioStateInternal] = useState<GlobalAudioState>({
+  const [globalAudioState, setGlobalAudioStateInternal] = React.useState<GlobalAudioState>({
     isPlaying: false,
     currentPosition: 0,
     duration: 0,
@@ -83,7 +83,7 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
 }
 
 export function useGlobalAudio() {
-  const context = useContext(GlobalAudioContext);
+  const context = React.useContext(GlobalAudioContext);
   if (!context) {
     throw new Error('useGlobalAudio must be used within GlobalAudioProvider');
   }
