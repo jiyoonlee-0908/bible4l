@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import * as React from 'react';
 import { AudioState, Language } from '@shared/schema';
 
 interface GlobalAudioState extends AudioState {
@@ -24,7 +24,7 @@ interface GlobalAudioContextType {
 
 const GlobalAudioContext = React.createContext<GlobalAudioContextType | undefined>(undefined);
 
-export function GlobalAudioProvider({ children }: { children: ReactNode }) {
+export function GlobalAudioProvider({ children }: { children: React.ReactNode }) {
   const [globalAudioState, setGlobalAudioStateInternal] = React.useState<GlobalAudioState>({
     isPlaying: false,
     currentPosition: 0,
