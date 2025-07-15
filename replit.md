@@ -51,6 +51,9 @@ Ad-supported model: Keep only ad-supported version, Pro version to be developed 
 ✓ Localized reading plan book names to Korean (창세기, 출애굽기, etc.)
 ✓ Enhanced TTS voice selection with stronger Google voice enforcement for mobile devices
 ✓ Added comprehensive voice debugging logs to troubleshoot mobile TTS issues
+✓ Fixed badge system with proper event-driven architecture for real-time badge unlocking
+✓ Connected badge checks to actual app activities (listening, bookmarks, reading plans, streaks)
+✓ Added totalListeningTime tracking to settings schema for accurate badge calculations
 
 ## System Architecture
 

@@ -39,6 +39,7 @@ export const settingsSchema = z.object({
     }).default({}),
   }).default({}),
   fontLevel: z.number().min(-2).max(3).default(0),
+  totalListeningTime: z.number().default(0),
 });
 
 // Audio state schema

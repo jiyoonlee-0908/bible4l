@@ -71,7 +71,7 @@ export default function Settings() {
         'bible-audio-settings',
         'bible-audio-current-verse',
         'bible-audio-listening-stats',
-        'bible-audio-badges'
+        'bible-badges'
       ];
       
       keysToRemove.forEach(key => {

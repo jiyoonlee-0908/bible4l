@@ -140,6 +140,18 @@ export function useReadingPlan() {
 
     setProgress(updatedProgress);
     localStorage.setItem(`bible-progress-${selectedPlan.id}`, JSON.stringify(updatedProgress));
+    
+    // Check for streak and completion badges
+    const streakEvent = new CustomEvent('badge-check', {
+      detail: { type: 'streak', value: updatedProgress.streak }
+    });
+    window.dispatchEvent(streakEvent);
+    
+    const completionPercentage = (updatedProgress.completedDays.length / selectedPlan.totalDays) * 100;
+    const completionEvent = new CustomEvent('badge-check', {
+      detail: { type: 'completion', value: completionPercentage }
+    });
+    window.dispatchEvent(completionEvent);
   };
 
   const addListeningTime = (minutes: number) => {

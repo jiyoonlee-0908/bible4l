@@ -294,9 +294,24 @@ export function useSpeech() {
         const endTime = Date.now();
         const listeningTime = (endTime - startTime) / 1000 / 60; // in minutes
         
-        // Update listening time in storage
+        // Update listening time in storage and trigger badge checks
         const currentSettings = Storage.getSettings();
-        // Note: We'd need to add totalListeningTime to settings schema
+        const totalListeningTime = (currentSettings.totalListeningTime || 0) + listeningTime;
+        
+        // Save updated listening time
+        Storage.saveSettings({ ...currentSettings, totalListeningTime });
+        
+        // Check for listening time badges
+        const badgeEvent = new CustomEvent('badge-check', {
+          detail: { type: 'listening', value: totalListeningTime }
+        });
+        window.dispatchEvent(badgeEvent);
+        
+        // Check for first listen badge
+        const firstListenEvent = new CustomEvent('badge-check', {
+          detail: { type: 'first_listen' }
+        });
+        window.dispatchEvent(firstListenEvent);
         
         setAudioState(prev => ({ ...prev, isPlaying: false, currentPosition: 0 }));
         
