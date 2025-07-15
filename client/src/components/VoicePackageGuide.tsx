@@ -42,9 +42,9 @@ export function VoicePackageGuide({ onClose, onNeverShow }: VoicePackageGuidePro
           <div className="p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border-2 border-green-300">
             <div className="text-center mb-2">
               <div className="text-lg font-bold text-green-800 mb-1">
-                필수 다운로드 언어팩
+                설치되지않은 언어 다운로드
               </div>
-              <div className="text-sm text-green-700">아래 4개 언어 모두 다운로드하세요</div>
+              <div className="text-sm text-green-700">한국어/영어(미국)/일본어/중국어(중국 본토)</div>
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div className="bg-white p-1.5 rounded-lg text-center border border-green-200">
