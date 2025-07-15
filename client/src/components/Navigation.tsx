@@ -425,6 +425,9 @@ export function Navigation({
             <div className="text-xl font-bold">
               {getBookName(currentBook || '', language)} {currentChapter}:{currentVerse}
             </div>
+            <div className="text-sm text-amber-200 mt-1">
+              {getBookName(currentBook || '', 'ko')} {currentChapter}:{currentVerse}
+            </div>
           </div>
           <div className="flex space-x-2">
             <Button
