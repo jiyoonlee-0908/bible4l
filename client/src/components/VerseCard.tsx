@@ -179,12 +179,17 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
     }
   };
 
+  const adjustSpeed = (delta: number) => {
+    const newSpeed = Math.max(0.5, Math.min(1.5, audioState.speed + delta));
+    setSpeed(newSpeed);
+  };
+
   const getLanguageLabel = (lang: Language) => {
     const labels = {
       ko: '한국어',
       en: 'English',
       zh: '中文',
-      ja: '日本語'
+      ja: '日본語'
     };
     return labels[lang];
   };
@@ -241,23 +246,48 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
             
             {/* Audio Controls */}
             <div className="flex items-center justify-between">
-              <Button
-                onClick={handlePlay}
-                size="sm"
-                variant="outline"
-                className="flex items-center gap-2"
-                disabled={embeddedTTS.isLoading}
-              >
-                {(audioState.isPlaying || embeddedTTS.isPlaying) ? (
-                  <Pause className="w-4 h-4" />
-                ) : embeddedTTS.isLoading ? (
-                  <div className="w-4 h-4 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600"></div>
-                ) : (
-                  <Play className="w-4 h-4" />
-                )}
-                {embeddedTTS.isLoading ? '준비 중...' : 
-                 (audioState.isPlaying || embeddedTTS.isPlaying) ? '정지' : '프리미엄 듣기'}
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={handlePlay}
+                  size="sm"
+                  variant="outline"
+                  className="flex items-center gap-2"
+                  disabled={embeddedTTS.isLoading}
+                >
+                  {(audioState.isPlaying || embeddedTTS.isPlaying) ? (
+                    <Pause className="w-4 h-4" />
+                  ) : embeddedTTS.isLoading ? (
+                    <div className="w-4 h-4 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600"></div>
+                  ) : (
+                    <Play className="w-4 h-4" />
+                  )}
+                  {embeddedTTS.isLoading ? '준비 중...' : 
+                   (audioState.isPlaying || embeddedTTS.isPlaying) ? '일시정지' : '재생'}
+                </Button>
+              </div>
+              
+              {/* Speed Controls */}
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={() => adjustSpeed(-0.1)}
+                  size="sm"
+                  variant="ghost"
+                  className="p-1 h-8 w-8"
+                >
+                  <Minus className="w-3 h-3" />
+                </Button>
+                <span className="text-sm text-slate-600 min-w-[3rem] text-center">
+                  {audioState.speed.toFixed(1)}x
+                </span>
+                <Button
+                  onClick={() => adjustSpeed(0.1)}
+                  size="sm"
+                  variant="ghost"
+                  className="p-1 h-8 w-8"
+                >
+                  <Plus className="w-3 h-3" />
+                </Button>
+              </div>
             </div>
           </div>
 
