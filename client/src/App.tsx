@@ -6,7 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { GlobalAudioProvider } from '@/hooks/useGlobalAudio';
 import { GlobalAudioBar } from '@/components/GlobalAudioBar';
 import { Storage } from '@/lib/storage';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Home from "@/pages/home";
 import Player from "@/pages/player";
 import Bookmarks from "@/pages/bookmarks";

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { BibleApi } from '@/lib/bible-api';
 import { BibleVerse } from '@/types/bible';

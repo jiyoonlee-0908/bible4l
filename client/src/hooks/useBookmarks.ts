@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Bookmark, Language } from '@shared/schema';
 import { Storage } from '@/lib/storage';
 

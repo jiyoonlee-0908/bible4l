@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { AudioState, Settings } from '@shared/schema';
 import { Storage } from '@/lib/storage';
 

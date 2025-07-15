@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Storage } from '@/lib/storage';
 
 interface SubscriptionState {
