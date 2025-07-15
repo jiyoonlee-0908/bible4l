@@ -30,20 +30,20 @@ export function Navigation({
   const { globalAudioState, toggleGlobalPlayback } = useGlobalAudio();
   const { isPlaying, speak, stop, pause, resume, settings, updateSettings } = useSpeech();
 
-  const handlePlayPause = () => {
+  const handlePlay = () => {
+    if (speechSynthesis.paused) {
+      resume();
+    } else if (verseText) {
+      speak(verseText, {
+        lang: language === 'ko' ? 'ko-KR' : language === 'en' ? 'en-US' : language === 'zh' ? 'zh-CN' : 'ja-JP',
+        rate: currentSpeed,
+      });
+    }
+  };
+
+  const handlePause = () => {
     if (isPlaying) {
-      // 재생 중이면 일시정지
       pause();
-    } else {
-      // 일시정지 상태이면 재개 또는 새로 시작
-      if (speechSynthesis.paused) {
-        resume();
-      } else if (verseText) {
-        speak(verseText, {
-          lang: language === 'ko' ? 'ko-KR' : language === 'en' ? 'en-US' : language === 'zh' ? 'zh-CN' : 'ja-JP',
-          rate: currentSpeed,
-        });
-      }
     }
   };
 
@@ -441,14 +441,19 @@ export function Navigation({
             {/* 재생 버튼 */}
             <Button
               variant="ghost"
-              onClick={handlePlayPause}
+              onClick={handlePlay}
               className="p-4 bg-amber-800 hover:bg-amber-700 rounded-full transition-colors"
             >
-              {isPlaying ? (
-                <Pause className="h-6 w-6 text-white" />
-              ) : (
-                <Play className="h-6 w-6 text-white" />
-              )}
+              <Play className="h-6 w-6 text-white" />
+            </Button>
+
+            {/* 일시정지 버튼 */}
+            <Button
+              variant="ghost"
+              onClick={handlePause}
+              className="p-4 bg-slate-600 hover:bg-slate-700 rounded-full transition-colors"
+            >
+              <Pause className="h-6 w-6 text-white" />
             </Button>
 
             {/* 다음 버튼 */}
