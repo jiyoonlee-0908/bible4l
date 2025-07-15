@@ -84,8 +84,14 @@ export function VoiceDebugger() {
   }, []);
 
   const testVoice = (voiceInfo: VoiceInfo, language: Language) => {
+    // 기존 재생 중단
+    speechSynthesis.cancel();
+    
     const voice = speechSynthesis.getVoices().find(v => v.name === voiceInfo.name);
-    if (!voice) return;
+    if (!voice) {
+      setTestResults(prev => ({ ...prev, [voiceInfo.name]: '음성을 찾을 수 없음' }));
+      return;
+    }
 
     const testTexts = {
       ko: '안녕하세요. 성경 말씀을 들려드리겠습니다.',
@@ -94,25 +100,39 @@ export function VoiceDebugger() {
       ja: 'こんにちは。聖書の言葉をお読みします。'
     };
 
-    const utterance = new SpeechSynthesisUtterance(testTexts[language]);
-    utterance.voice = voice;
-    utterance.rate = 0.9;
-    utterance.volume = 0.8;
-    
-    utterance.onstart = () => {
-      setTestResults(prev => ({ ...prev, [voiceInfo.name]: '재생 중...' }));
-      setCurrentVoice(voice);
-    };
-    
-    utterance.onend = () => {
-      setTestResults(prev => ({ ...prev, [voiceInfo.name]: '재생 완료' }));
-    };
-    
-    utterance.onerror = (event) => {
-      setTestResults(prev => ({ ...prev, [voiceInfo.name]: `오류: ${event.error}` }));
-    };
+    setTestResults(prev => ({ ...prev, [voiceInfo.name]: '준비 중...' }));
 
-    speechSynthesis.speak(utterance);
+    // 작은 지연 후 재생 (브라우저 호환성)
+    setTimeout(() => {
+      const utterance = new SpeechSynthesisUtterance(testTexts[language]);
+      utterance.voice = voice;
+      utterance.rate = 0.9;
+      utterance.volume = 1.0;
+      utterance.pitch = 1.0;
+      
+      utterance.onstart = () => {
+        setTestResults(prev => ({ ...prev, [voiceInfo.name]: '🔊 재생 중...' }));
+        setCurrentVoice(voice);
+        console.log(`음성 재생 시작: ${voice.name} (${voice.lang})`);
+      };
+      
+      utterance.onend = () => {
+        setTestResults(prev => ({ ...prev, [voiceInfo.name]: '✅ 재생 완료' }));
+        console.log(`음성 재생 완료: ${voice.name}`);
+      };
+      
+      utterance.onerror = (event) => {
+        setTestResults(prev => ({ ...prev, [voiceInfo.name]: `❌ 오류: ${event.error}` }));
+        console.error(`음성 재생 오류: ${voice.name}`, event.error);
+      };
+
+      try {
+        speechSynthesis.speak(utterance);
+      } catch (error) {
+        setTestResults(prev => ({ ...prev, [voiceInfo.name]: `❌ 재생 실패: ${error}` }));
+        console.error('음성 재생 실패:', error);
+      }
+    }, 100);
   };
 
   const getLanguageFromCode = (langCode: string): Language | null => {
@@ -130,15 +150,23 @@ export function VoiceDebugger() {
           <CardTitle>🎤 현재 사용 중인 음성 분석</CardTitle>
         </CardHeader>
         <CardContent>
-          {currentVoice && (
+          {currentVoice ? (
             <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-              <div className="font-semibold text-green-800">현재 재생 중인 음성:</div>
+              <div className="font-semibold text-green-800">✅ 현재 재생 중인 음성:</div>
               <div className="text-sm text-green-700 mt-2">
                 <div><strong>이름:</strong> {currentVoice.name}</div>
                 <div><strong>언어:</strong> {currentVoice.lang}</div>
                 <div><strong>URI:</strong> {currentVoice.voiceURI}</div>
                 <div><strong>로컬:</strong> {currentVoice.localService ? '예' : '아니오'}</div>
                 <div><strong>기본값:</strong> {currentVoice.default ? '예' : '아니오'}</div>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+              <div className="text-sm text-blue-800">
+                아래에서 음성을 테스트하면 어떤 음성이 사용되는지 확인할 수 있습니다.
+                <br />
+                <strong>주의:</strong> 브라우저에서 음소거가 해제되어 있는지 확인하세요.
               </div>
             </div>
           )}

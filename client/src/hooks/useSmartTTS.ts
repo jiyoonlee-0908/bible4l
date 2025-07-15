@@ -30,37 +30,53 @@ export function useSmartTTS() {
     autoOptimizing: false
   });
 
-  // 음성 품질 점수 계산
+  // 음성 품질 점수 계산 (맥북 음성 최적화)
   const calculateVoiceQuality = (voice: SpeechSynthesisVoice, language: Language): number => {
     let score = 0;
     
-    // Google TTS 보너스
-    if (voice.name.toLowerCase().includes('google') || 
+    // 최고급 맥북 내장 음성들 (품질 90-95점)
+    const premiumMacVoices = {
+      ko: ['유나', 'yuna'],
+      en: ['karen', 'samantha', 'alex', 'victoria'],
+      zh: ['tingting', 'sinji'],
+      ja: ['kyoko', 'otoya']
+    };
+    
+    const voiceName = voice.name.toLowerCase();
+    const currentLangVoices = premiumMacVoices[language] || [];
+    
+    if (currentLangVoices.some(name => voiceName.includes(name.toLowerCase()))) {
+      score += 90; // 맥북 프리미엄 음성
+    }
+    
+    // Google TTS (품질 80점)
+    else if (voice.name.toLowerCase().includes('google') || 
         voice.voiceURI.toLowerCase().includes('google')) {
+      score += 80;
+    }
+    
+    // 기타 Apple 시스템 음성들
+    else if (voice.name.toLowerCase().includes('apple') || 
+        voice.name.toLowerCase().includes('enhanced') ||
+        voice.localService) {
       score += 50;
     }
     
-    // 언어 매칭 정확도
+    // 언어 정확성 보너스
     const langMap = {
-      ko: ['ko', 'korean'],
-      en: ['en', 'english'],
-      zh: ['zh', 'cmn', 'chinese'],
-      ja: ['ja', 'japanese']
+      ko: ['ko-kr', 'korean'],
+      en: ['en-us', 'en-gb', 'en-au', 'english'],
+      zh: ['zh-cn', 'zh-hk', 'zh-tw', 'chinese', 'cmn'],
+      ja: ['ja-jp', 'japanese']
     };
     
     const targetLangs = langMap[language];
     if (targetLangs.some(lang => voice.lang.toLowerCase().includes(lang))) {
-      score += 30;
+      score += 20;
     }
     
-    // 로컬 음성 보너스 (빠른 재생)
+    // 로컬 서비스 보너스
     if (voice.localService) {
-      score += 10;
-    }
-    
-    // 품질 키워드 검사
-    const qualityKeywords = ['neural', 'enhanced', 'premium', 'standard'];
-    if (qualityKeywords.some(keyword => voice.name.toLowerCase().includes(keyword))) {
       score += 10;
     }
     

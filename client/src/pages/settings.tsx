@@ -8,6 +8,7 @@ import { ReadingPlanCard } from "@/components/ReadingPlanCard";
 import { BadgeDisplay } from "@/components/BadgeDisplay";
 import { VoiceSetupGuide } from "@/components/VoiceSetupGuide";
 import { VoiceDebugger } from "@/components/VoiceDebugger";
+import { MacVoiceExporter } from "@/components/MacVoiceExporter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -217,6 +218,9 @@ export default function Settings() {
 
                 {/* 맥북 음성 디버거 */}
                 <VoiceDebugger />
+                
+                {/* 맥북 음성 설정 내보내기 */}
+                <MacVoiceExporter />
 
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium text-slate-700">
