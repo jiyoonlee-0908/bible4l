@@ -23,7 +23,7 @@ const READING_PLANS = {
       // Continue for more days...
       ...Array.from({ length: 80 }, (_, i) => ({
         day: i + 11,
-        books: ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy'][Math.floor(i / 16)],
+        books: [['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy'][Math.floor(i / 16)]],
         chapters: [Math.floor(i % 5) + 1, Math.floor(i % 5) + 2],
         description: `${i + 11}일차 성경 읽기`
       }))
@@ -49,7 +49,7 @@ const READING_PLANS = {
       // Continue for more days...
       ...Array.from({ length: 355 }, (_, i) => ({
         day: i + 11,
-        books: ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy', 'Joshua', 'Judges', 'Ruth', '1 Samuel', '2 Samuel', '1 Kings', '2 Kings'][Math.floor(i / 30)],
+        books: [['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy', 'Joshua', 'Judges', 'Ruth', '1 Samuel', '2 Samuel', '1 Kings', '2 Kings'][Math.floor(i / 30)]],
         chapters: [Math.floor(i % 10) + 1],
         description: `${i + 11}일차 성경 읽기`
       }))
