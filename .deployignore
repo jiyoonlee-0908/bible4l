@@ -1,0 +1,5 @@
+.config/pulse/
+/tmp/pulse-*
+node_modules/.cache
+.vite
+*.log
