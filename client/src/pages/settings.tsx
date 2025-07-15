@@ -7,6 +7,7 @@ import { DSPControls } from "@/components/DSPControls";
 import { ReadingPlanCard } from "@/components/ReadingPlanCard";
 import { BadgeDisplay } from "@/components/BadgeDisplay";
 import { VoiceFileUploader } from "@/components/VoiceFileUploader";
+import { VoiceSetupGuide } from "@/components/VoiceSetupGuide";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";

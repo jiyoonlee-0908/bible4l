@@ -169,8 +169,8 @@ export function BibleSelector({ onSelect, selectedLanguage }: BibleSelectorProps
   const [selectedChapter, setSelectedChapter] = useState<string>('');
   const [selectedVerse, setSelectedVerse] = useState<string>('');
 
-  // Always use Korean book names for consistency
-  const books = BIBLE_BOOKS.ko;
+  // Use books for the selected language
+  const books = BIBLE_BOOKS[selectedLanguage] || BIBLE_BOOKS.ko;
   const selectedBookData = books.find(book => book.id === selectedBook);
   const maxChapters = selectedBookData?.chapters || 0;
 

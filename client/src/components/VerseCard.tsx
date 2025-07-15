@@ -9,6 +9,7 @@ import { useEmbeddedTTS } from '@/hooks/useEmbeddedTTS';
 import { usePrerecordedTTS } from '@/hooks/usePrerecordedTTS';
 import { useToast } from '@/hooks/use-toast';
 import { useEffect } from 'react';
+import { getLocalizedBookName } from '@/utils/bookNames';
 
 interface VerseCardProps {
   verse: BibleVerse;
@@ -189,7 +190,7 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
       <CardContent className="p-6">
         <div className="flex justify-between items-start mb-4">
           <div className="text-sm text-slate-500">
-            {verse.bookId} {verse.chapterId}:{verse.verseId}
+            {getLocalizedBookName(verse.bookId, language)} {verse.chapterId}:{verse.verseId}
           </div>
           <div className="flex items-center gap-2">
             <Button
