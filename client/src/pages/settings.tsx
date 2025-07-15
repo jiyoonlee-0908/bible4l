@@ -202,25 +202,7 @@ export default function Settings() {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Button
-                    onClick={() => setShowVoiceGuide(true)}
-                    variant="outline"
-                    className="w-full justify-start text-left"
-                  >
-                    <span className="mr-2">🎤</span>
-                    음성 설정 가이드 (모바일 음성 개선)
-                  </Button>
-                  <p className="text-xs text-slate-500">
-                    모바일에서 음성이 이상하면 클릭해서 확인해보세요
-                  </p>
-                </div>
 
-                {/* 맥북 음성 디버거 */}
-                <VoiceDebugger />
-                
-                {/* 맥북 음성 설정 내보내기 */}
-                <MacVoiceExporter />
 
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium text-slate-700">

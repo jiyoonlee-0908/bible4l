@@ -5,8 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { GlobalAudioProvider } from '@/hooks/useGlobalAudio';
 import { GlobalAudioBar } from '@/components/GlobalAudioBar';
-import { VoiceInitializer } from '@/components/VoiceInitializer';
-import { SmartTTSIndicator } from '@/components/SmartTTSIndicator';
+
 import { Storage } from '@/lib/storage';
 import { useState, useEffect } from 'react';
 import React from 'react';
@@ -71,7 +70,7 @@ class AppErrorBoundary extends React.Component<{children: React.ReactNode}, {has
 
 function App() {
   const [fontLevel, setFontLevel] = useState(0);
-  const [showVoiceInitializer, setShowVoiceInitializer] = useState(false);
+
 
   useEffect(() => {
     // 전역 에러 핸들러
@@ -102,14 +101,7 @@ function App() {
       const level = savedSettings.fontLevel || 0;
       setFontLevel(level);
       
-      // 음성 초기화 체크 (다시 보지 않기를 누를 때까지 계속 표시)
-      const voiceInitialized = localStorage.getItem('bible-voice-initialized');
-      if (voiceInitialized !== 'completed') {
-        // 1초 후에 음성 초기화 모달 표시 (앱 로딩 완료 후)
-        setTimeout(() => {
-          setShowVoiceInitializer(true);
-        }, 1000);
-      }
+
     } catch (error) {
       console.error('Settings loading error:', error);
     }
@@ -146,12 +138,7 @@ function App() {
             <Toaster />
             <Router />
             <GlobalAudioBar />
-            <SmartTTSIndicator />
-            <VoiceInitializer 
-              isOpen={showVoiceInitializer}
-              onClose={() => setShowVoiceInitializer(false)}
-              onComplete={() => setShowVoiceInitializer(false)}
-            />
+
           </TooltipProvider>
         </GlobalAudioProvider>
       </QueryClientProvider>

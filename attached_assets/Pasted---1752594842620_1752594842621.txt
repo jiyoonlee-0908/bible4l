@@ -1,0 +1,165 @@
+🎤
+음성 설정 가이드 (모바일 음성 개선)
+모바일에서 음성이 이상하면 클릭해서 확인해보세요
+
+🎤 현재 사용 중인 음성 분석
+아래에서 음성을 테스트하면 어떤 음성이 사용되는지 확인할 수 있습니다.
+주의: 브라우저에서 음소거가 해제되어 있는지 확인하세요.
+🎯 맥북 최적화 음성 목록 (품질 순)
+품질: 90
+Karen
+로컬
+언어: en-AU | URI: Karen
+준비 중...
+테스트
+품질: 90
+Kyoko
+로컬
+언어: ja-JP | URI: Kyoko
+테스트
+품질: 90
+Samantha
+로컬
+언어: en-US | URI: Samantha
+테스트
+품질: 90
+Sinji
+로컬
+언어: zh-HK | URI: Sinji
+테스트
+품질: 90
+Tingting
+로컬
+언어: zh-CN | URI: Tingting
+테스트
+품질: 80
+Google US English
+언어: en-US | URI: Google US English
+테스트
+품질: 80
+Google UK English Female
+언어: en-GB | URI: Google UK English Female
+테스트
+품질: 80
+Google UK English Male
+언어: en-GB | URI: Google UK English Male
+테스트
+품질: 80
+Google 日本語
+언어: ja-JP | URI: Google 日本語
+테스트
+품질: 80
+Google 한국의
+언어: ko-KR | URI: Google 한국의
+테스트
+품질: 80
+Google 普通话（中国大陆）
+언어: zh-CN | URI: Google 普通话（中国大陆）
+테스트
+품질: 80
+Google 粤語（香港）
+언어: zh-HK | URI: Google 粤語（香港）
+테스트
+품질: 80
+Google 國語（臺灣）
+언어: zh-TW | URI: Google 國語（臺灣）
+테스트
+품질: 50
+유나
+로컬
+기본
+언어: ko-KR | URI: 유나
+테스트
+품질: 50
+Aaron
+로컬
+언어: en-US | URI: Aaron
+테스트
+품질: 50
+Albert
+로컬
+언어: en-US | URI: Albert
+테스트
+품질: 50
+Arthur
+로컬
+언어: en-GB | URI: Arthur
+테스트
+품질: 50
+Bad News
+로컬
+언어: en-US | URI: Bad News
+테스트
+품질: 50
+Bahh
+로컬
+언어: en-US | URI: Bahh
+테스트
+품질: 50
+Bells
+로컬
+언어: en-US | URI: Bells
+테스트
+💻 맥북 음성 설정 내보내기
+실험적 기능
+기능 설명:
+맥북에서 사용 중인 고품질 음성 설정을 추출하여 안드로이드에서도 비슷한 품질로 재생할 수 있도록 설정을 생성합니다.
+맥북 음성 설정 추출하기
+추출된 음성 설정:
+{
+  "preferredVoices": {
+    "ko": [],
+    "en": [
+      {
+        "name": "Karen",
+        "lang": "en-AU",
+        "voiceURI": "Karen",
+        "fallback": "Google US English"
+      },
+      {
+        "name": "Samantha",
+        "lang": "en-US",
+        "voiceURI": "Samantha",
+        "fallback": "Google US English"
+      }
+    ],
+    "zh": [
+      {
+        "name": "Sinji",
+        "lang": "zh-HK",
+        "voiceURI": "Sinji",
+        "fallback": "Google 普通话（中国大陆）"
+      },
+      {
+        "name": "Tingting",
+        "lang": "zh-CN",
+        "voiceURI": "Tingting",
+        "fallback": "Google 普通话（中国大陆）"
+      }
+    ],
+    "ja": [
+      {
+        "name": "Kyoko",
+        "lang": "ja-JP",
+        "voiceURI": "Kyoko",
+        "fallback": "Google 日本語"
+      }
+    ]
+  },
+  "voiceSettings": {
+    "rate": 0.9,
+    "volume": 0.8,
+    "pitch": 1
+  },
+  "fallbackStrategy": [
+    "Google TTS (권장)",
+    "Samsung TTS",
+    "시스템 기본 TTS"
+  ]
+}
+복사
+다운로드
+사용 방법:
+1. 이 설정을 안드로이드 개발자에게 전달
+2. Google TTS 앱을 설치하고 해당 언어팩 다운로드
+3. 앱에서 이 설정을 기반으로 음성 우선순위 적용

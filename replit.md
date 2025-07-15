@@ -77,6 +77,11 @@ Ad-supported model: Keep only ad-supported version, Pro version to be developed 
 ✓ Created MacVoiceExporter to extract high-quality Mac voice settings for Android use
 ✓ Optimized voice quality scoring to prioritize Mac premium voices (Yuna, Karen, Samantha, etc.)
 ✓ Fixed TTS testing functionality with proper error handling and status feedback
+✓ Removed complex TTS setup system and popup interfaces as requested by user
+✓ Implemented embedded voice system using Mac premium voices (Yuna, Karen, Samantha, Kyoko, Tingting)
+✓ Created useEmbeddedTTS hook for direct Mac voice integration without external dependencies
+✓ Updated VerseCard to use premium embedded voices with fallback to standard TTS
+✓ Cleaned up App.tsx to remove voice initialization popups and complex setup flows
 
 ## Play Store Deployment Preparation (January 15, 2025)
 
