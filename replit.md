@@ -64,6 +64,11 @@ Ad-supported model: Keep only ad-supported version, Pro version to be developed 
 ✓ Modified TTS popup to show repeatedly until "다시 보지 않기" is clicked (not just first-time)
 ✓ Improved Android TTS language addition with direct settings navigation and detailed instructions
 ✓ Added comprehensive 3-method guidance for Chinese/Japanese voice installation
+✓ Created TTSEngineDetector component for automatic TTS engine identification (Google/Samsung/etc.)
+✓ Implemented VoiceLanguageChecker for detailed language-specific voice availability testing
+✓ Added voice quality diagnosis with real-time testing for all 4 languages
+✓ Enhanced TTS setup with manufacturer-specific guidance (Samsung TTS vs Google TTS)
+✓ Integrated direct language install attempts for missing voice packages
 
 ## Play Store Deployment Preparation (January 15, 2025)
 

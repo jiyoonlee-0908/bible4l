@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Volume2, Download, CheckCircle, XCircle, Smartphone, Info } from 'lucide-react';
+import { VoiceLanguageChecker } from './VoiceLanguageChecker';
 
 interface VoiceSetupGuideProps {
   isOpen: boolean;
@@ -14,6 +15,7 @@ export function VoiceSetupGuide({ isOpen, onClose }: VoiceSetupGuideProps) {
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [isChecking, setIsChecking] = useState(false);
   const [testResults, setTestResults] = useState<{[key: string]: 'success' | 'error' | 'testing'}>({});
+  const [voiceStatus, setVoiceStatus] = useState<any[]>([]);
 
   useEffect(() => {
     if (isOpen) {
@@ -112,14 +114,12 @@ export function VoiceSetupGuide({ isOpen, onClose }: VoiceSetupGuideProps) {
               자연스러운 발음과 억양으로 성경을 들을 수 있습니다.
               <br />
               <div className="space-y-3 mt-3">
-                {/* TTS 엔진 상태 체크 */}
-                <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
-                  <div className="text-sm font-semibold text-blue-800 mb-1">
-                    현재 TTS 엔진 확인
+                {/* 언어별 음성 상태 체크 */}
+                <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                  <div className="text-sm font-semibold text-gray-800 mb-2">
+                    🎯 언어별 음성 품질 진단
                   </div>
-                  <div className="text-xs text-blue-700">
-                    삼성/LG 기본 TTS는 중국어/일본어 지원이 제한됩니다
-                  </div>
+                  <VoiceLanguageChecker onVoiceCheck={setVoiceStatus} />
                 </div>
 
                 <div className="grid grid-cols-1 gap-2">

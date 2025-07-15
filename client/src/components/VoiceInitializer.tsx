@@ -5,6 +5,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { CheckCircle, Download, Volume2, Smartphone, ExternalLink, AlertTriangle } from 'lucide-react';
 import { TTSEngineDetector } from './TTSEngineDetector';
+import { VoiceLanguageChecker } from './VoiceLanguageChecker';
 
 interface VoiceInitializerProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ export function VoiceInitializer({ isOpen, onClose, onComplete }: VoiceInitializ
   const [availableLanguages, setAvailableLanguages] = useState<string[]>([]);
   const [missingLanguages, setMissingLanguages] = useState<string[]>([]);
   const [ttsEngineInfo, setTtsEngineInfo] = useState<any>(null);
+  const [voiceStatus, setVoiceStatus] = useState<any[]>([]);
 
   const languages = [
     { code: 'ko-KR', name: '한국어', testText: '안녕하세요. 성경 말씀을 들려드립니다.' },
@@ -208,6 +210,14 @@ export function VoiceInitializer({ isOpen, onClose, onComplete }: VoiceInitializ
                   {/* TTS 엔진 감지 */}
                   <div className="mt-4">
                     <TTSEngineDetector onEngineCheck={setTtsEngineInfo} />
+                  </div>
+                  
+                  {/* 언어별 음성 상태 체크 */}
+                  <div className="mt-4">
+                    <div className="text-sm font-semibold text-gray-800 mb-2">
+                      🎯 언어별 음성 상태 점검
+                    </div>
+                    <VoiceLanguageChecker onVoiceCheck={setVoiceStatus} />
                   </div>
                   <br />
                   <div className="space-y-3 mt-3">
