@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { CheckCircle, Download, Volume2, Smartphone, ExternalLink, AlertTriangle } from 'lucide-react';
-import { TTSInstallGuide } from '@/components/TTSInstallGuide';
 
 interface VoiceInitializerProps {
   isOpen: boolean;
@@ -19,7 +18,6 @@ export function VoiceInitializer({ isOpen, onClose, onComplete }: VoiceInitializ
   const [isInitializing, setIsInitializing] = useState(false);
   const [availableLanguages, setAvailableLanguages] = useState<string[]>([]);
   const [missingLanguages, setMissingLanguages] = useState<string[]>([]);
-  const [showInstallGuide, setShowInstallGuide] = useState(false);
 
   const languages = [
     { code: 'ko-KR', name: '한국어', testText: '안녕하세요. 성경 말씀을 들려드립니다.' },
@@ -178,22 +176,7 @@ export function VoiceInitializer({ isOpen, onClose, onComplete }: VoiceInitializ
     onComplete();
   };
 
-  const openGoogleTTSInstall = () => {
-    const userAgent = navigator.userAgent.toLowerCase();
-    const isAndroid = userAgent.includes('android');
-    const isIOS = userAgent.includes('iphone') || userAgent.includes('ipad');
-    
-    if (isAndroid) {
-      // Android Google TTS 다운로드
-      window.open('https://play.google.com/store/apps/details?id=com.google.android.tts', '_blank');
-    } else if (isIOS) {
-      // iOS는 시스템 설정으로 안내
-      alert('iOS에서는 설정 > 손쉬운 사용 > 음성 콘텐츠 > 음성에서 언어를 추가할 수 있습니다.');
-    } else {
-      // 데스크톱 브라우저 - Chrome Web Store
-      window.open('https://chrome.google.com/webstore/detail/google-text-to-speech/hdmbmaphjmjfnikkjhlfbnajabeicapj', '_blank');
-    }
-  };
+
 
   if (!isOpen) return null;
 
@@ -213,27 +196,49 @@ export function VoiceInitializer({ isOpen, onClose, onComplete }: VoiceInitializ
 
           {!isInitializing && (
             <>
-              {missingLanguages.length > 0 && (
-                <Alert className="mb-6 border-orange-200 bg-orange-50">
-                  <AlertTriangle className="h-4 w-4" />
-                  <AlertDescription>
-                    <strong>누락된 언어 음성 감지:</strong>
-                    <br />
-                    {missingLanguages.map(code => languages.find(l => l.code === code)?.name).join(', ')} 
-                    음성이 없거나 품질이 낮습니다.
-                    <br />
+              <Alert className="mb-6 border-blue-200 bg-blue-50">
+                <Volume2 className="h-4 w-4" />
+                <AlertDescription>
+                  <strong>더 나은 오디오를 위해 구글 TTS 사용을 권장합니다</strong>
+                  <br />
+                  자연스러운 발음과 억양으로 성경을 들을 수 있습니다.
+                  <br />
+                  <div className="grid grid-cols-2 gap-2 mt-3">
                     <Button 
-                      onClick={() => setShowInstallGuide(true)}
+                      onClick={() => window.open('https://play.google.com/store/apps/details?id=com.google.android.tts&hl=ko', '_blank')}
                       variant="outline" 
-                      size="sm" 
-                      className="mt-2"
+                      size="sm"
+                      className="text-xs"
                     >
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      구글 TTS 설치하기
+                      🇰🇷 한국어
                     </Button>
-                  </AlertDescription>
-                </Alert>
-              )}
+                    <Button 
+                      onClick={() => window.open('https://play.google.com/store/apps/details?id=com.google.android.tts&hl=en', '_blank')}
+                      variant="outline" 
+                      size="sm"
+                      className="text-xs"
+                    >
+                      🇺🇸 English
+                    </Button>
+                    <Button 
+                      onClick={() => window.open('https://play.google.com/store/apps/details?id=com.google.android.tts&hl=zh', '_blank')}
+                      variant="outline" 
+                      size="sm"
+                      className="text-xs"
+                    >
+                      🇨🇳 中文
+                    </Button>
+                    <Button 
+                      onClick={() => window.open('https://play.google.com/store/apps/details?id=com.google.android.tts&hl=ja', '_blank')}
+                      variant="outline" 
+                      size="sm"
+                      className="text-xs"
+                    >
+                      🇯🇵 日本語
+                    </Button>
+                  </div>
+                </AlertDescription>
+              </Alert>
 
               <Alert className="mb-6 border-blue-200 bg-blue-50">
                 <Smartphone className="h-4 w-4" />
@@ -273,17 +278,16 @@ export function VoiceInitializer({ isOpen, onClose, onComplete }: VoiceInitializ
                   <Button
                     onClick={initializeVoices}
                     className="flex-1 bg-amber-600 hover:bg-amber-700"
-                    disabled={availableLanguages.length === 0}
                   >
                     <Download className="w-4 h-4 mr-2" />
-                    {missingLanguages.length > 0 ? '가능한 언어만 초기화' : '음성 초기화 시작'}
+                    음성 최적화 시작
                   </Button>
                   <Button
                     onClick={skipInitialization}
                     variant="outline"
                     className="flex-1"
                   >
-                    건너뛰기
+                    나중에 하기
                   </Button>
                 </div>
               </div>
@@ -317,16 +321,7 @@ export function VoiceInitializer({ isOpen, onClose, onComplete }: VoiceInitializ
           )}
         </div>
       </div>
-      
-      <TTSInstallGuide
-        isOpen={showInstallGuide}
-        onClose={() => setShowInstallGuide(false)}
-        missingLanguages={missingLanguages}
-        onRetry={() => {
-          setShowInstallGuide(false);
-          loadVoices();
-        }}
-      />
+
     </div>
   );
 }

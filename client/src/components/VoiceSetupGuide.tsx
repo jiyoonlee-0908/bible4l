@@ -104,20 +104,52 @@ export function VoiceSetupGuide({ isOpen, onClose }: VoiceSetupGuideProps) {
             <Button onClick={onClose} variant="ghost" size="sm">✕</Button>
           </div>
 
-          {!hasGoogleVoices && (
-            <Alert className="mb-6 border-amber-200 bg-amber-50">
-              <Info className="h-4 w-4" />
-              <AlertDescription>
-                <strong>모바일에서 최적의 음성 품질을 위해:</strong>
-                <br />
-                • Android: Chrome 브라우저 사용 권장
-                <br />
-                • iOS: Safari 브라우저 사용 권장
-                <br />
-                • 인터넷 연결이 있을 때 Google 음성이 자동으로 사용됩니다
-              </AlertDescription>
-            </Alert>
-          )}
+          <Alert className="mb-6 border-blue-200 bg-blue-50">
+            <Info className="h-4 w-4" />
+            <AlertDescription>
+              <strong>더 나은 오디오를 위해 구글 TTS 사용을 권장합니다</strong>
+              <br />
+              자연스러운 발음과 억양으로 성경을 들을 수 있습니다.
+              <br />
+              <div className="grid grid-cols-2 gap-2 mt-3">
+                <Button 
+                  onClick={() => window.open('https://play.google.com/store/apps/details?id=com.google.android.tts&hl=ko', '_blank')}
+                  variant="outline" 
+                  size="sm"
+                  className="text-xs"
+                >
+                  🇰🇷 한국어 다운로드
+                </Button>
+                <Button 
+                  onClick={() => window.open('https://play.google.com/store/apps/details?id=com.google.android.tts&hl=en', '_blank')}
+                  variant="outline" 
+                  size="sm"
+                  className="text-xs"
+                >
+                  🇺🇸 English 다운로드
+                </Button>
+                <Button 
+                  onClick={() => window.open('https://play.google.com/store/apps/details?id=com.google.android.tts&hl=zh', '_blank')}
+                  variant="outline" 
+                  size="sm"
+                  className="text-xs"
+                >
+                  🇨🇳 中文 다운로드
+                </Button>
+                <Button 
+                  onClick={() => window.open('https://play.google.com/store/apps/details?id=com.google.android.tts&hl=ja', '_blank')}
+                  variant="outline" 
+                  size="sm"
+                  className="text-xs"
+                >
+                  🇯🇵 日本語 다운로드
+                </Button>
+              </div>
+              <div className="text-xs text-gray-500 mt-2">
+                다운로드 후 브라우저를 새로고침하면 새로운 음성을 사용할 수 있습니다.
+              </div>
+            </AlertDescription>
+          </Alert>
 
           <div className="space-y-6">
             {Object.entries(voicesByLanguage).map(([lang, langVoices]) => {
