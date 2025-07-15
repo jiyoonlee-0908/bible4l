@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Play, Pause, SkipForward, SkipBack, Volume2, Loader2, Repeat, Repeat1, Plus, Minus } from 'lucide-react';
 import { useBible } from '@/hooks/useBible';
 import { useSpeech } from '@/hooks/useSpeech';
-import { useSubscription } from '@/hooks/useSubscription';
+
 import { AdFitBanner } from '@/components/AdFitBanner';
 import { FontSizeModal } from '@/components/FontSizeModal';
 import { Storage } from '@/lib/storage';
@@ -37,7 +37,7 @@ export default function Player() {
   } = useBible();
   
   const { audioState, speak, toggle, stop, setSpeed } = useSpeech();
-  const { isSubscribed } = useSubscription();
+
   const { toast } = useToast();
 
   useEffect(() => {
@@ -158,7 +158,7 @@ export default function Player() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 pb-20">
       <Header
         onFontSizeClick={() => setShowFontSizeModal(true)}
         onSettingsClick={() => setLocation('/settings')}
@@ -338,7 +338,6 @@ export default function Player() {
           adUnit="DAN-your-player-bottom-unit"
           adWidth={320}
           adHeight={50}
-          isSubscribed={isSubscribed}
           className="player-bottom-ad"
         />
       </div>

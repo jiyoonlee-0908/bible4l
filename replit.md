@@ -9,6 +9,7 @@ BibleAudio 4L is a Progressive Web Application (PWA) that provides Bible audio p
 ```
 Preferred communication style: Simple, everyday language.
 Commercial use: Prioritize cost-free solutions using public domain content.
+Ad-supported model: Keep only ad-supported version, Pro version to be developed separately later.
 ```
 
 ## Recent Changes (January 2025)
@@ -33,9 +34,10 @@ Commercial use: Prioritize cost-free solutions using public domain content.
 ✓ Applied consistent dark wood tone color palette throughout entire UI/UX
 ✓ Updated CSS custom properties for wood-inspired design theme matching the icon
 ✓ Integrated Kakao AdFit advertising system with strategic placement (home, player, settings)
-✓ Implemented subscription management system (월 990원) with ad removal functionality
-✓ Added subscription tab in settings with premium vs. free status management
-✓ Created AdFitBanner component with subscription-aware conditional rendering
+✓ Completely removed subscription system - now ad-supported only for future Pro version separation
+✓ Fixed bottom navigation to properly anchor to device bottom edge
+✓ Removed ad placement between Bible selection and language selection for better UX
+✓ Optimized TTS voices with hardcoded language-specific settings for natural pronunciation
 
 ## System Architecture
 

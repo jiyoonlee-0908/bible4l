@@ -16,21 +16,21 @@ import { Settings as SettingsType } from '@shared/schema';
 import { useSpeech } from '@/hooks/useSpeech';
 import { useReadingPlan } from '@/hooks/useReadingPlan';
 import { useBadges } from '@/hooks/useBadges';
-import { useSubscription } from '@/hooks/useSubscription';
+
 import { AdFitBanner } from '@/components/AdFitBanner';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Settings() {
   const [location, setLocation] = useLocation();
   const [settings, setSettings] = useState<SettingsType>(Storage.getSettings());
-  const [activeTab, setActiveTab] = useState<'audio' | 'plans' | 'badges' | 'subscription'>('audio');
+  const [activeTab, setActiveTab] = useState<'audio' | 'plans' | 'badges'>('audio');
   const [showFontSizeModal, setShowFontSizeModal] = useState(false);
   const [fontLevel, setFontLevel] = useState(0);
   const { voices } = useSpeech();
   const { toast } = useToast();
   const readingPlan = useReadingPlan();
   const badges = useBadges();
-  const { subscription, activateSubscription, cancelSubscription, getRemainingDays, isSubscribed } = useSubscription();
+
 
   useEffect(() => {
     const savedSettings = Storage.getSettings();
@@ -83,7 +83,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 pb-20">
       <Header
         onFontSizeClick={() => setShowFontSizeModal(true)}
         onSettingsClick={() => setLocation('/settings')}
@@ -127,17 +127,7 @@ export default function Settings() {
               >
                 <span className="text-sm font-medium">배지</span>
               </Button>
-              <Button
-                variant="ghost"
-                onClick={() => setActiveTab('subscription')}
-                className={`flex-1 py-2 px-2 rounded-lg transition-all duration-200 ${
-                  activeTab === 'subscription'
-                    ? 'bg-amber-800 shadow-sm text-white'
-                    : 'text-slate-600 hover:text-slate-800'
-                }`}
-              >
-                <span className="text-sm font-medium">구독</span>
-              </Button>
+
             </div>
           </CardContent>
         </Card>
@@ -282,102 +272,13 @@ export default function Settings() {
           />
         )}
 
-        {/* Subscription Tab */}
-        {activeTab === 'subscription' && (
-          <>
-            <Card className="bg-white rounded-2xl shadow-sm border border-slate-200">
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold text-slate-800">
-                  {isSubscribed ? '프리미엄 구독' : '광고 제거 구독'}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {isSubscribed ? (
-                  <>
-                    <div className="text-center p-4 bg-green-50 rounded-lg">
-                      <div className="text-green-800 font-semibold mb-2">✓ 프리미엄 구독 중</div>
-                      <div className="text-sm text-green-600">
-                        남은 기간: {getRemainingDays()}일
-                      </div>
-                      <div className="text-xs text-green-500 mt-1">
-                        만료일: {subscription.expiryDate?.toLocaleDateString('ko-KR')}
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <h4 className="font-medium text-slate-700">프리미엄 혜택</h4>
-                      <div className="space-y-1 text-sm text-slate-600">
-                        <div>• 모든 광고 제거</div>
-                        <div>• 끊김 없는 오디오 경험</div>
-                        <div>• 전체 기능 이용</div>
-                      </div>
-                    </div>
-
-                    <Button
-                      onClick={cancelSubscription}
-                      variant="outline"
-                      className="w-full"
-                    >
-                      구독 해지 (테스트용)
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <div className="text-center p-4 bg-amber-50 rounded-lg">
-                      <div className="text-amber-800 font-semibold mb-2">무료 버전 사용 중</div>
-                      <div className="text-sm text-amber-600">
-                        광고가 표시됩니다
-                      </div>
-                    </div>
-
-                    <div className="space-y-3">
-                      <h4 className="font-medium text-slate-700">프리미엄 구독 혜택</h4>
-                      <div className="space-y-2 text-sm text-slate-600">
-                        <div className="flex items-center">
-                          <span className="text-green-500 mr-2">✓</span>
-                          모든 광고 제거
-                        </div>
-                        <div className="flex items-center">
-                          <span className="text-green-500 mr-2">✓</span>
-                          끊김 없는 오디오 체험
-                        </div>
-                        <div className="flex items-center">
-                          <span className="text-green-500 mr-2">✓</span>
-                          전체 기능 무제한 이용
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="bg-slate-50 p-4 rounded-lg text-center">
-                      <div className="text-2xl font-bold text-slate-800">월 990원</div>
-                      <div className="text-sm text-slate-600">첫 달 무료 체험</div>
-                    </div>
-
-                    <Button
-                      onClick={() => activateSubscription(1)}
-                      className="w-full bg-amber-800 hover:bg-amber-900"
-                    >
-                      프리미엄 구독하기 (테스트용)
-                    </Button>
-
-                    <div className="text-xs text-slate-500 text-center">
-                      실제 앱스토어/플레이스토어에서는 인앱 결제로 처리됩니다
-                    </div>
-                  </>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* 설정 페이지 광고 */}
-            <AdFitBanner
-              adUnit="DAN-your-settings-unit"
-              adWidth={300}
-              adHeight={250}
-              isSubscribed={isSubscribed}
-              className="settings-ad"
-            />
-          </>
-        )}
+        {/* Settings 페이지 광고 */}
+        <AdFitBanner
+          adUnit="DAN-your-settings-unit"
+          adWidth={300}
+          adHeight={250}
+          className="settings-ad"
+        />
       </div>
       
       <BottomNavigation
