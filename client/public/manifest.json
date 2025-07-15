@@ -3,33 +3,14 @@
   "name": "다개국어 성경듣기",
   "short_name": "성경듣기",
   "description": "4개 언어 지원 성경 음성 앱 - 한국어, 영어, 중국어, 일본어로 성경을 듣고 읽으세요",
-  "start_url": "https://bible4.replit.app/",
-  "scope": "https://bible4.replit.app/",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#2D1810",
   "theme_color": "#8B4513",
   "orientation": "portrait-primary",
-  "categories": ["books", "education", "lifestyle", "productivity"],
+  "categories": ["books", "education", "lifestyle"],
   "lang": "ko",
-  "dir": "ltr",
-  "prefer_related_applications": false,
-  "related_applications": [],
-  "shortcuts": [
-    {
-      "name": "홈",
-      "short_name": "홈",
-      "description": "성경 구절 선택",
-      "url": "https://bible4.replit.app/",
-      "icons": [{ "src": "/icon-96.png", "sizes": "96x96" }]
-    },
-    {
-      "name": "북마크",
-      "short_name": "북마크",
-      "description": "저장된 구절",
-      "url": "https://bible4.replit.app/bookmarks",
-      "icons": [{ "src": "/icon-96.png", "sizes": "96x96" }]
-    }
-  ],
   "icons": [
     {
       "src": "/icon-512.png",
