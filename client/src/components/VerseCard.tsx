@@ -64,9 +64,45 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
   }, [verse.bookId, verse.chapterId, verse.verseId, language]);
 
   const handlePlay = () => {
+    console.log('🎵 VerseCard Play button clicked!');
+    console.log('Verse:', verse);
+    console.log('Audio state:', audioState);
+    
     if (audioState.isPlaying) {
+      console.log('🛑 Stopping current playback');
       toggle();
     } else {
+      console.log('▶️ Starting verse playback');
+      
+      // 간단한 TTS 테스트
+      const testText = verse.text;
+      console.log('🎤 Testing TTS with text:', testText);
+      
+      if ('speechSynthesis' in window) {
+        console.log('✅ Speech synthesis available');
+        const utterance = new SpeechSynthesisUtterance(testText);
+        utterance.rate = 1.0;
+        utterance.volume = 1.0;
+        utterance.lang = language === 'ko' ? 'ko-KR' : 'en-US';
+        
+        utterance.onstart = () => {
+          console.log('✅ Direct TTS started');
+        };
+        
+        utterance.onend = () => {
+          console.log('✅ Direct TTS ended');
+        };
+        
+        utterance.onerror = (e) => {
+          console.error('❌ Direct TTS error:', e.error);
+        };
+        
+        speechSynthesis.speak(utterance);
+      } else {
+        console.error('❌ Speech synthesis not available');
+      }
+      
+      // 기존 코드도 실행
       if (mode === 'double' && koreanVerse) {
         // For cross mode, speak first language then Korean with appropriate voices
         speakCrossMode(verse, koreanVerse, language);

@@ -131,14 +131,54 @@ export default function Player() {
   };
 
   const handlePlay = () => {
+    console.log('🎵 Play button clicked!');
+    console.log('Current verse data:', currentVerseData);
+    console.log('Audio state:', audioState);
+    
     if (audioState.isPlaying) {
+      console.log('🛑 Stopping current playback');
       toggle();
       setIsPlayingContinuous(false);
     } else if (currentVerseData) {
+      console.log('▶️ Starting playback');
       setIsLoading(true);
       setIsPlayingContinuous(true);
+      
+      // 간단한 TTS 테스트
+      const testText = currentVerseData.text;
+      console.log('🎤 Testing TTS with text:', testText);
+      
+      if ('speechSynthesis' in window) {
+        console.log('✅ Speech synthesis available');
+        const utterance = new SpeechSynthesisUtterance(testText);
+        utterance.rate = 1.0;
+        utterance.volume = 1.0;
+        utterance.lang = 'ko-KR';
+        
+        utterance.onstart = () => {
+          console.log('✅ Direct TTS started');
+        };
+        
+        utterance.onend = () => {
+          console.log('✅ Direct TTS ended');
+          setIsLoading(false);
+        };
+        
+        utterance.onerror = (e) => {
+          console.error('❌ Direct TTS error:', e.error);
+          setIsLoading(false);
+        };
+        
+        speechSynthesis.speak(utterance);
+      } else {
+        console.error('❌ Speech synthesis not available');
+        setIsLoading(false);
+      }
+      
+      // 기존 playCurrentVerse도 호출
       playCurrentVerse();
-      setIsLoading(false);
+    } else {
+      console.log('❌ No verse data available');
     }
   };
 
