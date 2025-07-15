@@ -16,7 +16,7 @@ export function VoicePackageGuide({ onClose, onNeverShow }: VoicePackageGuidePro
         <CardTitle className="flex items-center justify-between text-amber-800">
           <div className="flex items-center gap-2">
             <Volume2 className="h-5 w-5" />
-            고품질 음성 다운로드 안내
+            <span className="text-lg font-semibold">고품질 음성 다운로드 안내</span>
           </div>
           {onClose && (
             <Button variant="ghost" size="icon" onClick={onClose}>
@@ -30,10 +30,10 @@ export function VoicePackageGuide({ onClose, onNeverShow }: VoicePackageGuidePro
         <div className="space-y-4">
           {/* 안내 메시지 */}
           <div className="text-center p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
-            <div className="text-base font-semibold text-blue-800 mb-1">
+            <div className="text-lg font-semibold text-blue-800 mb-1">
               🎙️ 더 자연스러운 음성으로 성경 듣기
             </div>
-            <div className="text-xs text-blue-700">
+            <div className="text-sm text-blue-700">
               기기에 언어팩을 다운로드하면 고품질 음성을 사용할 수 있습니다
             </div>
           </div>
@@ -42,9 +42,8 @@ export function VoicePackageGuide({ onClose, onNeverShow }: VoicePackageGuidePro
           <div className="p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border-2 border-green-300">
             <div className="text-center mb-2">
               <div className="text-lg font-bold text-green-800 mb-1">
-                설치되지않은 언어 다운로드
+                [필수] 4개 언어 다운로드
               </div>
-              <div className="text-sm text-green-700">한국어/영어(미국)/일본어/중국어(중국 본토)</div>
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div className="bg-white p-1.5 rounded-lg text-center border border-green-200">
@@ -65,7 +64,7 @@ export function VoicePackageGuide({ onClose, onNeverShow }: VoicePackageGuidePro
           {/* 다운로드 방법 - 더 간결하게 */}
           <div className="bg-slate-50 rounded-lg p-3">
             <div className="text-center mb-3">
-              <h3 className="text-base font-semibold text-slate-800">
+              <h3 className="text-lg font-semibold text-slate-800">
                 다운로드 방법
               </h3>
             </div>
@@ -102,7 +101,7 @@ export function VoicePackageGuide({ onClose, onNeverShow }: VoicePackageGuidePro
                   4
                 </div>
                 <div className="text-sm">
-                  <span className="font-medium text-slate-800">4개 언어 모두</span> 다운로드
+                  <span className="font-medium text-slate-800">한국어,영어,일본어,중국어(중국 본토)</span> 다운로드
                 </div>
               </div>
             </div>
@@ -132,8 +131,28 @@ export function VoicePackageGuide({ onClose, onNeverShow }: VoicePackageGuidePro
 }
 
 // 설정 페이지에서 사용할 간단한 버튼 컴포넌트
-export function VoicePackageButton() {
+export function VoicePackageButton({ isHeaderButton = false }: { isHeaderButton?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
+
+  if (isHeaderButton) {
+    return (
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="w-10 h-10 bg-amber-200/50 hover:bg-amber-300/50 rounded-full"
+            title="음성 다운로드 안내"
+          >
+            <Volume2 className="h-5 w-5 text-amber-800" />
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="max-w-md max-h-[90vh] p-0">
+          <VoicePackageGuide onClose={() => setIsOpen(false)} />
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
