@@ -363,18 +363,39 @@ export function Navigation({
   };
 
   return (
-    <Card className="bg-white rounded-2xl shadow-sm border border-slate-200">
-      <CardContent className="p-6">
-        {/* 성경 정보 표시 */}
-        <div className="text-center mb-6">
-          <div className="text-xl font-bold text-amber-800 mb-2">
-            {getBookName(currentBook || '', language)} {currentChapter}:{currentVerse}
+    <Card className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <CardContent className="p-0">
+        {/* 성경 정보 헤더 - 갈색 배경 */}
+        <div className="bg-amber-800 text-white p-4 flex items-center justify-between">
+          <div>
+            <div className="text-xl font-bold">
+              {getBookName(currentBook || '', language)} {currentChapter}:{currentVerse}
+            </div>
+            <div className="text-sm text-amber-100 mt-1">성경</div>
+          </div>
+          <div className="flex space-x-2">
+            <Button
+              variant="ghost"
+              className="p-2 bg-amber-700 hover:bg-amber-600 rounded-full transition-colors"
+            >
+              <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+              </svg>
+            </Button>
+            <Button
+              variant="ghost"
+              className="p-2 bg-amber-700 hover:bg-amber-600 rounded-full transition-colors"
+            >
+              <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+              </svg>
+            </Button>
           </div>
         </div>
 
         {/* 성경 구절 표시 */}
         {primaryVerse && (
-          <div className="mb-6 space-y-4">
+          <div className="p-6 space-y-4">
             <div className="text-sm text-slate-600 mb-2">
               {primaryVerse.language === 'ko' ? '한국어' : 
                primaryVerse.language === 'en' ? 'English' :
@@ -385,7 +406,7 @@ export function Navigation({
             </div>
             
             {secondaryVerse && (
-              <div className="mt-4 p-4 bg-amber-50 rounded-lg border border-amber-200">
+              <div className="mt-4 pl-4 border-l-4 border-amber-400">
                 <div className="text-sm text-slate-600 mb-2">
                   {secondaryVerse.language === 'ko' ? '한국어' : 
                    secondaryVerse.language === 'en' ? 'English' :
@@ -400,58 +421,91 @@ export function Navigation({
         )}
 
         {/* 오디오 컨트롤 - 한 줄로 배치 */}
-        <div className="flex items-center justify-center space-x-4">
-          {/* 이전 버튼 */}
-          <Button
-            variant="ghost"
-            onClick={onPrevious}
-            className="p-3 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors"
-          >
-            <SkipBack className="h-5 w-5 text-slate-600" />
-          </Button>
-
-          {/* 재생/일시정지 버튼 */}
-          <Button
-            variant="ghost"
-            onClick={handlePlayPause}
-            className="p-4 bg-amber-100 hover:bg-amber-200 rounded-full transition-colors"
-          >
-            {isPlaying ? (
-              <Pause className="h-6 w-6 text-amber-800" />
-            ) : (
-              <Play className="h-6 w-6 text-amber-800" />
-            )}
-          </Button>
-
-          {/* 다음 버튼 */}
-          <Button
-            variant="ghost"
-            onClick={onNext}
-            className="p-3 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors"
-          >
-            <SkipForward className="h-5 w-5 text-slate-600" />
-          </Button>
-
-          {/* 속도 조절 */}
-          <div className="flex items-center space-x-2 ml-4">
-            <span className="text-sm text-slate-600 font-medium">속도</span>
+        <div className="p-6 pt-0">
+          <div className="flex items-center justify-between">
+            {/* 이전 버튼 */}
             <Button
               variant="ghost"
-              onClick={() => handleSpeedChange(-0.25)}
-              className="p-2 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors"
+              onClick={onPrevious}
+              className="p-3 bg-slate-200 hover:bg-slate-300 rounded-full transition-colors"
             >
-              <Minus className="h-4 w-4 text-slate-600" />
+              <SkipBack className="h-5 w-5 text-slate-600" />
             </Button>
-            <span className="text-sm font-medium text-amber-800 min-w-[50px] text-center">
-              {currentSpeed.toFixed(2)}x
-            </span>
+
+            {/* 재생 버튼 */}
             <Button
               variant="ghost"
-              onClick={() => handleSpeedChange(0.25)}
-              className="p-2 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors"
+              onClick={handlePlayPause}
+              className="p-4 bg-amber-800 hover:bg-amber-700 rounded-full transition-colors"
             >
-              <Plus className="h-4 w-4 text-slate-600" />
+              {isPlaying ? (
+                <Pause className="h-6 w-6 text-white" />
+              ) : (
+                <Play className="h-6 w-6 text-white" />
+              )}
             </Button>
+
+            {/* 다음 버튼 */}
+            <Button
+              variant="ghost"
+              onClick={onNext}
+              className="p-3 bg-slate-200 hover:bg-slate-300 rounded-full transition-colors"
+            >
+              <SkipForward className="h-5 w-5 text-slate-600" />
+            </Button>
+
+            {/* 속도 조절 */}
+            <div className="flex items-center space-x-3">
+              <Button
+                variant="ghost"
+                onClick={() => handleSpeedChange(-0.25)}
+                className="p-2 bg-slate-200 hover:bg-slate-300 rounded-full transition-colors"
+                disabled={currentSpeed <= 0.5}
+              >
+                <Minus className="h-4 w-4 text-slate-600" />
+              </Button>
+              <div className="text-center min-w-[50px]">
+                <div className="text-sm font-medium text-slate-800">
+                  {currentSpeed.toFixed(2)}x
+                </div>
+                <div className="text-xs text-slate-500">속도</div>
+              </div>
+              <Button
+                variant="ghost"
+                onClick={() => handleSpeedChange(0.25)}
+                className="p-2 bg-slate-200 hover:bg-slate-300 rounded-full transition-colors"
+                disabled={currentSpeed >= 2.0}
+              >
+                <Plus className="h-4 w-4 text-slate-600" />
+              </Button>
+            </div>
+
+            {/* 음조 조절 (기본값 0) */}
+            <div className="flex items-center space-x-3">
+              <Button
+                variant="ghost"
+                className="p-2 bg-amber-200 hover:bg-amber-300 rounded-full transition-colors"
+                disabled
+              >
+                <Minus className="h-4 w-4 text-amber-600" />
+              </Button>
+              <div className="text-center min-w-[50px]">
+                <div className="text-sm font-medium text-orange-600">0</div>
+                <div className="text-xs text-orange-500">음조</div>
+              </div>
+              <Button
+                variant="ghost"
+                className="p-2 bg-amber-200 hover:bg-amber-300 rounded-full transition-colors"
+                disabled
+              >
+                <Plus className="h-4 w-4 text-amber-600" />
+              </Button>
+            </div>
+
+            {/* 일시정지 텍스트 */}
+            <div className="text-sm text-slate-600 font-medium">
+              {isPlaying ? '일시정지' : '재생'}
+            </div>
           </div>
         </div>
       </CardContent>
