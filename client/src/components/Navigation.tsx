@@ -377,7 +377,6 @@ export function Navigation({
             <div className="text-xl font-bold">
               {getBookName(currentBook || '', language)} {currentChapter}:{currentVerse}
             </div>
-            <div className="text-sm text-amber-100 mt-1">성경</div>
           </div>
           <div className="flex space-x-2">
             <Button
