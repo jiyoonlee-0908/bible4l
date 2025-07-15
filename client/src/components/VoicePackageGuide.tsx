@@ -13,16 +13,9 @@ export function VoicePackageGuide({ onClose, onNeverShow }: VoicePackageGuidePro
   return (
     <div className="bg-white rounded-2xl shadow-lg border border-amber-200 max-h-[85vh] flex flex-col">
       <CardHeader className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-t-2xl flex-shrink-0">
-        <CardTitle className="flex items-center justify-between text-amber-800">
-          <div className="flex items-center gap-2">
-            <Volume2 className="h-5 w-5" />
-            <span className="text-lg font-semibold">고품질 음성 다운로드 안내</span>
-          </div>
-          {onClose && (
-            <Button variant="ghost" size="icon" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
-          )}
+        <CardTitle className="flex items-center gap-2 text-amber-800">
+          <Volume2 className="h-5 w-5" />
+          <span className="text-lg font-semibold">고품질 음성 다운로드 안내</span>
         </CardTitle>
       </CardHeader>
       
@@ -148,7 +141,10 @@ export function VoicePackageButton({ isHeaderButton = false }: { isHeaderButton?
           </Button>
         </DialogTrigger>
         <DialogContent className="max-w-md max-h-[90vh] p-0">
-          <VoicePackageGuide onClose={() => setIsOpen(false)} />
+          <VoicePackageGuide onClose={() => setIsOpen(false)} onNeverShow={() => {
+            localStorage.setItem('voicePackageGuide_neverShow', 'true');
+            setIsOpen(false);
+          }} />
         </DialogContent>
       </Dialog>
     );
@@ -166,7 +162,10 @@ export function VoicePackageButton({ isHeaderButton = false }: { isHeaderButton?
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-md max-h-[90vh] p-0">
-        <VoicePackageGuide onClose={() => setIsOpen(false)} />
+        <VoicePackageGuide onClose={() => setIsOpen(false)} onNeverShow={() => {
+          localStorage.setItem('voicePackageGuide_neverShow', 'true');
+          setIsOpen(false);
+        }} />
       </DialogContent>
     </Dialog>
   );

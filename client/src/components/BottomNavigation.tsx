@@ -19,7 +19,7 @@ export function BottomNavigation({ currentPath, onNavigate }: BottomNavigationPr
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-lg z-50">
       <div className="max-w-md mx-auto">
-        <div className="flex items-center justify-around py-2 px-4">
+        <div className="flex items-center justify-between py-2 px-4">
           {navItems.map(({ path, icon: Icon, label }) => {
             const isActive = currentPath === path;
             return (
