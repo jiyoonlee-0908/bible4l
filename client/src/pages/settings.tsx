@@ -1,96 +1,71 @@
-import { useState, useEffect } from "react";
-import { useLocation } from "wouter";
-import { Header } from "@/components/Header";
-import { BottomNavigation } from "@/components/BottomNavigation";
-import { FontSizeModal } from "@/components/FontSizeModal";
-import { DSPControls } from "@/components/DSPControls";
-import { ReadingPlanCard } from "@/components/ReadingPlanCard";
-import { BadgeDisplay } from "@/components/BadgeDisplay";
-import { VoicePackageButton } from "@/components/VoicePackageGuide";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Slider } from "@/components/ui/slider";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Storage } from "@/lib/storage";
-import { Settings as SettingsType } from "@shared/schema";
-import { useSpeech } from "@/hooks/useSpeech";
-import { useReadingPlan } from "@/hooks/useReadingPlan";
-import { useBadges } from "@/hooks/useBadges";
-
-import { useToast } from "@/hooks/use-toast";
+import { useState } from 'react';
+import { useLocation } from 'wouter';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Header } from '@/components/Header';
+import { BottomNavigation } from '@/components/BottomNavigation';
+import { FontSizeModal } from '@/components/FontSizeModal';
+import { VoicePackageButton } from '@/components/VoicePackageGuide';
+import { BadgeDisplay } from '@/components/BadgeDisplay';
+import { ReadingPlanCard } from '@/components/ReadingPlanCard';
+import { useBadges } from '@/hooks/useBadges';
+import { useReadingPlan } from '@/hooks/useReadingPlan';
+import { Storage } from '@/lib/storage';
+import { Settings as SettingsType } from '@shared/schema';
 
 export default function Settings() {
-  const [location, setLocation] = useLocation();
-  const [settings, setSettings] = useState<SettingsType>(Storage.getSettings());
-  const [activeTab, setActiveTab] = useState<"audio" | "plans" | "badges">(
-    "audio",
-  );
+  const [, setLocation] = useLocation();
+  const [activeTab, setActiveTab] = useState<'audio' | 'plans' | 'badges'>('audio');
   const [showFontSizeModal, setShowFontSizeModal] = useState(false);
-  const [fontLevel, setFontLevel] = useState(0);
-  const { voices } = useSpeech();
-  const { toast } = useToast();
-  const readingPlan = useReadingPlan();
+  const [fontLevel, setFontLevel] = useState(() => {
+    const saved = localStorage.getItem('fontLevel');
+    return saved ? parseInt(saved) : 3;
+  });
+  
   const badges = useBadges();
-
-  useEffect(() => {
-    const savedSettings = Storage.getSettings();
-    setSettings(savedSettings);
-    setFontLevel(savedSettings.fontLevel || 0);
-  }, []);
+  const readingPlan = useReadingPlan();
+  
+  const [settings, setSettings] = useState<SettingsType>(() => {
+    const saved = Storage.getSettings();
+    if (saved) return saved;
+    
+    const defaultSettings: SettingsType = {
+      selectedLanguage: 'ko',
+      displayMode: 'single',
+      playbackSpeed: 1.0,
+      pitch: 0,
+      autoPlay: true,
+      totalListeningTime: 0,
+      dsp: {
+        echo: false,
+        reverb: false,
+        eq: { low: 0, mid: 0, high: 0 },
+      },
+    };
+    return defaultSettings;
+  });
 
   const updateSettings = (newSettings: Partial<SettingsType>) => {
     const updated = { ...settings, ...newSettings };
     setSettings(updated);
     Storage.saveSettings(updated);
-
-    toast({
-      title: "설정이 저장되었습니다",
-      description: "변경사항이 적용되었습니다.",
-    });
   };
 
   const clearAllData = () => {
-    if (
-      confirm("모든 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.")
-    ) {
-      // Clear all localStorage data including reading plan progress
+    const confirmClear = window.confirm(
+      '모든 데이터를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.'
+    );
+    
+    if (confirmClear) {
       localStorage.clear();
       
-      // Also specifically clear reading plan related keys that might be cached
-      const keysToRemove = [
-        'bible-reading-plan-id',
-        'bible-progress-plan_90',
-        'bible-progress-plan_365',
-        'bible-audio-bookmarks',
-        'bible-audio-settings',
-        'bible-audio-current-verse',
-        'bible-audio-listening-stats',
-        'bible-badges'
-      ];
-      
-      keysToRemove.forEach(key => {
-        localStorage.removeItem(key);
-      });
-      
-      toast({
-        title: "데이터 삭제 완료",
-        description: "모든 설정, 북마크, 읽기 계획 진행률이 삭제되었습니다.",
-      });
-
-      // Reset to default settings
       const defaultSettings: SettingsType = {
-        selectedLanguage: "ko",
-        displayMode: "single",
+        selectedLanguage: 'ko',
+        displayMode: 'single',
         playbackSpeed: 1.0,
         pitch: 0,
-        autoPlay: false,
+        autoPlay: true,
+        totalListeningTime: 0,
         dsp: {
           echo: false,
           reverb: false,
@@ -105,13 +80,6 @@ export default function Settings() {
         window.location.reload();
       }, 1000);
     }
-  };
-
-  const getVoicesByLanguage = (lang: string) => {
-    return voices.filter(
-      (voice) =>
-        voice.lang.startsWith(lang) || voice.name.toLowerCase().includes(lang),
-    );
   };
 
   return (
@@ -206,126 +174,31 @@ export default function Settings() {
 
         {/* Reading Plans Tab */}
         {activeTab === "plans" && (
-          <>
-            {/* Basic Audio Settings */}
-            <Card className="bg-white rounded-2xl shadow-sm border border-slate-200">
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold text-slate-800">
-                  기본 설정
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-700">
-                    재생 속도
-                  </label>
-                  <div className="px-2">
-                    <Slider
-                      value={[settings.playbackSpeed]}
-                      onValueChange={([value]) =>
-                        updateSettings({ playbackSpeed: value })
-                      }
-                      min={0.8}
-                      max={1.5}
-                      step={0.1}
-                      className="w-full"
-                    />
-                  </div>
-                  <div className="flex justify-between text-xs text-slate-500">
-                    <span>0.8x</span>
-                    <span className="font-medium">
-                      {settings.playbackSpeed.toFixed(1)}x
-                    </span>
-                    <span>1.5x</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium text-slate-700">
-                    자동 재생
-                  </label>
-                  <Switch
-                    checked={settings.autoPlay}
-                    onCheckedChange={(autoPlay) => updateSettings({ autoPlay })}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-700">
-                    기본 언어
-                  </label>
-                  <Select
-                    value={settings.selectedLanguage}
-                    onValueChange={(selectedLanguage: any) =>
-                      updateSettings({ selectedLanguage })
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="ko">한국어</SelectItem>
-                      <SelectItem value="en">English</SelectItem>
-                      <SelectItem value="zh">中文</SelectItem>
-                      <SelectItem value="ja">日본語</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-700">
-                    표시 모드
-                  </label>
-                  <Select
-                    value={settings.displayMode}
-                    onValueChange={(displayMode: any) =>
-                      updateSettings({ displayMode })
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="single">단일 모드</SelectItem>
-                      <SelectItem value="double">교차 모드</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* DSP Controls */}
-            <DSPControls
-              settings={settings}
-              onUpdateSettings={updateSettings}
-            />
-
-            <div className="space-y-4">
-              {readingPlan.availablePlans.map((plan) => (
-                <ReadingPlanCard
-                  key={plan.id}
-                  plan={plan}
-                  progress={
-                    readingPlan.selectedPlan?.id === plan.id
-                      ? readingPlan.progress
-                      : undefined
+          <div className="space-y-4">
+            {readingPlan.availablePlans.map((plan) => (
+              <ReadingPlanCard
+                key={plan.id}
+                plan={plan}
+                progress={
+                  readingPlan.selectedPlan?.id === plan.id
+                    ? readingPlan.progress
+                    : undefined
+                }
+                onSelectPlan={() => readingPlan.selectPlan(plan.id as any)}
+                onMarkComplete={() => {
+                  const todaysReading = readingPlan.getTodaysReading();
+                  if (todaysReading) {
+                    readingPlan.markDayComplete(todaysReading.day);
                   }
-                  onSelectPlan={() => readingPlan.selectPlan(plan.id as any)}
-                  onMarkComplete={() => {
-                    const todaysReading = readingPlan.getTodaysReading();
-                    if (todaysReading) {
-                      readingPlan.markDayComplete(todaysReading.day);
-                    }
-                  }}
-                  todaysReading={
-                    readingPlan.selectedPlan?.id === plan.id
-                      ? readingPlan.getTodaysReading()
-                      : null
-                  }
-                />
-              ))}
-            </div>
-          </>
+                }}
+                todaysReading={
+                  readingPlan.selectedPlan?.id === plan.id
+                    ? readingPlan.getTodaysReading()
+                    : null
+                }
+              />
+            ))}
+          </div>
         )}
 
         {/* Badges Tab */}
