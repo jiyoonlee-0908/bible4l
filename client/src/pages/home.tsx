@@ -3,7 +3,7 @@ import { useLocation } from 'wouter';
 import { Header } from '@/components/Header';
 import { LanguageToggle } from '@/components/LanguageToggle';
 import { ModeToggle } from '@/components/ModeToggle';
-import { VerseCard } from '@/components/VerseCard';
+
 import { Navigation } from '@/components/Navigation';
 import { BottomNavigation } from '@/components/BottomNavigation';
 
@@ -148,26 +148,28 @@ export default function Home() {
         />
 
         {currentVerseData && (
-          <>
-            <VerseCard
-              verse={currentVerseData}
-              language={currentLanguage}
-              mode={settings.displayMode}
-              koreanVerse={currentLanguage !== 'ko' ? koreanVerseData : undefined}
-            />
-
-          </>
+          <Navigation
+            currentChapter={currentChapter}
+            currentVerse={currentVerse}
+            onPrevious={() => navigateVerse('prev')}
+            onNext={() => navigateVerse('next')}
+            currentBook={getKoreanBookName(currentBook)}
+            verseText={currentVerseData?.text}
+            language={currentLanguage}
+            primaryVerse={{
+              text: currentVerseData.text,
+              language: currentLanguage
+            }}
+            secondaryVerse={
+              settings.displayMode === 'double' && currentLanguage !== 'ko' && koreanVerseData
+                ? {
+                    text: koreanVerseData.text,
+                    language: 'ko'
+                  }
+                : undefined
+            }
+          />
         )}
-        
-        <Navigation
-          currentChapter={currentChapter}
-          currentVerse={currentVerse}
-          onPrevious={() => navigateVerse('prev')}
-          onNext={() => navigateVerse('next')}
-          currentBook={getKoreanBookName(currentBook)}
-          verseText={currentVerseData?.text}
-          language={currentLanguage}
-        />
 
         {/* Font Size Modal */}
         {showFontSizeModal && (

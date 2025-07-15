@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Play, Pause, SkipBack, SkipForward } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Minus, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useGlobalAudio } from '@/hooks/useGlobalAudio';
@@ -12,6 +12,8 @@ interface NavigationProps {
   currentBook?: string;
   verseText?: string;
   language?: string;
+  primaryVerse?: { text: string; language: string };
+  secondaryVerse?: { text: string; language: string };
 }
 
 export function Navigation({
@@ -22,6 +24,8 @@ export function Navigation({
   currentBook,
   verseText,
   language = 'ko',
+  primaryVerse,
+  secondaryVerse,
 }: NavigationProps) {
   const { globalAudioState, toggleGlobalPlayback } = useGlobalAudio();
   const { isPlaying, speak, stop, settings, updateSettings } = useSpeech();
@@ -37,11 +41,11 @@ export function Navigation({
     }
   };
 
-  const handleSpeedChange = (newSpeed: number) => {
+  const handleSpeedChange = (increment: number) => {
+    const newSpeed = Math.max(0.5, Math.min(2.0, currentSpeed + increment));
     updateSettings({ speed: newSpeed });
   };
 
-  const speedOptions = [0.5, 0.75, 1.0, 1.25, 1.5];
   const currentSpeed = settings?.speed || 1.0;
 
   return (
@@ -49,11 +53,37 @@ export function Navigation({
       <CardContent className="p-4">
         {/* 성경 정보 표시 */}
         <div className="text-center mb-4">
-          <div className="text-sm text-slate-600">{currentBook}</div>
           <div className="text-lg font-semibold text-amber-800">
-            {currentChapter}장 {currentVerse}절
+            {currentBook} {currentChapter}:{currentVerse}
           </div>
         </div>
+
+        {/* 성경 구절 표시 */}
+        {primaryVerse && (
+          <div className="mb-4">
+            <div className="text-sm text-slate-600 mb-2">
+              {primaryVerse.language === 'ko' ? '한국어' : 
+               primaryVerse.language === 'en' ? 'English' :
+               primaryVerse.language === 'zh' ? '中文' : '日本語'}
+            </div>
+            <div className="text-base text-slate-800 mb-3">
+              {primaryVerse.text}
+            </div>
+            
+            {secondaryVerse && (
+              <>
+                <div className="text-sm text-slate-600 mb-2">
+                  {secondaryVerse.language === 'ko' ? '한국어' : 
+                   secondaryVerse.language === 'en' ? 'English' :
+                   secondaryVerse.language === 'zh' ? '中文' : '日本語'}
+                </div>
+                <div className="text-base text-slate-800 mb-3 pl-4 border-l-4 border-amber-300">
+                  {secondaryVerse.text}
+                </div>
+              </>
+            )}
+          </div>
+        )}
 
         {/* 오디오 컨트롤 */}
         <div className="flex items-center justify-center space-x-4 mb-4">
@@ -90,23 +120,26 @@ export function Navigation({
         </div>
 
         {/* 속도 조절 */}
-        <div className="flex items-center justify-center space-x-2">
+        <div className="flex items-center justify-center space-x-4">
           <span className="text-sm text-slate-600 font-medium">속도</span>
-          <div className="flex items-center space-x-1">
-            {speedOptions.map((speed) => (
-              <Button
-                key={speed}
-                variant="ghost"
-                onClick={() => handleSpeedChange(speed)}
-                className={`px-3 py-1 rounded-lg text-sm transition-colors ${
-                  currentSpeed === speed
-                    ? 'bg-amber-100 text-amber-800 font-medium'
-                    : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
-                }`}
-              >
-                {speed}x
-              </Button>
-            ))}
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="ghost"
+              onClick={() => handleSpeedChange(-0.25)}
+              className="p-2 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors"
+            >
+              <Minus className="h-4 w-4 text-slate-600" />
+            </Button>
+            <span className="text-sm font-medium text-amber-800 min-w-[50px] text-center">
+              {currentSpeed.toFixed(2)}x
+            </span>
+            <Button
+              variant="ghost"
+              onClick={() => handleSpeedChange(0.25)}
+              className="p-2 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors"
+            >
+              <Plus className="h-4 w-4 text-slate-600" />
+            </Button>
           </div>
         </div>
       </CardContent>
