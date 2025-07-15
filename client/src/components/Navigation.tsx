@@ -30,7 +30,7 @@ export function Navigation({
   secondaryVerse,
 }: NavigationProps) {
   const { globalAudioState, toggleGlobalPlayback } = useGlobalAudio();
-  const { isPlaying, speak, stop, pause, resume, settings, updateSettings } = useSpeech();
+  const { isPlaying, speak, stop, pause, resume, settings, setSpeed } = useSpeech();
   const { isBookmarked, toggleBookmark } = useBookmarks();
 
   const handlePlay = () => {
@@ -52,10 +52,10 @@ export function Navigation({
 
   const handleSpeedChange = (increment: number) => {
     const newSpeed = Math.max(0.5, Math.min(2.0, currentSpeed + increment));
-    updateSettings({ speed: newSpeed });
+    setSpeed(newSpeed);
   };
 
-  const currentSpeed = settings?.speed || 1.0;
+  const currentSpeed = settings?.playbackSpeed || 1.0;
 
   const handleBookmarkToggle = () => {
     if (primaryVerse && currentBook) {
