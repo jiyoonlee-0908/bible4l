@@ -77,7 +77,8 @@ Ad-supported model: Keep only ad-supported version, Pro version to be developed 
 ✓ All PWA requirements met: HTTPS, manifest, service worker, offline support
 ✓ Fixed deployment permission issues with package layer caching and build optimization
 ✓ Resolved PulseAudio permission errors and dependency package issues following Replit support guidance
-✓ Created .deployignore file to exclude problematic pulse files from deployment layers
+✓ Created .replitignore file to exclude problematic pulse files from deployment layers (fixed from .deployignore)
+✓ Added predeploy command to automatically clean PulseAudio files before each build
 ✓ Added REPLIT_KEEP_PACKAGE_DEV_DEPENDENCIES=1 to preserve build tools during deployment
 ✓ Completely rebuilt node_modules with all required dependencies (esbuild, typescript)
 ✓ Created automated deployment script with proper environment variable handling

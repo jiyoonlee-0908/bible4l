@@ -1,0 +1,5 @@
+# PulseAudio runtime 디렉터리
+.config/pulse/
+
+# 깨진 소켓·링크
+/tmp/pulse-*
