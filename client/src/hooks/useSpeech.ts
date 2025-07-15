@@ -101,6 +101,19 @@ export function useSpeech() {
     return langMap[currentSettings.selectedLanguage] || 'en-US';
   }, []);
 
+  const getLanguageSpecificSettings = useCallback((lang: string) => {
+    // 각 언어별 최적화된 TTS 설정
+    const languageSettings = {
+      'ko': { rate: 0.9, pitch: 1.0, volume: 1.0 },
+      'en': { rate: 1.0, pitch: 1.0, volume: 1.0 },
+      'zh': { rate: 0.8, pitch: 1.1, volume: 1.0 },
+      'ja': { rate: 0.9, pitch: 1.0, volume: 1.0 }
+    };
+    
+    const langCode = lang.split('-')[0];
+    return languageSettings[langCode as keyof typeof languageSettings] || languageSettings.en;
+  }, []);
+
   const selectBestVoice = useCallback((targetLang: string) => {
     if (!voices.length) return null;
     
@@ -174,14 +187,6 @@ export function useSpeech() {
         return;
       }
 
-      // 이전 음성 정지
-      speechSynthesis.cancel();
-
-      // 사용자 상호작용 없이 음성 재생 시도 시 에러 방지
-      if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
-        audioContextRef.current.resume().catch(console.error);
-      }
-      
       console.log('TTS 시작:', text);
 
       const cleanedText = cleanText(text);
@@ -190,108 +195,130 @@ export function useSpeech() {
         return;
       }
 
-      const newUtterance = new SpeechSynthesisUtterance(cleanedText);
-        
-      // 기본 TTS 설정 (간단하게)
-      const targetLang = options.lang || getCurrentLanguageCode();
-      const selectedVoice = selectBestVoice(targetLang);
-      
-      if (selectedVoice) {
-        newUtterance.voice = selectedVoice;
-        console.log(`Using voice: ${selectedVoice.name} for ${targetLang}`);
+      // 이전 음성 정지 (딜레이 추가)
+      if (speechSynthesis.speaking) {
+        speechSynthesis.cancel();
+        // 취소 후 약간의 딜레이
+        setTimeout(() => {
+          startSpeech();
+        }, 100);
       } else {
-        console.log(`Using system default voice for ${targetLang}`);
+        startSpeech();
       }
-      
-      // Apply settings with safe defaults
-      newUtterance.rate = Math.max(0.1, Math.min(10, options.rate || settings.playbackSpeed || 1.0));
-      const pitchValue = options.pitch !== undefined ? options.pitch : settings.pitch || 0;
-      newUtterance.pitch = calculatePitch(pitchValue);
-      newUtterance.volume = Math.max(0, Math.min(1, options.volume || 1));
-      
-      // Set language for the utterance
-      newUtterance.lang = options.lang || targetLang;
 
-      // Apply DSP effects
-      applyDSPSettings();
-
-      // Track listening time for achievements
-      const startTime = Date.now();
-
-      newUtterance.onstart = () => {
-        console.log('TTS started successfully');
-        setAudioState(prev => ({ 
-          ...prev, 
-          isPlaying: true, 
-          currentPosition: 0,
-          speed: newUtterance.rate,
-          pitch: settings.pitch,
-        }));
-      };
-
-      newUtterance.onend = () => {
-        console.log('TTS finished');
-        const endTime = Date.now();
-        const listeningTime = (endTime - startTime) / 1000 / 60; // in minutes
-        
-        // Update listening time in storage and trigger badge checks
-        const currentSettings = Storage.getSettings();
-        const totalListeningTime = (currentSettings.totalListeningTime || 0) + listeningTime;
-        
-        // Save updated listening time
-        Storage.saveSettings({ ...currentSettings, totalListeningTime });
-        
-        // Check for listening time badges
-        const badgeEvent = new CustomEvent('badge-check', {
-          detail: { type: 'listening', value: totalListeningTime }
-        });
-        window.dispatchEvent(badgeEvent);
-        
-        // Check for first listen badge
-        const firstListenEvent = new CustomEvent('badge-check', {
-          detail: { type: 'first_listen' }
-        });
-        window.dispatchEvent(firstListenEvent);
-        
-        setAudioState(prev => ({ ...prev, isPlaying: false, currentPosition: 0 }));
-        
-        // Call onEnd callback if provided
-        if (options.onEnd) {
-          options.onEnd();
+      function startSpeech() {
+        // 사용자 상호작용 없이 음성 재생 시도 시 에러 방지
+        if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
+          audioContextRef.current.resume().catch(console.error);
         }
-      };
 
-      newUtterance.onerror = (event) => {
-        console.error('Speech synthesis error:', event.error);
-        setAudioState(prev => ({ ...prev, isPlaying: false }));
-      };
+        const newUtterance = new SpeechSynthesisUtterance(cleanedText);
+          
+        // 기본 TTS 설정 (간단하게)
+        const targetLang = options.lang || getCurrentLanguageCode();
+        const selectedVoice = selectBestVoice(targetLang);
+        const langSettings = getLanguageSpecificSettings(targetLang);
+        
+        if (selectedVoice) {
+          newUtterance.voice = selectedVoice;
+          console.log(`Using voice: ${selectedVoice.name} for ${targetLang}`);
+        } else {
+          console.log(`Using system default voice for ${targetLang}`);
+        }
+        
+        // Apply settings with language-specific defaults
+        newUtterance.rate = Math.max(0.1, Math.min(10, options.rate || settings.playbackSpeed || langSettings.rate));
+        const pitchValue = options.pitch !== undefined ? options.pitch : settings.pitch || 0;
+        newUtterance.pitch = calculatePitch(pitchValue);
+        newUtterance.volume = Math.max(0, Math.min(1, options.volume || langSettings.volume));
+        
+        // Set language for the utterance
+        newUtterance.lang = options.lang || targetLang;
 
-      newUtterance.onpause = () => {
-        console.log('TTS paused');
-        setAudioState(prev => ({ ...prev, isPlaying: false }));
-      };
+        // Apply DSP effects
+        applyDSPSettings();
 
-      newUtterance.onresume = () => {
-        console.log('TTS resumed');
-        setAudioState(prev => ({ ...prev, isPlaying: true }));
-      };
+        // Track listening time for achievements
+        const startTime = Date.now();
 
-      // Estimate duration based on text length and speech rate
-      const estimatedDuration = (cleanedText.length / 10) / (options.rate || settings.playbackSpeed || 1.0);
-      setAudioState(prev => ({ ...prev, duration: estimatedDuration }));
+        newUtterance.onstart = () => {
+          console.log('TTS started successfully');
+          setAudioState(prev => ({ 
+            ...prev, 
+            isPlaying: true, 
+            currentPosition: 0,
+            speed: newUtterance.rate,
+            pitch: settings.pitch,
+          }));
+        };
 
-      // Save utterance reference
-      setUtterance(newUtterance);
-      
-      // Start speech synthesis
-      console.log('Starting speech synthesis...');
-      speechSynthesis.speak(newUtterance);
+        newUtterance.onend = () => {
+          console.log('TTS finished');
+          const endTime = Date.now();
+          const listeningTime = (endTime - startTime) / 1000 / 60; // in minutes
+          
+          // Update listening time in storage and trigger badge checks
+          const currentSettings = Storage.getSettings();
+          const totalListeningTime = (currentSettings.totalListeningTime || 0) + listeningTime;
+          
+          // Save updated listening time
+          Storage.saveSettings({ ...currentSettings, totalListeningTime });
+          
+          // Check for listening time badges
+          const badgeEvent = new CustomEvent('badge-check', {
+            detail: { type: 'listening', value: totalListeningTime }
+          });
+          window.dispatchEvent(badgeEvent);
+          
+          // Check for first listen badge
+          const firstListenEvent = new CustomEvent('badge-check', {
+            detail: { type: 'first_listen' }
+          });
+          window.dispatchEvent(firstListenEvent);
+          
+          setAudioState(prev => ({ ...prev, isPlaying: false, currentPosition: 0 }));
+          
+          // Call onEnd callback if provided
+          if (options.onEnd) {
+            options.onEnd();
+          }
+        };
+
+        newUtterance.onerror = (event) => {
+          console.error('Speech synthesis error:', event.error);
+          // canceled 오류는 정상적인 취소이므로 무시
+          if (event.error !== 'canceled') {
+            setAudioState(prev => ({ ...prev, isPlaying: false }));
+          }
+        };
+
+        newUtterance.onpause = () => {
+          console.log('TTS paused');
+          setAudioState(prev => ({ ...prev, isPlaying: false }));
+        };
+
+        newUtterance.onresume = () => {
+          console.log('TTS resumed');
+          setAudioState(prev => ({ ...prev, isPlaying: true }));
+        };
+
+        // Estimate duration based on text length and speech rate
+        const estimatedDuration = (cleanedText.length / 10) / (options.rate || settings.playbackSpeed || 1.0);
+        setAudioState(prev => ({ ...prev, duration: estimatedDuration }));
+
+        // Save utterance reference
+        setUtterance(newUtterance);
+        
+        // Start speech synthesis
+        console.log('Starting speech synthesis...');
+        speechSynthesis.speak(newUtterance);
+      }
 
     } catch (error) {
       console.error('Speech synthesis error:', error);
       setAudioState(prev => ({ ...prev, isPlaying: false }));
     }
-  }, [cleanText, settings, voices, calculatePitch, applyDSPSettings, getCurrentLanguageCode, selectBestVoice]);
+  }, [cleanText, settings, voices, calculatePitch, applyDSPSettings, getCurrentLanguageCode, selectBestVoice, getLanguageSpecificSettings]);
 
   const pause = useCallback(() => {
     if (speechSynthesis.speaking) {
