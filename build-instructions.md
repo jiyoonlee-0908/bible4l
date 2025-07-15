@@ -2,15 +2,37 @@
 
 ## 🚀 내가 해야 할 일 (사용자)
 
-### 1. 앱 빌드 준비
+### 1. Capacitor 앱 빌드 준비
 ```bash
 # 1. Node.js 프로젝트 빌드
 npm run build
 
-# 2. Bubblewrap CLI 설치
+# 2. Capacitor 안드로이드 플랫폼 추가
+npx cap add android
+
+# 3. 웹 에셋 복사 및 동기화
+npx cap sync
+
+# 4. 안드로이드 프로젝트 열기
+npx cap open android
+```
+
+### 2. 안드로이드 스튜디오에서 빌드
+```bash
+# Android Studio가 열리면:
+# 1. Build > Generate Signed Bundle / APK 선택
+# 2. Android App Bundle 선택
+# 3. 키스토어 생성 또는 기존 키스토어 사용
+# 4. release 모드로 빌드
+```
+
+### 3. 대안: Bubblewrap 사용 (PWA 기반)
+```bash
+# PWA 기반 배포를 원하는 경우:
+# 1. Bubblewrap CLI 설치
 npm install -g @bubblewrap/cli
 
-# 3. 앱 초기화 (현재 배포된 Replit URL 사용)
+# 2. 앱 초기화 (현재 배포된 Replit URL 사용)
 bubblewrap init --url https://your-app-name.replit.app
 
 # 질문 답변 예시:
@@ -88,6 +110,13 @@ bubblewrap install
 - ✅ 오프라인 기능 구현
 - ✅ 모바일 최적화
 - ✅ 접근성 고려 설계
+
+### 안드로이드 앱 기능 추가
+- ✅ Capacitor 설정 구성
+- ✅ TTS 설정 페이지 직접 열기 기능
+- ✅ 언어팩 설치 상태 실시간 확인
+- ✅ 안드로이드 환경 감지 및 최적화
+- ✅ 시스템 설정 직접 접근 권한 구현
 
 ## 🔍 주의사항
 

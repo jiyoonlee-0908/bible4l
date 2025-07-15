@@ -62,6 +62,10 @@ Ad-supported model: Keep only ad-supported version, Pro version to be developed 
 ✓ Reorganized settings tabs: "음성 설정" with only voice guide and data management
 ✓ Fixed dialog close issue with proper state management
 ✓ Removed "모든 효과 초기화" button from DSP controls
+✓ Added Android app TTS settings direct access functionality
+✓ Implemented language pack installation status checking with visual indicators
+✓ Created Capacitor configuration for native Android app deployment
+✓ Added system settings permission handling for automatic TTS language pack download
 
 ## Play Store Deployment Preparation (January 15, 2025)
 
@@ -75,6 +79,10 @@ Ad-supported model: Keep only ad-supported version, Pro version to be developed 
 ✓ Implemented proper error boundaries and offline fallback pages
 ✓ Added build instructions and deployment guide for user
 ✓ All PWA requirements met: HTTPS, manifest, service worker, offline support
+✓ Integrated Capacitor for native Android app capabilities
+✓ Added TTS system settings direct access with proper permissions
+✓ Implemented real-time language pack status monitoring
+✓ Created Android-specific UI enhancements for better native experience
 
 ## System Architecture
 
