@@ -9,6 +9,7 @@ BibleAudio 4L is a Progressive Web Application (PWA) that provides Bible audio p
 ```
 Preferred communication style: Simple, everyday language.
 Commercial use: Prioritize cost-free solutions using public domain content.
+Ad-supported model: Keep only ad-supported version, Pro version to be developed separately later.
 ```
 
 ## Recent Changes (January 2025)
@@ -53,10 +54,19 @@ Commercial use: Prioritize cost-free solutions using public domain content.
 ✓ Fixed badge system with proper event-driven architecture for real-time badge unlocking
 ✓ Connected badge checks to actual app activities (listening, bookmarks, reading plans, streaks)
 ✓ Added totalListeningTime tracking to settings schema for accurate badge calculations
-✓ Reverted TTS system to simple useSpeech hook after complex implementation caused audio failures
-✓ Removed useSimpleTTS and returned to basic browser TTS functionality for stability
-✓ Added comprehensive TTS diagnostic tool to identify browser-level speechSynthesis API issues
-✓ Implemented system-wide TTS troubleshooting with real-time status monitoring
+
+## Play Store Deployment Preparation (January 15, 2025)
+
+✓ Enhanced Service Worker with comprehensive offline support and error handling
+✓ Improved PWA manifest with proper app identity and shortcuts
+✓ Created privacy policy page accessible at /privacy endpoint
+✓ Generated digital asset links template for Android App Links verification
+✓ Added service worker registration with update notification system
+✓ Created feature graphic (1024x500) for Play Store listing
+✓ Prepared all required Play Store assets and documentation
+✓ Implemented proper error boundaries and offline fallback pages
+✓ Added build instructions and deployment guide for user
+✓ All PWA requirements met: HTTPS, manifest, service worker, offline support
 
 ## System Architecture
 

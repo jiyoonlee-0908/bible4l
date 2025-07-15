@@ -35,18 +35,21 @@ export function Header({ onFontSizeClick, onSettingsClick }: HeaderProps) {
               variant="ghost"
               size="icon"
               onClick={onFontSizeClick}
-              className="w-10 h-10 bg-secondary hover:bg-accent/20 rounded-full"
+              className="w-10 h-10 bg-amber-200/50 hover:bg-amber-300/50 rounded-full"
               title="글자 크기 조절"
             >
-              <Type className="h-5 w-5 text-accent-foreground" />
+              <div className="flex items-center justify-center text-amber-800">
+                <span className="text-xs font-bold mr-0.5">A</span>
+                <span className="text-sm font-bold">A</span>
+              </div>
             </Button>
             <Button
               variant="ghost"
               size="icon"
               onClick={onSettingsClick}
-              className="w-10 h-10 bg-secondary hover:bg-accent/20 rounded-full"
+              className="w-10 h-10 bg-amber-200/50 hover:bg-amber-300/50 rounded-full"
             >
-              <Settings className="h-5 w-5 text-accent-foreground" />
+              <Settings className="h-5 w-5 text-amber-800" />
             </Button>
           </div>
         </div>

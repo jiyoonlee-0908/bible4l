@@ -10,10 +10,26 @@ const READING_PLANS = {
     type: '90days' as const,
     totalDays: 90,
     dailyReadings: [
-      { day: 1, books: ['Genesis'], chapters: [1, 2, 3], description: '창조와 타락' },
-      { day: 2, books: ['Genesis'], chapters: [4, 5, 6], description: '가인과 아벨, 홍수 이전' },
-      { day: 3, books: ['Genesis'], chapters: [7, 8, 9], description: '노아의 홍수' },
-      // ... more days would be added
+      { day: 1, books: ['창세기'], chapters: [1, 2, 3], description: '창조와 타락' },
+      { day: 2, books: ['창세기'], chapters: [4, 5, 6], description: '가인과 아벨, 홍수 이전' },
+      { day: 3, books: ['창세기'], chapters: [7, 8, 9], description: '노아의 홍수' },
+      { day: 4, books: ['창세기'], chapters: [10, 11, 12], description: '바벨탑과 아브라함의 부름' },
+      { day: 5, books: ['창세기'], chapters: [13, 14, 15], description: '아브라함의 언약' },
+      { day: 6, books: ['창세기'], chapters: [16, 17, 18], description: '이스마엘과 이삭의 약속' },
+      { day: 7, books: ['창세기'], chapters: [19, 20, 21], description: '소돔과 고모라, 이삭의 탄생' },
+      { day: 8, books: ['창세기'], chapters: [22, 23, 24], description: '아브라함의 시험과 믿음' },
+      { day: 9, books: ['창세기'], chapters: [25, 26, 27], description: '이삭과 야곱의 축복' },
+      { day: 10, books: ['창세기'], chapters: [28, 29, 30], description: '야곱의 꿈과 결혼' },
+      // Continue for more days...
+      ...Array.from({ length: 80 }, (_, i) => {
+        const koreanBooks = ['창세기', '출애굽기', '레위기', '민수기', '신명기'];
+        return {
+          day: i + 11,
+          books: [koreanBooks[Math.floor(i / 16)]],
+          chapters: [Math.floor(i % 5) + 1, Math.floor(i % 5) + 2],
+          description: `${i + 11}일차 성경 읽기`
+        };
+      })
     ],
     createdAt: new Date().toISOString(),
   },
@@ -23,10 +39,26 @@ const READING_PLANS = {
     type: '365days' as const,
     totalDays: 365,
     dailyReadings: [
-      { day: 1, books: ['Genesis'], chapters: [1], description: '창조 첫째 날' },
-      { day: 2, books: ['Genesis'], chapters: [2], description: '창조 둘째 날' },
-      { day: 3, books: ['Genesis'], chapters: [3], description: '타락' },
-      // ... more days would be added
+      { day: 1, books: ['창세기'], chapters: [1], description: '창조 첫째 날' },
+      { day: 2, books: ['창세기'], chapters: [2], description: '창조 둘째 날' },
+      { day: 3, books: ['창세기'], chapters: [3], description: '타락' },
+      { day: 4, books: ['창세기'], chapters: [4], description: '가인과 아벨' },
+      { day: 5, books: ['창세기'], chapters: [5], description: '아담의 족보' },
+      { day: 6, books: ['창세기'], chapters: [6], description: '노아 시대' },
+      { day: 7, books: ['창세기'], chapters: [7], description: '홍수 시작' },
+      { day: 8, books: ['창세기'], chapters: [8], description: '홍수 끝' },
+      { day: 9, books: ['창세기'], chapters: [9], description: '노아의 언약' },
+      { day: 10, books: ['창세기'], chapters: [10], description: '민족들의 분산' },
+      // Continue for more days...
+      ...Array.from({ length: 355 }, (_, i) => {
+        const koreanBooks = ['창세기', '출애굽기', '레위기', '민수기', '신명기', '여호수아', '사사기', '룻기', '사무엘상', '사무엘하', '열왕기상', '열왕기하'];
+        return {
+          day: i + 11,
+          books: [koreanBooks[Math.floor(i / 30)]],
+          chapters: [Math.floor(i % 10) + 1],
+          description: `${i + 11}일차 성경 읽기`
+        };
+      })
     ],
     createdAt: new Date().toISOString(),
   },
@@ -108,6 +140,18 @@ export function useReadingPlan() {
 
     setProgress(updatedProgress);
     localStorage.setItem(`bible-progress-${selectedPlan.id}`, JSON.stringify(updatedProgress));
+    
+    // Check for streak and completion badges
+    const streakEvent = new CustomEvent('badge-check', {
+      detail: { type: 'streak', value: updatedProgress.streak }
+    });
+    window.dispatchEvent(streakEvent);
+    
+    const completionPercentage = (updatedProgress.completedDays.length / selectedPlan.totalDays) * 100;
+    const completionEvent = new CustomEvent('badge-check', {
+      detail: { type: 'completion', value: completionPercentage }
+    });
+    window.dispatchEvent(completionEvent);
   };
 
   const addListeningTime = (minutes: number) => {

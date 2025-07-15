@@ -8,8 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Play, Pause, SkipForward, SkipBack, Volume2, Loader2, Repeat, Repeat1, Plus, Minus } from 'lucide-react';
 import { useBible } from '@/hooks/useBible';
 import { useSpeech } from '@/hooks/useSpeech';
-import { useSubscription } from '@/hooks/useSubscription';
-import { AdFitBanner } from '@/components/AdFitBanner';
+
+
 import { FontSizeModal } from '@/components/FontSizeModal';
 import { Storage } from '@/lib/storage';
 import { Language, Settings, languageConfig } from '@shared/schema';
@@ -36,8 +36,8 @@ export default function Player() {
     navigateVerse
   } = useBible();
   
-  const { isPlaying, speak, toggle, stop } = useSpeech();
-  const { isSubscribed } = useSubscription();
+  const { audioState, speak, toggle, stop, setSpeed } = useSpeech();
+
   const { toast } = useToast();
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export default function Player() {
 
   // Auto-play when verse changes in continuous mode
   useEffect(() => {
-    if (isPlayingContinuous && currentVerseData && !isPlaying) {
+    if (isPlayingContinuous && currentVerseData && !audioState.isPlaying) {
       setTimeout(() => {
         playCurrentVerse();
       }, 500); // Small delay to ensure verse is loaded
@@ -83,7 +83,7 @@ export default function Player() {
     
     const langCode = voiceMapping[currentLanguage] || 'en-US';
     speak(currentVerseData.text, { 
-      rate: 1.0, 
+      rate: audioState.speed, 
       lang: langCode,
       onEnd: () => {
         setIsLoading(false);
@@ -153,11 +153,12 @@ export default function Player() {
   };
 
   const adjustSpeed = (delta: number) => {
-    // Speed adjustment disabled in simple mode
+    const newSpeed = Math.max(0.5, Math.min(1.5, audioState.speed + delta));
+    setSpeed(newSpeed);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 pb-24">
       <Header
         onFontSizeClick={() => setShowFontSizeModal(true)}
         onSettingsClick={() => setLocation('/settings')}
@@ -253,7 +254,7 @@ export default function Player() {
               >
                 {isLoading ? (
                   <Loader2 className="h-6 w-6 text-white animate-spin" />
-                ) : isPlaying ? (
+                ) : audioState.isPlaying ? (
                   <Pause className="h-6 w-6 text-white" />
                 ) : (
                   <Play className="h-6 w-6 text-white ml-1" />
@@ -283,7 +284,7 @@ export default function Player() {
                   <Minus className="h-3 w-3 text-slate-600" />
                 </Button>
                 <span className="text-sm font-medium text-slate-700 min-w-12 text-center">
-                  1.0x
+                  {audioState.speed.toFixed(1)}x
                 </span>
                 <Button
                   variant="ghost"
@@ -310,7 +311,7 @@ export default function Player() {
                   }`}
                 >
                   <Repeat1 className="h-3 w-3 mr-1" />
-                  한 곡 반복
+                  한 구절 반복
                 </Button>
                 
                 <Button
@@ -324,7 +325,7 @@ export default function Player() {
                   }`}
                 >
                   <Repeat className="h-3 w-3 mr-1" />
-                  연속 재생
+                  전체 듣기
                 </Button>
               </div>
             </div>
@@ -332,14 +333,7 @@ export default function Player() {
           </CardContent>
         </Card>
 
-        {/* 플레이어 하단 광고 */}
-        <AdFitBanner
-          adUnit="DAN-your-player-bottom-unit"
-          adWidth={320}
-          adHeight={50}
-          isSubscribed={isSubscribed}
-          className="player-bottom-ad"
-        />
+
       </div>
       
       <BottomNavigation

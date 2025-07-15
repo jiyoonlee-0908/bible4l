@@ -4,6 +4,7 @@ import { Header } from '@/components/Header';
 import { BookmarksList } from '@/components/BookmarksList';
 import { FontSizeModal } from '@/components/FontSizeModal';
 import { BottomNavigation } from '@/components/BottomNavigation';
+
 import { useBookmarks } from '@/hooks/useBookmarks';
 import { useBible } from '@/hooks/useBible';
 import { Storage } from '@/lib/storage';
@@ -35,18 +36,19 @@ export default function Bookmarks() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 pb-24">
       <Header
         onFontSizeClick={() => setShowFontSizeModal(true)}
         onSettingsClick={() => setLocation('/settings')}
       />
       
-      <div className="max-w-md mx-auto px-4 py-6">
+      <div className="max-w-md mx-auto px-4 py-6 space-y-4">
         <BookmarksList
           bookmarks={bookmarks}
           onRemoveBookmark={removeBookmark}
           onSelectBookmark={handleSelectBookmark}
         />
+
       </div>
       
       <BottomNavigation
