@@ -6,6 +6,7 @@ import { FontSizeModal } from "@/components/FontSizeModal";
 import { DSPControls } from "@/components/DSPControls";
 import { ReadingPlanCard } from "@/components/ReadingPlanCard";
 import { BadgeDisplay } from "@/components/BadgeDisplay";
+import { VoiceSetupGuide } from "@/components/VoiceSetupGuide";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -32,6 +33,7 @@ export default function Settings() {
     "audio",
   );
   const [showFontSizeModal, setShowFontSizeModal] = useState(false);
+  const [showVoiceGuide, setShowVoiceGuide] = useState(false);
   const [fontLevel, setFontLevel] = useState(0);
   const { voices } = useSpeech();
   const { toast } = useToast();
@@ -198,6 +200,20 @@ export default function Settings() {
                   </div>
                 </div>
 
+                <div className="space-y-2">
+                  <Button
+                    onClick={() => setShowVoiceGuide(true)}
+                    variant="outline"
+                    className="w-full justify-start text-left"
+                  >
+                    <span className="mr-2">🎤</span>
+                    음성 설정 가이드 (모바일 음성 개선)
+                  </Button>
+                  <p className="text-xs text-slate-500">
+                    모바일에서 음성이 이상하면 클릭해서 확인해보세요
+                  </p>
+                </div>
+
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium text-slate-700">
                     자동 재생
@@ -342,6 +358,11 @@ export default function Settings() {
         onClose={() => setShowFontSizeModal(false)}
         currentLevel={fontLevel}
         onLevelChange={setFontLevel}
+      />
+      
+      <VoiceSetupGuide
+        isOpen={showVoiceGuide}
+        onClose={() => setShowVoiceGuide(false)}
       />
     </div>
   );
