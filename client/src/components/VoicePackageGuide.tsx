@@ -1,138 +1,131 @@
-import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Download, Settings, Volume2, Info, CheckCircle } from 'lucide-react';
+import { Download, Volume2, CheckCircle, X } from 'lucide-react';
 
 interface VoicePackageGuideProps {
   onClose?: () => void;
+  onNeverShow?: () => void;
 }
 
-export function VoicePackageGuide({ onClose }: VoicePackageGuideProps) {
-  const [currentStep, setCurrentStep] = useState(0);
-
-  const steps = [
-    {
-      title: "설정 앱 열기",
-      description: "기기의 '설정' 앱을 열어주세요",
-      detail: "홈 화면에서 톱니바퀴 모양의 설정 아이콘을 찾아 터치하세요"
-    },
-    {
-      title: "일반 메뉴 찾기",
-      description: "설정에서 '일반' 메뉴를 찾아주세요",
-      detail: "설정 목록에서 '일반' 또는 'General'을 터치하세요"
-    },
-    {
-      title: "언어팩 메뉴",
-      description: "'언어팩' 또는 'Language Pack'을 선택하세요",
-      detail: "일반 설정 안에서 언어팩 메뉴를 찾아 터치하세요"
-    },
-    {
-      title: "언어 다운로드",
-      description: "필요한 언어팩을 다운로드하세요",
-      detail: "한국어, 영어(미국), 일본어, 중국어(중국 본토) 중 원하는 언어를 선택하여 다운로드하세요"
-    }
-  ];
-
-  const nextStep = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
-  const prevStep = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
+export function VoicePackageGuide({ onClose, onNeverShow }: VoicePackageGuideProps) {
   return (
-    <Card className="bg-white rounded-2xl shadow-lg border border-amber-200">
-      <CardHeader className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-t-2xl">
-        <CardTitle className="flex items-center gap-2 text-amber-800">
-          <Volume2 className="h-5 w-5" />
-          고품질 음성 다운로드 안내
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-6">
-        <div className="mb-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-slate-600">
-              단계 {currentStep + 1} / {steps.length}
-            </span>
-            <div className="text-xs text-amber-600">
-              {Math.round(((currentStep + 1) / steps.length) * 100)}% 완료
-            </div>
+    <div className="max-h-screen overflow-y-auto bg-white rounded-2xl shadow-lg border border-amber-200">
+      <CardHeader className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-t-2xl sticky top-0 z-10">
+        <CardTitle className="flex items-center justify-between text-amber-800">
+          <div className="flex items-center gap-2">
+            <Volume2 className="h-5 w-5" />
+            고품질 음성 다운로드 안내
           </div>
-          <div className="w-full bg-slate-200 rounded-full h-2">
-            <div 
-              className="bg-gradient-to-r from-amber-500 to-orange-500 h-2 rounded-full transition-all duration-300"
-              style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-            />
-          </div>
-        </div>
-
-        <div className="text-center mb-6">
-          <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-3">
-            {currentStep === 0 && <Settings className="h-8 w-8 text-amber-600" />}
-            {currentStep === 1 && <Info className="h-8 w-8 text-amber-600" />}
-            {currentStep === 2 && <Volume2 className="h-8 w-8 text-amber-600" />}
-            {currentStep === 3 && <Download className="h-8 w-8 text-amber-600" />}
-          </div>
-          <h3 className="text-lg font-semibold text-slate-800 mb-2">
-            {steps[currentStep].title}
-          </h3>
-          <p className="text-slate-600 mb-3">
-            {steps[currentStep].description}
-          </p>
-          <div className="bg-blue-50 p-3 rounded-lg text-sm text-blue-700">
-            💡 {steps[currentStep].detail}
-          </div>
-        </div>
-
-        <div className="flex gap-3">
-          <Button
-            variant="outline"
-            onClick={prevStep}
-            disabled={currentStep === 0}
-            className="flex-1"
-          >
-            이전
-          </Button>
-          {currentStep < steps.length - 1 ? (
-            <Button
-              onClick={nextStep}
-              className="flex-1 bg-amber-600 hover:bg-amber-700"
-            >
-              다음
-            </Button>
-          ) : (
-            <Button
-              onClick={onClose}
-              className="flex-1 bg-green-600 hover:bg-green-700"
-            >
-              <CheckCircle className="h-4 w-4 mr-2" />
-              완료
+          {onClose && (
+            <Button variant="ghost" size="icon" onClick={onClose}>
+              <X className="h-4 w-4" />
             </Button>
           )}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-6 space-y-6">
+        {/* 안내 메시지 */}
+        <div className="text-center p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+          <div className="text-lg font-semibold text-blue-800 mb-2">
+            🎙️ 더 자연스러운 음성으로 성경 듣기
+          </div>
+          <div className="text-sm text-blue-700">
+            기기에 언어팩을 다운로드하면 고품질 음성으로 성경을 들을 수 있습니다
+          </div>
         </div>
 
-        <div className="mt-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
-          <div className="flex items-start gap-3">
-            <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-              <CheckCircle className="h-4 w-4 text-white" />
+        {/* 다운로드 방법 */}
+        <div className="space-y-4">
+          <div className="text-center">
+            <h3 className="text-lg font-semibold text-slate-800 mb-2">
+              언어팩 다운로드 방법
+            </h3>
+            <p className="text-sm text-slate-600 mb-4">
+              아래 순서대로 진행하시면 4개 언어 모두 고품질 음성을 사용할 수 있습니다
+            </p>
+          </div>
+
+          <div className="bg-slate-50 rounded-lg p-4 space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-amber-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                1
+              </div>
+              <div>
+                <div className="font-medium text-slate-800">설정 앱 열기</div>
+                <div className="text-sm text-slate-600">홈 화면에서 '설정' 앱을 터치하세요</div>
+              </div>
             </div>
-            <div className="text-sm">
-              <div className="font-medium text-green-800 mb-1">왜 언어팩이 필요한가요?</div>
-              <div className="text-green-700">
-                기기에 언어팩을 다운로드하면 더욱 자연스럽고 선명한 음성으로 성경을 들을 수 있습니다. 
-                온라인 연결 없이도 고품질 음성을 사용할 수 있어 배터리도 절약됩니다.
+            
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-amber-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                2
+              </div>
+              <div>
+                <div className="font-medium text-slate-800">일반 메뉴 선택</div>
+                <div className="text-sm text-slate-600">설정 목록에서 '일반' 메뉴를 터치하세요</div>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-amber-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                3
+              </div>
+              <div>
+                <div className="font-medium text-slate-800">언어팩 메뉴</div>
+                <div className="text-sm text-slate-600">일반 설정에서 '언어팩' 메뉴를 터치하세요</div>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-amber-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                4
+              </div>
+              <div>
+                <div className="font-medium text-slate-800">4개 언어 모두 다운로드</div>
+                <div className="text-sm text-slate-600">한국어, 영어(미국), 일본어, 중국어(중국 본토) 전부 다운로드</div>
               </div>
             </div>
           </div>
         </div>
+
+        {/* 언어별 안내 */}
+        <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
+          <div className="text-sm font-medium text-green-800 mb-2">
+            다운로드할 언어팩 (4개 모두 필요)
+          </div>
+          <div className="grid grid-cols-2 gap-2 text-xs text-green-700">
+            <div>🇰🇷 한국어</div>
+            <div>🇺🇸 영어(미국)</div>
+            <div>🇯🇵 일본어</div>
+            <div>🇨🇳 중국어(중국 본토)</div>
+          </div>
+        </div>
+
+        {/* 버튼 */}
+        <div className="flex gap-3 sticky bottom-0 bg-white pt-4 border-t">
+          <Button
+            variant="outline"
+            onClick={onNeverShow}
+            className="flex-1 text-sm"
+          >
+            다시 보지 않기
+          </Button>
+          <Button
+            onClick={onClose}
+            className="flex-1 bg-amber-600 hover:bg-amber-700 text-sm"
+          >
+            <CheckCircle className="h-4 w-4 mr-2" />
+            확인
+          </Button>
+        </div>
+
+        {/* 추가 정보 */}
+        <div className="text-center text-xs text-slate-500 pt-2 border-t">
+          언제든지 설정 → 오디오 탭에서 다시 확인할 수 있습니다
+        </div>
       </CardContent>
-    </Card>
+    </div>
   );
 }
 
@@ -149,12 +142,23 @@ export function VoicePackageButton() {
           고품질 음성 다운로드 안내
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle>음성 품질 향상 방법</DialogTitle>
-        </DialogHeader>
+      <DialogContent className="max-w-md max-h-[90vh] p-0">
         <VoicePackageGuide />
       </DialogContent>
     </Dialog>
+  );
+}
+
+// 초기 실행 팝업 컴포넌트
+export function VoicePackageInitialPopup({ onClose, onNeverShow }: { 
+  onClose: () => void; 
+  onNeverShow: () => void; 
+}) {
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="w-full max-w-md max-h-[90vh] overflow-hidden">
+        <VoicePackageGuide onClose={onClose} onNeverShow={onNeverShow} />
+      </div>
+    </div>
   );
 }

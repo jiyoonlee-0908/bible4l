@@ -54,6 +54,10 @@ Ad-supported model: Keep only ad-supported version, Pro version to be developed 
 ✓ Fixed badge system with proper event-driven architecture for real-time badge unlocking
 ✓ Connected badge checks to actual app activities (listening, bookmarks, reading plans, streaks)
 ✓ Added totalListeningTime tracking to settings schema for accurate badge calculations
+✓ Fixed bottom navigation content overlap by increasing padding to pb-32 across all pages
+✓ Added comprehensive voice package download guide with initial popup and settings access
+✓ Implemented "다시 보지 않기" functionality with localStorage persistence
+✓ Created mobile-optimized single-screen UI for voice package download instructions
 
 ## Play Store Deployment Preparation (January 15, 2025)
 

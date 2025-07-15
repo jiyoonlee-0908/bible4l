@@ -8,6 +8,7 @@ import { Navigation } from '@/components/Navigation';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { ChapterVerseSelector } from '@/components/ChapterVerseSelector';
 import { BibleSelector } from '@/components/BibleSelector';
+import { VoicePackageInitialPopup } from '@/components/VoicePackageGuide';
 import { useBible } from '@/hooks/useBible';
 import { useBadges } from '@/hooks/useBadges';
 import { useBookmarks } from '@/hooks/useBookmarks';
@@ -24,6 +25,7 @@ export default function Home() {
   const [showBibleSelector, setShowBibleSelector] = useState(false);
   const [showFontSizeModal, setShowFontSizeModal] = useState(false);
   const [fontLevel, setFontLevel] = useState(0); // -2 to +3, 0 is base
+  const [showVoicePackagePopup, setShowVoicePackagePopup] = useState(false);
   
   const {
     currentLanguage,
@@ -47,6 +49,12 @@ export default function Home() {
     setSettings(savedSettings);
     setCurrentLanguage(savedSettings.selectedLanguage);
     setFontLevel(savedSettings.fontLevel || 0);
+    
+    // Check if voice package popup should be shown
+    const hasShownVoicePackagePopup = localStorage.getItem('voice-package-popup-shown');
+    if (!hasShownVoicePackagePopup) {
+      setShowVoicePackagePopup(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -98,6 +106,16 @@ export default function Home() {
   const getFontLevelName = (level: number) => {
     const names = ['매우 작게', '작게', '기본', '크게', '매우 크게', '최대 크게'];
     return names[level + 2] || '기본';
+  };
+
+  const handleVoicePackagePopupClose = () => {
+    setShowVoicePackagePopup(false);
+    localStorage.setItem('voice-package-popup-shown', 'true');
+  };
+
+  const handleVoicePackageNeverShow = () => {
+    setShowVoicePackagePopup(false);
+    localStorage.setItem('voice-package-popup-shown', 'never');
   };
 
   return (
@@ -210,6 +228,14 @@ export default function Home() {
         currentPath={location}
         onNavigate={setLocation}
       />
+      
+      {/* Voice Package Initial Popup */}
+      {showVoicePackagePopup && (
+        <VoicePackageInitialPopup
+          onClose={handleVoicePackagePopupClose}
+          onNeverShow={handleVoicePackageNeverShow}
+        />
+      )}
     </div>
   );
 }
