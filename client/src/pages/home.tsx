@@ -12,7 +12,7 @@ import { useBible } from '@/hooks/useBible';
 import { useBadges } from '@/hooks/useBadges';
 import { useBookmarks } from '@/hooks/useBookmarks';
 
-import { AdFitBanner } from '@/components/AdFitBanner';
+
 import { Storage } from '@/lib/storage';
 import { Language, Settings } from '@shared/schema';
 import { useToast } from '@/hooks/use-toast';
@@ -136,14 +136,7 @@ export default function Home() {
               mode={settings.displayMode}
               koreanVerse={currentLanguage !== 'ko' ? koreanVerseData : undefined}
             />
-            
-            {/* 구절 아래 정사각형 광고 */}
-            <AdFitBanner
-              adUnit="DAN-your-verse-square-unit"
-              adWidth={300}
-              adHeight={250}
-              className="verse-square-ad"
-            />
+
           </>
         )}
         

@@ -9,7 +9,7 @@ import { Play, Pause, SkipForward, SkipBack, Volume2, Loader2, Repeat, Repeat1, 
 import { useBible } from '@/hooks/useBible';
 import { useSpeech } from '@/hooks/useSpeech';
 
-import { AdFitBanner } from '@/components/AdFitBanner';
+
 import { FontSizeModal } from '@/components/FontSizeModal';
 import { Storage } from '@/lib/storage';
 import { Language, Settings, languageConfig } from '@shared/schema';
@@ -333,13 +333,7 @@ export default function Player() {
           </CardContent>
         </Card>
 
-        {/* 플레이어 하단 광고 */}
-        <AdFitBanner
-          adUnit="DAN-your-player-bottom-unit"
-          adWidth={320}
-          adHeight={50}
-          className="player-bottom-ad"
-        />
+
       </div>
       
       <BottomNavigation

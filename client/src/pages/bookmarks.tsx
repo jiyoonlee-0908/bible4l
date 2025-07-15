@@ -4,7 +4,7 @@ import { Header } from '@/components/Header';
 import { BookmarksList } from '@/components/BookmarksList';
 import { FontSizeModal } from '@/components/FontSizeModal';
 import { BottomNavigation } from '@/components/BottomNavigation';
-import { AdFitBanner } from '@/components/AdFitBanner';
+
 import { useBookmarks } from '@/hooks/useBookmarks';
 import { useBible } from '@/hooks/useBible';
 import { Storage } from '@/lib/storage';
@@ -48,14 +48,7 @@ export default function Bookmarks() {
           onRemoveBookmark={removeBookmark}
           onSelectBookmark={handleSelectBookmark}
         />
-        
-        {/* 북마크 페이지 광고 */}
-        <AdFitBanner
-          adUnit="DAN-your-bookmarks-unit"
-          adWidth={300}
-          adHeight={250}
-          className="bookmarks-ad"
-        />
+
       </div>
       
       <BottomNavigation

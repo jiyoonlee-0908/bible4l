@@ -39,8 +39,8 @@ Ad-supported model: Keep only ad-supported version, Pro version to be developed 
 ✓ Removed ad placement between Bible selection and language selection for better UX
 ✓ Optimized TTS voices with hardcoded language-specific settings for natural pronunciation
 ✓ Updated player mode labels to "한 구절 반복" and "전체 듣기" for better user clarity
-✓ Added advertisements to bookmarks and progress tabs for revenue optimization
-✓ Removed advertisements from settings tab per user request
+✓ Removed all advertisements - ads require actual app store registration for approval
+✓ AdFitBanner component kept for future use after app store deployment
 
 ## System Architecture
 
