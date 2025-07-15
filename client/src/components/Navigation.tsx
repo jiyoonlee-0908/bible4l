@@ -480,10 +480,7 @@ export function Navigation({
               </Button>
             </div>
 
-            {/* 일시정지 텍스트 */}
-            <div className="text-sm text-slate-600 font-medium">
-              {isPlaying ? '일시정지' : '재생'}
-            </div>
+
           </div>
         </div>
       </CardContent>
