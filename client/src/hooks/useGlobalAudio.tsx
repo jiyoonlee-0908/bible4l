@@ -1,4 +1,5 @@
-import * as React from 'react';
+import { createContext, useContext, useState } from 'react';
+import type { ReactNode } from 'react';
 import { AudioState, Language } from '@shared/schema';
 
 interface GlobalAudioState extends AudioState {
@@ -22,10 +23,10 @@ interface GlobalAudioContextType {
   toggleGlobalPlayback: () => void;
 }
 
-const GlobalAudioContext = React.createContext<GlobalAudioContextType | undefined>(undefined);
+const GlobalAudioContext = createContext<GlobalAudioContextType | undefined>(undefined);
 
-export function GlobalAudioProvider({ children }: { children: React.ReactNode }) {
-  const [globalAudioState, setGlobalAudioStateInternal] = React.useState<GlobalAudioState>({
+export function GlobalAudioProvider({ children }: { children: ReactNode }) {
+  const [globalAudioState, setGlobalAudioStateInternal] = useState<GlobalAudioState>({
     isPlaying: false,
     currentPosition: 0,
     duration: 0,
@@ -83,7 +84,7 @@ export function GlobalAudioProvider({ children }: { children: React.ReactNode })
 }
 
 export function useGlobalAudio() {
-  const context = React.useContext(GlobalAudioContext);
+  const context = useContext(GlobalAudioContext);
   if (!context) {
     throw new Error('useGlobalAudio must be used within GlobalAudioProvider');
   }
