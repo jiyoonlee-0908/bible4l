@@ -311,7 +311,7 @@ export default function Player() {
                   }`}
                 >
                   <Repeat1 className="h-3 w-3 mr-1" />
-                  한 곡 반복
+                  한 구절 반복
                 </Button>
                 
                 <Button
@@ -325,7 +325,7 @@ export default function Player() {
                   }`}
                 >
                   <Repeat className="h-3 w-3 mr-1" />
-                  연속 재생
+                  전체 듣기
                 </Button>
               </div>
             </div>
