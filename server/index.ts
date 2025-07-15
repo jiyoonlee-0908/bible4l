@@ -1,68 +1,64 @@
-import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
+import express from "express";
+import { createServer } from "vite";
+import path from "path";
 
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+const port = 5000;
 
-app.use((req, res, next) => {
-  const start = Date.now();
-  const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
-
-  const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
-    capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
-  };
-
-  res.on("finish", () => {
-    const duration = Date.now() - start;
-    if (path.startsWith("/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-      }
-
-      if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "…";
-      }
-
-      log(logLine);
-    }
-  });
-
-  next();
-});
-
-(async () => {
-  const server = await registerRoutes(app);
-
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-
-    res.status(status).json({ message });
-    throw err;
-  });
-
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
+async function startServer() {
   if (process.env.NODE_ENV === "development") {
-    await setupVite(app, server);
+    // 개발 모드: Vite 개발 서버
+    const vite = await createServer({
+      server: { middlewareMode: true },
+      appType: 'custom',
+      root: path.resolve(process.cwd(), 'client'),
+      base: '/',
+      resolve: {
+        alias: {
+          '@': path.resolve(process.cwd(), 'client/src'),
+          '@shared': path.resolve(process.cwd(), 'shared'),
+          '@assets': path.resolve(process.cwd(), 'attached_assets'),
+        }
+      }
+    });
+
+    app.use(vite.middlewares);
+    
+    // SPA 라우팅
+    app.use('*', async (req, res, next) => {
+      try {
+        const url = req.originalUrl;
+        const template = await vite.transformIndexHtml(url, `
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BibleAudio 4L</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>`);
+        res.status(200).set({ 'Content-Type': 'text/html' }).end(template);
+      } catch (e) {
+        vite.ssrFixStacktrace(e);
+        next(e);
+      }
+    });
   } else {
-    serveStatic(app);
+    // 프로덕션 모드: 정적 파일 서빙
+    app.use(express.static(path.resolve(process.cwd(), 'dist/public')));
+    app.get('*', (req, res) => {
+      res.sendFile(path.resolve(process.cwd(), 'dist/public/index.html'));
+    });
   }
 
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = 5000;
-  server.listen(port, "0.0.0.0", () => {
-    log(`serving on port ${port}`);
-    console.log(`🚀 App running at: http://localhost:${port}`);
-    console.log(`🌐 External URL: https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`);
+  app.listen(port, '0.0.0.0', () => {
+    console.log(`Server running on port ${port}`);
+    console.log(`Development: http://localhost:${port}`);
   });
-})();
+}
+
+startServer().catch(console.error);
