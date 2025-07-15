@@ -49,6 +49,8 @@ Ad-supported model: Keep only ad-supported version, Pro version to be developed 
 ✓ Replaced hardcoded reading plan progress with actual data from useReadingPlan hook
 ✓ Extended reading plans to full 90 and 365 days with complete daily reading schedules
 ✓ Localized reading plan book names to Korean (창세기, 출애굽기, etc.)
+✓ Enhanced TTS voice selection with stronger Google voice enforcement for mobile devices
+✓ Added comprehensive voice debugging logs to troubleshoot mobile TTS issues
 
 ## System Architecture
 
