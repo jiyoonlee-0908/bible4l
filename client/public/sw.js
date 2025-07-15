@@ -1,29 +1,46 @@
-const CACHE_NAME = 'bibleaudio-4l-v1';
+// Service Worker for BibleAudio 4L
+const CACHE_NAME = 'bibleaudio-v1';
 const urlsToCache = [
   '/',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png',
-  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'
+  '/static/js/bundle.js',
+  '/static/css/main.css',
+  '/bible-icon.svg',
+  '/manifest.json'
 ];
 
-self.addEventListener('install', (event) => {
+// Install event
+self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => {
+      .then(function(cache) {
         return cache.addAll(urlsToCache);
       })
   );
 });
 
-self.addEventListener('fetch', (event) => {
+// Fetch event
+self.addEventListener('fetch', function(event) {
   event.respondWith(
     caches.match(event.request)
-      .then((response) => {
-        if (response) {
-          return response;
-        }
-        return fetch(event.request);
-      })
+      .then(function(response) {
+        // Return cached version or fetch from network
+        return response || fetch(event.request);
+      }
+    )
+  );
+});
+
+// Activate event
+self.addEventListener('activate', function(event) {
+  event.waitUntil(
+    caches.keys().then(function(cacheNames) {
+      return Promise.all(
+        cacheNames.map(function(cacheName) {
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
   );
 });

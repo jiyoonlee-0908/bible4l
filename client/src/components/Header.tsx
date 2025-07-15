@@ -1,4 +1,3 @@
-import React from 'react';
 import { Type, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLocation } from 'wouter';
