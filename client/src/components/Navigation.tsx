@@ -42,7 +42,7 @@ export function Navigation({
   };
 
   const handlePause = () => {
-    if (isPlaying) {
+    if (speechSynthesis.speaking && !speechSynthesis.paused) {
       pause();
     }
   };
@@ -451,9 +451,9 @@ export function Navigation({
             <Button
               variant="ghost"
               onClick={handlePause}
-              className="p-4 bg-slate-600 hover:bg-slate-700 rounded-full transition-colors"
+              className="p-3 bg-slate-200 hover:bg-slate-300 rounded-full transition-colors"
             >
-              <Pause className="h-6 w-6 text-white" />
+              <Pause className="h-5 w-5 text-slate-600" />
             </Button>
 
             {/* 다음 버튼 */}

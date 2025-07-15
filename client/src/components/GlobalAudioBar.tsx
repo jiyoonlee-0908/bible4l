@@ -5,14 +5,30 @@ import { useSpeech } from '@/hooks/useSpeech';
 
 export function GlobalAudioBar() {
   const { globalAudioState, toggleGlobalPlayback, stopGlobalPlayback } = useGlobalAudio();
-  const { audioState, toggle, stop } = useSpeech();
+  const { audioState, speak, pause, resume, stop } = useSpeech();
 
   if (!globalAudioState.isActive || !globalAudioState.currentVerse) {
     return null;
   }
 
   const handleToggle = () => {
-    toggle();
+    if (audioState.isPlaying) {
+      // 재생 중이면 일시정지
+      pause();
+    } else if (speechSynthesis.paused) {
+      // 일시정지 상태이면 재개
+      resume();
+    } else {
+      // 새로 재생 시작
+      const verse = globalAudioState.currentVerse;
+      if (verse) {
+        speak(verse.text, {
+          lang: verse.language === 'ko' ? 'ko-KR' : 
+                verse.language === 'en' ? 'en-US' : 
+                verse.language === 'zh' ? 'zh-CN' : 'ja-JP',
+        });
+      }
+    }
     toggleGlobalPlayback();
   };
 
