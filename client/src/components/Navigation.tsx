@@ -28,16 +28,22 @@ export function Navigation({
   secondaryVerse,
 }: NavigationProps) {
   const { globalAudioState, toggleGlobalPlayback } = useGlobalAudio();
-  const { isPlaying, speak, stop, settings, updateSettings } = useSpeech();
+  const { isPlaying, speak, stop, pause, resume, settings, updateSettings } = useSpeech();
 
   const handlePlayPause = () => {
     if (isPlaying) {
-      stop();
-    } else if (verseText) {
-      speak(verseText, {
-        lang: language === 'ko' ? 'ko-KR' : language === 'en' ? 'en-US' : language === 'zh' ? 'zh-CN' : 'ja-JP',
-        rate: currentSpeed,
-      });
+      // 재생 중이면 일시정지
+      pause();
+    } else {
+      // 일시정지 상태이면 재개 또는 새로 시작
+      if (speechSynthesis.paused) {
+        resume();
+      } else if (verseText) {
+        speak(verseText, {
+          lang: language === 'ko' ? 'ko-KR' : language === 'en' ? 'en-US' : language === 'zh' ? 'zh-CN' : 'ja-JP',
+          rate: currentSpeed,
+        });
+      }
     }
   };
 
