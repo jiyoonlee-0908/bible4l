@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import * as React from 'react';
+const { createContext, useContext, useState } = React;
+import type { ReactNode } from 'react';
 import { AudioState, Language } from '@shared/schema';
 
 interface GlobalAudioState extends AudioState {
