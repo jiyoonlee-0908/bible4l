@@ -297,21 +297,34 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
                 size="sm"
                 variant="outline"
                 className="flex items-center gap-2"
-                disabled={embeddedTTS.isLoading || prerecordedTTS.isLoading}
+                disabled={embeddedTTS.isLoading || prerecordedTTS.isLoading || (audioState.isPlaying || embeddedTTS.isPlaying || prerecordedTTS.isPlaying)}
               >
-                {(audioState.isPlaying || embeddedTTS.isPlaying || prerecordedTTS.isPlaying) ? (
-                  <Pause className="w-4 h-4" />
-                ) : (embeddedTTS.isLoading || prerecordedTTS.isLoading) ? (
+                {(embeddedTTS.isLoading || prerecordedTTS.isLoading) ? (
                   <div className="w-4 h-4 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600"></div>
                 ) : (
                   <Play className="w-4 h-4" />
                 )}
-                {(embeddedTTS.isLoading || prerecordedTTS.isLoading) ? '준비 중...' : 
-                 (audioState.isPlaying || embeddedTTS.isPlaying || prerecordedTTS.isPlaying) ? '일시정지' : '재생'}
+                {(embeddedTTS.isLoading || prerecordedTTS.isLoading) ? '준비 중...' : '재생'}
               </Button>
-              {mode === 'double' && (
-                <span className="text-xs text-slate-500">외국어 → 한국어</span>
-              )}
+              
+              <Button
+                onClick={() => {
+                  if (prerecordedTTS.isPlaying) {
+                    prerecordedTTS.stop();
+                  } else if (embeddedTTS.isPlaying) {
+                    embeddedTTS.stop();
+                  } else {
+                    toggle();
+                  }
+                }}
+                size="sm"
+                variant="outline"
+                className="flex items-center gap-2"
+                disabled={!(audioState.isPlaying || embeddedTTS.isPlaying || prerecordedTTS.isPlaying)}
+              >
+                <Pause className="w-4 h-4" />
+                일시정지
+              </Button>
             </div>
             
             {/* Speed Controls */}
