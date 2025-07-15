@@ -183,9 +183,6 @@ export function BibleSelector({ onSelect, selectedLanguage }: BibleSelectorProps
   return (
     <Card className="bg-white rounded-xl shadow-sm border border-slate-200">
       <CardContent className="p-4">
-        <div className="mb-3">
-          <h3 className="text-sm font-medium text-slate-700">성경 선택</h3>
-        </div>
         <div className="space-y-3">
           <div className="grid grid-cols-3 gap-2">
           <div className="space-y-1">
