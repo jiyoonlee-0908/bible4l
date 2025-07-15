@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, SkipForward, SkipBack, Volume2, Loader2, Repeat, Repeat1, Plus, Minus } from 'lucide-react';
 import { useBible } from '@/hooks/useBible';
-import { useSpeech } from '@/hooks/useSpeech';
+import { useSimpleTTS } from '@/hooks/useSimpleTTS';
 
 
 import { FontSizeModal } from '@/components/FontSizeModal';
@@ -36,7 +36,7 @@ export default function Player() {
     navigateVerse
   } = useBible();
   
-  const { audioState, speak, toggle, stop, setSpeed } = useSpeech();
+  const { audioState, speak, toggle, stop, setSpeed } = useSimpleTTS();
 
   const { toast } = useToast();
 
@@ -82,52 +82,32 @@ export default function Player() {
     };
     
     const langCode = voiceMapping[currentLanguage] || 'en-US';
-    speak(currentVerseData.text, { 
-      rate: audioState.speed, 
-      lang: langCode,
-      onEnd: () => {
-        setIsLoading(false);
-        
-        // Save listening statistics
-        const listeningStats = JSON.parse(localStorage.getItem('listeningStats') || '[]');
-        const verseKey = `${currentBook}-${currentChapter}-${currentVerse}-${currentLanguage}`;
-        
-        // Check if this exact verse in this language was already recorded recently (within 5 minutes)
-        const recentRecord = listeningStats.find((stat: any) => {
-          const statKey = `${stat.book}-${stat.chapter}-${stat.verse}-${stat.language}`;
-          const timeDiff = new Date().getTime() - new Date(stat.timestamp).getTime();
-          return statKey === verseKey && timeDiff < 5 * 60 * 1000; // 5 minutes
-        });
-        
-        if (!recentRecord) {
-          const newStat = {
-            book: currentBook,
-            chapter: currentChapter,
-            verse: currentVerse,
-            language: currentLanguage,
-            timestamp: new Date().toISOString(),
-            duration: Math.round(currentVerseData.text.length / 15), // Estimate duration based on text length
-            type: 'listen'
-          };
-          listeningStats.push(newStat);
-          localStorage.setItem('listeningStats', JSON.stringify(listeningStats));
-        }
-        
-        if (playMode === 'single') {
-          // Repeat current verse in single mode
-          setTimeout(() => {
-            playCurrentVerse();
-          }, 500);
-        } else if (playMode === 'continuous' && isPlayingContinuous) {
-          // Auto advance to next verse after 1 second
-          setTimeout(() => {
-            navigateVerse('next');
-          }, 1000);
-        } else {
-          setIsPlayingContinuous(false);
-        }
-      }
+    speak(currentVerseData.text, langCode);
+    
+    // Save listening statistics
+    const listeningStats = JSON.parse(localStorage.getItem('listeningStats') || '[]');
+    const verseKey = `${currentBook}-${currentChapter}-${currentVerse}-${currentLanguage}`;
+    
+    // Check if this exact verse in this language was already recorded recently (within 5 minutes)
+    const recentRecord = listeningStats.find((stat: any) => {
+      const statKey = `${stat.book}-${stat.chapter}-${stat.verse}-${stat.language}`;
+      const timeDiff = new Date().getTime() - new Date(stat.timestamp).getTime();
+      return statKey === verseKey && timeDiff < 5 * 60 * 1000; // 5 minutes
     });
+    
+    if (!recentRecord) {
+      const newStat = {
+        book: currentBook,
+        chapter: currentChapter,
+        verse: currentVerse,
+        language: currentLanguage,
+        timestamp: new Date().toISOString(),
+        duration: Math.round(currentVerseData.text.length / 15), // Estimate duration based on text length
+        type: 'listen'
+      };
+      listeningStats.push(newStat);
+      localStorage.setItem('listeningStats', JSON.stringify(listeningStats));
+    }
   };
 
   const handlePlay = () => {
@@ -143,40 +123,8 @@ export default function Player() {
       console.log('▶️ Starting playback');
       setIsLoading(true);
       setIsPlayingContinuous(true);
-      
-      // 간단한 TTS 테스트
-      const testText = currentVerseData.text;
-      console.log('🎤 Testing TTS with text:', testText);
-      
-      if ('speechSynthesis' in window) {
-        console.log('✅ Speech synthesis available');
-        const utterance = new SpeechSynthesisUtterance(testText);
-        utterance.rate = 1.0;
-        utterance.volume = 1.0;
-        utterance.lang = 'ko-KR';
-        
-        utterance.onstart = () => {
-          console.log('✅ Direct TTS started');
-        };
-        
-        utterance.onend = () => {
-          console.log('✅ Direct TTS ended');
-          setIsLoading(false);
-        };
-        
-        utterance.onerror = (e) => {
-          console.error('❌ Direct TTS error:', e.error);
-          setIsLoading(false);
-        };
-        
-        speechSynthesis.speak(utterance);
-      } else {
-        console.error('❌ Speech synthesis not available');
-        setIsLoading(false);
-      }
-      
-      // 기존 playCurrentVerse도 호출
       playCurrentVerse();
+      setTimeout(() => setIsLoading(false), 1000);
     } else {
       console.log('❌ No verse data available');
     }

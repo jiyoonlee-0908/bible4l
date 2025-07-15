@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Play, Pause, Star, Share2, Minus, Plus } from 'lucide-react';
 import { BibleVerse } from '@/types/bible';
 import { Language } from '@shared/schema';
-import { useSpeech } from '@/hooks/useSpeech';
+import { useSimpleTTS } from '@/hooks/useSimpleTTS';
 import { useBookmarks } from '@/hooks/useBookmarks';
 import { useToast } from '@/hooks/use-toast';
 import { useEffect } from 'react';
@@ -16,7 +16,7 @@ interface VerseCardProps {
 }
 
 export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps) {
-  const { audioState, speak, toggle, stop, setSpeed, setPitch } = useSpeech();
+  const { audioState, speak, toggle, stop, setSpeed } = useSimpleTTS();
   const { isBookmarked, toggleBookmark } = useBookmarks();
   const { toast } = useToast();
 
@@ -74,72 +74,19 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
     } else {
       console.log('▶️ Starting verse playback');
       
-      // 간단한 TTS 테스트
-      const testText = verse.text;
-      console.log('🎤 Testing TTS with text:', testText);
+      const voiceMapping = {
+        ko: 'ko-KR',
+        en: 'en-US',
+        zh: 'zh-CN', 
+        ja: 'ja-JP'
+      };
       
-      if ('speechSynthesis' in window) {
-        console.log('✅ Speech synthesis available');
-        const utterance = new SpeechSynthesisUtterance(testText);
-        utterance.rate = 1.0;
-        utterance.volume = 1.0;
-        utterance.lang = language === 'ko' ? 'ko-KR' : 'en-US';
-        
-        utterance.onstart = () => {
-          console.log('✅ Direct TTS started');
-        };
-        
-        utterance.onend = () => {
-          console.log('✅ Direct TTS ended');
-        };
-        
-        utterance.onerror = (e) => {
-          console.error('❌ Direct TTS error:', e.error);
-        };
-        
-        speechSynthesis.speak(utterance);
-      } else {
-        console.error('❌ Speech synthesis not available');
-      }
-      
-      // 기존 코드도 실행
-      if (mode === 'double' && koreanVerse) {
-        // For cross mode, speak first language then Korean with appropriate voices
-        speakCrossMode(verse, koreanVerse, language);
-      } else {
-        // Single mode - speak only the current verse
-        const voiceMapping = {
-          ko: 'ko-KR',
-          en: 'en-US',
-          zh: 'zh-CN', 
-          ja: 'ja-JP'
-        };
-        
-        const langCode = voiceMapping[language] || 'en-US';
-        speak(verse.text, { rate: audioState.speed, lang: langCode });
-      }
+      const langCode = voiceMapping[language] || 'en-US';
+      speak(verse.text, langCode);
     }
   };
 
-  const speakCrossMode = (primaryVerse: BibleVerse, koreanVerse: BibleVerse, primaryLang: Language) => {
-    const voiceMapping = {
-      ko: 'ko-KR',
-      en: 'en-US',
-      zh: 'zh-CN', 
-      ja: 'ja-JP'
-    };
 
-    // First speak in the primary language, then Korean when finished
-    const primaryLangCode = voiceMapping[primaryLang] || 'en-US';
-    speak(primaryVerse.text, { 
-      rate: audioState.speed, 
-      lang: primaryLangCode,
-      onEnd: () => {
-        // Speak Korean after the first language finishes
-        speak(koreanVerse.text, { rate: audioState.speed, lang: 'ko-KR' });
-      }
-    });
-  };
 
   const handleBookmark = () => {
     const bookmark = {
