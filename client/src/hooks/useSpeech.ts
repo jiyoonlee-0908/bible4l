@@ -256,9 +256,28 @@ export function useSpeech() {
       const cleanedText = cleanText(text);
       const newUtterance = new SpeechSynthesisUtterance(cleanedText);
       
-      // 구글 음성 강제 설정
+      // 구글 음성 강제 설정 (우선순위 음성 사용)
       const targetLang = options.lang || getCurrentLanguageCode();
-      const selectedVoice = selectBestVoice(targetLang);
+      let selectedVoice = selectBestVoice(targetLang);
+      
+      // 저장된 우선순위 음성 체크
+      try {
+        const preferredVoices = localStorage.getItem('bible-preferred-voices');
+        if (preferredVoices) {
+          const preferences = JSON.parse(preferredVoices);
+          const langPrefs = preferences[targetLang];
+          if (langPrefs && langPrefs.length > 0) {
+            const currentVoices = speechSynthesis.getVoices();
+            const preferredVoice = currentVoices.find(v => v.name === langPrefs[0].name);
+            if (preferredVoice) {
+              selectedVoice = preferredVoice;
+              console.log(`Using preferred voice: ${preferredVoice.name}`);
+            }
+          }
+        }
+      } catch (error) {
+        console.log('Failed to load preferred voices:', error);
+      }
       
       if (selectedVoice) {
         newUtterance.voice = selectedVoice;
