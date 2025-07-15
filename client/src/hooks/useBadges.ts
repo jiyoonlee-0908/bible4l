@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Badge } from '@shared/schema';
 import { useToast } from '@/hooks/use-toast';
 

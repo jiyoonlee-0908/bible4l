@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ReadingPlan, Progress } from '@shared/schema';
 import { Storage } from '@/lib/storage';
 

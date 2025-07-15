@@ -36,12 +36,6 @@ Commercial use: Prioritize cost-free solutions using public domain content.
 ✓ Implemented subscription management system (월 990원) with ad removal functionality
 ✓ Added subscription tab in settings with premium vs. free status management
 ✓ Created AdFitBanner component with subscription-aware conditional rendering
-✓ Fixed PWA Builder compatibility issues: added PNG icons, service worker, proper manifest
-✓ Generated PNG icons (512x512, 192x192, 144x144, 96x96) from SVG using ImageMagick
-✓ Resolved development server startup issues and configuration problems (January 2025)
-✓ Fixed critical React useState import error by adding explicit React imports to prevent white screen bug
-✓ Resolved MIME type errors by fixing Vite dev server integration with proper NODE_ENV configuration
-✓ Fixed React Fast Refresh ($RefreshSig$) errors by switching to production build for stable deployment
 
 ## System Architecture
 
