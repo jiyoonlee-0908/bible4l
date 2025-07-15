@@ -114,7 +114,7 @@ export default function ProgressPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-amber-50 pb-40">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-amber-50 pb-24">
       <Header
         onFontSizeClick={() => setShowFontSizeModal(true)}
         onSettingsClick={() => setLocation('/settings')}
