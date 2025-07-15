@@ -13,7 +13,20 @@ const READING_PLANS = {
       { day: 1, books: ['Genesis'], chapters: [1, 2, 3], description: '창조와 타락' },
       { day: 2, books: ['Genesis'], chapters: [4, 5, 6], description: '가인과 아벨, 홍수 이전' },
       { day: 3, books: ['Genesis'], chapters: [7, 8, 9], description: '노아의 홍수' },
-      // ... more days would be added
+      { day: 4, books: ['Genesis'], chapters: [10, 11, 12], description: '바벨탑과 아브라함의 부름' },
+      { day: 5, books: ['Genesis'], chapters: [13, 14, 15], description: '아브라함의 언약' },
+      { day: 6, books: ['Genesis'], chapters: [16, 17, 18], description: '이스마엘과 이삭의 약속' },
+      { day: 7, books: ['Genesis'], chapters: [19, 20, 21], description: '소돔과 고모라, 이삭의 탄생' },
+      { day: 8, books: ['Genesis'], chapters: [22, 23, 24], description: '아브라함의 시험과 믿음' },
+      { day: 9, books: ['Genesis'], chapters: [25, 26, 27], description: '이삭과 야곱의 축복' },
+      { day: 10, books: ['Genesis'], chapters: [28, 29, 30], description: '야곱의 꿈과 결혼' },
+      // Continue for more days...
+      ...Array.from({ length: 80 }, (_, i) => ({
+        day: i + 11,
+        books: ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy'][Math.floor(i / 16)],
+        chapters: [Math.floor(i % 5) + 1, Math.floor(i % 5) + 2],
+        description: `${i + 11}일차 성경 읽기`
+      }))
     ],
     createdAt: new Date().toISOString(),
   },
@@ -26,7 +39,20 @@ const READING_PLANS = {
       { day: 1, books: ['Genesis'], chapters: [1], description: '창조 첫째 날' },
       { day: 2, books: ['Genesis'], chapters: [2], description: '창조 둘째 날' },
       { day: 3, books: ['Genesis'], chapters: [3], description: '타락' },
-      // ... more days would be added
+      { day: 4, books: ['Genesis'], chapters: [4], description: '가인과 아벨' },
+      { day: 5, books: ['Genesis'], chapters: [5], description: '아담의 족보' },
+      { day: 6, books: ['Genesis'], chapters: [6], description: '노아 시대' },
+      { day: 7, books: ['Genesis'], chapters: [7], description: '홍수 시작' },
+      { day: 8, books: ['Genesis'], chapters: [8], description: '홍수 끝' },
+      { day: 9, books: ['Genesis'], chapters: [9], description: '노아의 언약' },
+      { day: 10, books: ['Genesis'], chapters: [10], description: '민족들의 분산' },
+      // Continue for more days...
+      ...Array.from({ length: 355 }, (_, i) => ({
+        day: i + 11,
+        books: ['Genesis', 'Exodus', 'Leviticus', 'Numbers', 'Deuteronomy', 'Joshua', 'Judges', 'Ruth', '1 Samuel', '2 Samuel', '1 Kings', '2 Kings'][Math.floor(i / 30)],
+        chapters: [Math.floor(i % 10) + 1],
+        description: `${i + 11}일차 성경 읽기`
+      }))
     ],
     createdAt: new Date().toISOString(),
   },

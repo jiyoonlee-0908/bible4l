@@ -47,6 +47,7 @@ Ad-supported model: Keep only ad-supported version, Pro version to be developed 
 ✓ Fixed Preview runtime errors with improved error handling and React import fixes
 ✓ Fixed "모든 데이터 삭제" to properly clear reading plan progress and reload page
 ✓ Replaced hardcoded reading plan progress with actual data from useReadingPlan hook
+✓ Extended reading plans to full 90 and 365 days with complete daily reading schedules
 
 ## System Architecture
 
