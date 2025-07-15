@@ -51,7 +51,7 @@ export function Navigation({
   };
 
   const handleSpeedChange = (increment: number) => {
-    const newSpeed = Math.max(0.5, Math.min(2.0, currentSpeed + increment));
+    const newSpeed = Math.max(0.5, Math.min(1.5, currentSpeed + increment));
     setSpeed(newSpeed);
   };
 
@@ -484,7 +484,7 @@ export function Navigation({
             <div className="flex items-center space-x-3">
               <Button
                 variant="ghost"
-                onClick={() => handleSpeedChange(-0.25)}
+                onClick={() => handleSpeedChange(-0.1)}
                 className="p-2 bg-slate-200 hover:bg-slate-300 rounded-full transition-colors"
                 disabled={currentSpeed <= 0.5}
               >
@@ -492,15 +492,15 @@ export function Navigation({
               </Button>
               <div className="text-center min-w-[50px]">
                 <div className="text-sm font-medium text-slate-800">
-                  {currentSpeed.toFixed(2)}x
+                  {currentSpeed.toFixed(1)}x
                 </div>
                 <div className="text-xs text-slate-500">속도</div>
               </div>
               <Button
                 variant="ghost"
-                onClick={() => handleSpeedChange(0.25)}
+                onClick={() => handleSpeedChange(0.1)}
                 className="p-2 bg-slate-200 hover:bg-slate-300 rounded-full transition-colors"
-                disabled={currentSpeed >= 2.0}
+                disabled={currentSpeed >= 1.5}
               >
                 <Plus className="h-4 w-4 text-slate-600" />
               </Button>
