@@ -317,6 +317,33 @@ export default function Player() {
                 </Button>
               </div>
             </div>
+            
+            {/* TTS Test Button */}
+            <div className="flex justify-center">
+              <Button 
+                onClick={() => {
+                  console.log('🧪 TTS Test Button clicked');
+                  if ('speechSynthesis' in window) {
+                    const testUtterance = new SpeechSynthesisUtterance('안녕하세요. 음성 테스트입니다.');
+                    testUtterance.rate = 1.0;
+                    testUtterance.volume = 1.0;
+                    testUtterance.lang = 'ko-KR';
+                    
+                    testUtterance.onstart = () => console.log('✅ Test TTS Started');
+                    testUtterance.onend = () => console.log('✅ Test TTS Ended');
+                    testUtterance.onerror = (e) => console.error('❌ Test TTS Error:', e.error);
+                    
+                    speechSynthesis.speak(testUtterance);
+                  } else {
+                    console.error('❌ Speech synthesis not available');
+                  }
+                }}
+                variant="outline"
+                className="h-10 px-4 bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-800"
+              >
+                <span className="text-sm">🎤 음성 테스트</span>
+              </Button>
+            </div>
 
           </CardContent>
         </Card>
