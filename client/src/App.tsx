@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -6,7 +7,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { GlobalAudioProvider } from '@/hooks/useGlobalAudio';
 import { GlobalAudioBar } from '@/components/GlobalAudioBar';
 import { Storage } from '@/lib/storage';
-import { useState, useEffect } from 'react';
 import Home from "@/pages/home";
 import Player from "@/pages/player";
 import Bookmarks from "@/pages/bookmarks";
@@ -39,7 +39,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // 폰트 크기 클래스 적용
     const fontScaleClasses = [
       'font-scale-xs',   // -2
       'font-scale-sm',   // -1  
@@ -48,24 +47,23 @@ function App() {
       'font-scale-xl',   // 2
       'font-scale-2xl'   // 3
     ];
-
-    // 기존 폰트 클래스 제거
-    document.body.classList.remove(...fontScaleClasses);
     
-    // 새 폰트 클래스 적용
-    const scaleIndex = Math.max(0, Math.min(5, fontLevel + 2));
-    document.body.classList.add(fontScaleClasses[scaleIndex]);
+    fontScaleClasses.forEach(cls => document.body.classList.remove(cls));
+    const targetClass = fontScaleClasses[fontLevel + 2] || 'font-scale-base';
+    document.body.classList.add(targetClass);
   }, [fontLevel]);
 
   return (
     <QueryClientProvider client={queryClient}>
-      <GlobalAudioProvider>
-        <TooltipProvider>
+      <TooltipProvider>
+        <GlobalAudioProvider>
+          <div className="min-h-screen bg-background text-foreground">
+            <Router />
+            <GlobalAudioBar />
+          </div>
           <Toaster />
-          <Router />
-          <GlobalAudioBar />
-        </TooltipProvider>
-      </GlobalAudioProvider>
+        </GlobalAudioProvider>
+      </TooltipProvider>
     </QueryClientProvider>
   );
 }
