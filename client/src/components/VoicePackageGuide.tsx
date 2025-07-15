@@ -39,28 +39,24 @@ export function VoicePackageGuide({ onClose, onNeverShow }: VoicePackageGuidePro
           </div>
 
           {/* 다운로드할 언어팩 - 더 강조 */}
-          <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border-2 border-green-300">
-            <div className="text-center mb-3">
+          <div className="p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border-2 border-green-300">
+            <div className="text-center mb-2">
               <div className="text-lg font-bold text-green-800 mb-1">
                 필수 다운로드 언어팩
               </div>
               <div className="text-sm text-green-700">아래 4개 언어 모두 다운로드하세요</div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="bg-white p-2 rounded-lg text-center border border-green-200">
-                <div className="text-2xl mb-1">🇰🇷</div>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="bg-white p-1.5 rounded-lg text-center border border-green-200">
                 <div className="text-sm font-medium text-green-800">한국어</div>
               </div>
-              <div className="bg-white p-2 rounded-lg text-center border border-green-200">
-                <div className="text-2xl mb-1">🇺🇸</div>
+              <div className="bg-white p-1.5 rounded-lg text-center border border-green-200">
                 <div className="text-sm font-medium text-green-800">영어(미국)</div>
               </div>
-              <div className="bg-white p-2 rounded-lg text-center border border-green-200">
-                <div className="text-2xl mb-1">🇯🇵</div>
+              <div className="bg-white p-1.5 rounded-lg text-center border border-green-200">
                 <div className="text-sm font-medium text-green-800">일본어</div>
               </div>
-              <div className="bg-white p-2 rounded-lg text-center border border-green-200">
-                <div className="text-2xl mb-1">🇨🇳</div>
+              <div className="bg-white p-1.5 rounded-lg text-center border border-green-200">
                 <div className="text-sm font-medium text-green-800">중국어(중국 본토)</div>
               </div>
             </div>

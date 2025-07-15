@@ -58,6 +58,10 @@ Ad-supported model: Keep only ad-supported version, Pro version to be developed 
 ✓ Added comprehensive voice package download guide with initial popup and settings access
 ✓ Implemented "다시 보지 않기" functionality with localStorage persistence
 ✓ Created mobile-optimized single-screen UI for voice package download instructions
+✓ Improved voice package popup: removed flag icons, reduced box sizes for better mobile fit
+✓ Reorganized settings tabs: "음성 설정" with only voice guide and data management
+✓ Fixed dialog close issue with proper state management
+✓ Removed "모든 효과 초기화" button from DSP controls
 
 ## Play Store Deployment Preparation (January 15, 2025)
 

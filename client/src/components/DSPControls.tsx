@@ -120,23 +120,6 @@ export function DSPControls({ settings, onUpdateSettings }: DSPControlsProps) {
             <span>+10dB</span>
           </div>
         </div>
-
-        {/* Reset Button */}
-        <button
-          onClick={() => {
-            onUpdateSettings({
-              pitch: 0,
-              dsp: {
-                echo: false,
-                reverb: false,
-                eq: { low: 0, mid: 0, high: 0 }
-              }
-            });
-          }}
-          className="w-full text-sm text-slate-600 hover:text-slate-800 py-2 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
-        >
-          모든 효과 초기화
-        </button>
       </CardContent>
     </Card>
   );
