@@ -480,28 +480,6 @@ export function Navigation({
               </Button>
             </div>
 
-            {/* 음조 조절 (기본값 0) */}
-            <div className="flex items-center space-x-3">
-              <Button
-                variant="ghost"
-                className="p-2 bg-amber-200 hover:bg-amber-300 rounded-full transition-colors"
-                disabled
-              >
-                <Minus className="h-4 w-4 text-amber-600" />
-              </Button>
-              <div className="text-center min-w-[50px]">
-                <div className="text-sm font-medium text-orange-600">0</div>
-                <div className="text-xs text-orange-500">음조</div>
-              </div>
-              <Button
-                variant="ghost"
-                className="p-2 bg-amber-200 hover:bg-amber-300 rounded-full transition-colors"
-                disabled
-              >
-                <Plus className="h-4 w-4 text-amber-600" />
-              </Button>
-            </div>
-
             {/* 일시정지 텍스트 */}
             <div className="text-sm text-slate-600 font-medium">
               {isPlaying ? '일시정지' : '재생'}
