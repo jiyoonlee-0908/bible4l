@@ -243,13 +243,31 @@ export function useSpeech() {
   }, []);
 
   const speak = useCallback((text: string, options: UseSpeechOptions = {}) => {
-    if ('speechSynthesis' in window) {
-      // Stop any ongoing speech
+    try {
+      // 브라우저 TTS 지원 확인
+      if (!('speechSynthesis' in window)) {
+        console.error('Speech synthesis not supported');
+        return;
+      }
+
+      // 이전 음성 정지
       speechSynthesis.cancel();
 
-      const cleanedText = cleanText(text);
-      const newUtterance = new SpeechSynthesisUtterance(cleanedText);
+      // 사용자 상호작용 없이 음성 재생 시도 시 에러 방지
+      if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
+        audioContextRef.current.resume().catch(console.error);
+      }
       
+      console.log('TTS 시작:', text);
+
+      const cleanedText = cleanText(text);
+      if (!cleanedText.trim()) {
+        console.warn('Empty text provided to TTS');
+        return;
+      }
+
+      const newUtterance = new SpeechSynthesisUtterance(cleanedText);
+        
       // 구글 음성 강제 설정
       const targetLang = options.lang || getCurrentLanguageCode();
       const selectedVoice = selectBestVoice(targetLang);
@@ -262,17 +280,13 @@ export function useSpeech() {
       }
       
       // Apply settings with safe defaults
-      newUtterance.rate = options.rate || settings.playbackSpeed || 1.0;
+      newUtterance.rate = Math.max(0.1, Math.min(10, options.rate || settings.playbackSpeed || 1.0));
       const pitchValue = options.pitch !== undefined ? options.pitch : settings.pitch || 0;
       newUtterance.pitch = calculatePitch(pitchValue);
-      newUtterance.volume = options.volume || 1;
+      newUtterance.volume = Math.max(0, Math.min(1, options.volume || 1));
       
       // Set language for the utterance
-      if (options.lang) {
-        newUtterance.lang = options.lang;
-      } else {
-        newUtterance.lang = targetLang;
-      }
+      newUtterance.lang = options.lang || targetLang;
 
       // Apply DSP effects
       applyDSPSettings();
@@ -281,6 +295,7 @@ export function useSpeech() {
       const startTime = Date.now();
 
       newUtterance.onstart = () => {
+        console.log('TTS started successfully');
         setAudioState(prev => ({ 
           ...prev, 
           isPlaying: true, 
@@ -291,6 +306,7 @@ export function useSpeech() {
       };
 
       newUtterance.onend = () => {
+        console.log('TTS finished');
         const endTime = Date.now();
         const listeningTime = (endTime - startTime) / 1000 / 60; // in minutes
         
@@ -326,14 +342,32 @@ export function useSpeech() {
         setAudioState(prev => ({ ...prev, isPlaying: false }));
       };
 
+      newUtterance.onpause = () => {
+        console.log('TTS paused');
+        setAudioState(prev => ({ ...prev, isPlaying: false }));
+      };
+
+      newUtterance.onresume = () => {
+        console.log('TTS resumed');
+        setAudioState(prev => ({ ...prev, isPlaying: true }));
+      };
+
       // Estimate duration based on text length and speech rate
-      const estimatedDuration = (cleanedText.length / 10) / (options.rate || settings.playbackSpeed);
+      const estimatedDuration = (cleanedText.length / 10) / (options.rate || settings.playbackSpeed || 1.0);
       setAudioState(prev => ({ ...prev, duration: estimatedDuration }));
 
+      // Save utterance reference
       setUtterance(newUtterance);
+      
+      // Start speech synthesis
+      console.log('Starting speech synthesis...');
       speechSynthesis.speak(newUtterance);
+
+    } catch (error) {
+      console.error('Speech synthesis error:', error);
+      setAudioState(prev => ({ ...prev, isPlaying: false }));
     }
-  }, [cleanText, settings, voices, calculatePitch, applyDSPSettings]);
+  }, [cleanText, settings, voices, calculatePitch, applyDSPSettings, getCurrentLanguageCode, selectBestVoice]);
 
   const pause = useCallback(() => {
     if (speechSynthesis.speaking) {
