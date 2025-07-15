@@ -59,10 +59,28 @@ export default function Settings() {
     if (
       confirm("모든 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.")
     ) {
+      // Clear all localStorage data including reading plan progress
       localStorage.clear();
+      
+      // Also specifically clear reading plan related keys that might be cached
+      const keysToRemove = [
+        'bible-reading-plan-id',
+        'bible-progress-plan_90',
+        'bible-progress-plan_365',
+        'bible-audio-bookmarks',
+        'bible-audio-settings',
+        'bible-audio-current-verse',
+        'bible-audio-listening-stats',
+        'bible-audio-badges'
+      ];
+      
+      keysToRemove.forEach(key => {
+        localStorage.removeItem(key);
+      });
+      
       toast({
         title: "데이터 삭제 완료",
-        description: "모든 설정과 북마크가 삭제되었습니다.",
+        description: "모든 설정, 북마크, 읽기 계획 진행률이 삭제되었습니다.",
       });
 
       // Reset to default settings
@@ -80,6 +98,11 @@ export default function Settings() {
       };
       setSettings(defaultSettings);
       Storage.saveSettings(defaultSettings);
+      
+      // Force page reload to ensure all components reset properly
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     }
   };
 

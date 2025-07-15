@@ -45,6 +45,7 @@ Ad-supported model: Keep only ad-supported version, Pro version to be developed 
 ✓ Improved header icons: amber color scheme matching title, intuitive font size icon (small A + big A)
 ✓ Data persistence confirmed: localStorage saves all user data permanently across app sessions
 ✓ Fixed Preview runtime errors with improved error handling and React import fixes
+✓ Fixed "모든 데이터 삭제" to properly clear reading plan progress and reload page
 
 ## System Architecture
 
