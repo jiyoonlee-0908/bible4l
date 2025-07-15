@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { CheckCircle, Download, Volume2, Smartphone, ExternalLink, AlertTriangle } from 'lucide-react';
+import { TTSEngineDetector } from './TTSEngineDetector';
 
 interface VoiceInitializerProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ export function VoiceInitializer({ isOpen, onClose, onComplete }: VoiceInitializ
   const [isInitializing, setIsInitializing] = useState(false);
   const [availableLanguages, setAvailableLanguages] = useState<string[]>([]);
   const [missingLanguages, setMissingLanguages] = useState<string[]>([]);
+  const [ttsEngineInfo, setTtsEngineInfo] = useState<any>(null);
 
   const languages = [
     { code: 'ko-KR', name: '한국어', testText: '안녕하세요. 성경 말씀을 들려드립니다.' },
@@ -202,32 +204,78 @@ export function VoiceInitializer({ isOpen, onClose, onComplete }: VoiceInitializ
                   <strong>더 나은 오디오를 위해 구글 TTS 사용을 권장합니다</strong>
                   <br />
                   자연스러운 발음과 억양으로 성경을 들을 수 있습니다.
+                  
+                  {/* TTS 엔진 감지 */}
+                  <div className="mt-4">
+                    <TTSEngineDetector onEngineCheck={setTtsEngineInfo} />
+                  </div>
                   <br />
-                  <div className="grid grid-cols-1 gap-2 mt-3">
-                    <Button 
-                      onClick={() => {
-                        // Android TTS 설정으로 직접 이동 시도
-                        try {
-                          window.open('intent://com.android.settings/.tts.TextToSpeechSettings#Intent;scheme=android-app;end', '_self');
-                        } catch (e) {
-                          // 폴백: 구글 TTS 앱 열기
-                          window.open('https://play.google.com/store/apps/details?id=com.google.android.tts', '_blank');
-                        }
-                      }}
-                      variant="outline" 
-                      size="sm"
-                      className="text-sm"
-                    >
-                      📱 Android TTS 설정 열기
-                    </Button>
-                    <div className="text-xs text-gray-600 mt-2">
-                      <strong>언어 추가 방법:</strong>
+                  <div className="space-y-3 mt-3">
+                    {/* TTS 엔진 확인 및 변경 */}
+                    <div className="bg-yellow-50 p-3 rounded-lg border border-yellow-200">
+                      <div className="text-sm font-semibold text-yellow-800 mb-2">
+                        ⚠️ 중요: TTS 엔진 확인 필요
+                      </div>
+                      <div className="text-xs text-yellow-700 space-y-1">
+                        <div>• 삼성 기본 TTS: 중국어/일본어 지원 제한</div>
+                        <div>• Google TTS 권장: 모든 언어 지원</div>
+                      </div>
+                    </div>
+
+                    {/* 설정 이동 버튼들 */}
+                    <div className="grid grid-cols-1 gap-2">
+                      <Button 
+                        onClick={() => {
+                          // 다양한 방법으로 설정 열기 시도
+                          const attempts = [
+                            () => window.open('intent://com.android.settings/.tts.TextToSpeechSettings#Intent;scheme=android-app;end', '_self'),
+                            () => window.location.href = 'intent://com.android.settings/.tts.TextToSpeechSettings#Intent;scheme=android-app;end',
+                            () => window.open('intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;component=com.android.settings/.Settings$TextToSpeechSettingsActivity;end', '_self')
+                          ];
+                          
+                          let success = false;
+                          for (const attempt of attempts) {
+                            try {
+                              attempt();
+                              success = true;
+                              break;
+                            } catch (e) {
+                              continue;
+                            }
+                          }
+                          
+                          if (!success) {
+                            alert('수동으로 이동하세요:\n설정 > 손쉬운 사용 > 텍스트 음성 변환');
+                          }
+                        }}
+                        variant="outline" 
+                        size="sm"
+                        className="text-sm"
+                      >
+                        📱 TTS 설정 열기
+                      </Button>
+                      
+                      <Button 
+                        onClick={() => window.open('https://play.google.com/store/apps/details?id=com.google.android.tts', '_blank')}
+                        variant="outline" 
+                        size="sm"
+                        className="text-sm"
+                      >
+                        📦 Google TTS 앱 열기
+                      </Button>
+                    </div>
+
+                    {/* 상세 안내 */}
+                    <div className="bg-gray-50 p-3 rounded-lg text-xs text-gray-700">
+                      <strong>단계별 설정 방법:</strong>
                       <br />
-                      1. 설정 &gt; 손쉬운 사용 &gt; 텍스트 음성 변환
+                      <strong>1단계:</strong> 설정 &gt; 손쉬운 사용 &gt; 텍스트 음성 변환
                       <br />
-                      2. Google TTS 선택 &gt; 언어 &gt; 중국어/일본어 추가
+                      <strong>2단계:</strong> 기본 TTS 엔진을 <span className="text-blue-600 font-semibold">"Google 텍스트 음성 변환"</span>으로 변경
                       <br />
-                      3. 또는 Google TTS 앱에서 직접 언어 다운로드
+                      <strong>3단계:</strong> Google TTS 설정 &gt; 언어에서 중국어/일본어 추가
+                      <br />
+                      <strong>4단계:</strong> 브라우저 새로고침 후 앱 재실행
                     </div>
                   </div>
                 </AlertDescription>
