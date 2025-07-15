@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { Download, X } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Download, Volume2, CheckCircle, X } from 'lucide-react';
 
 interface VoicePackageGuideProps {
   onClose?: () => void;
@@ -23,10 +23,7 @@ export function VoicePackageGuide({ onClose, onNeverShow }: VoicePackageGuidePro
         <div className="space-y-4">
           {/* 안내 메시지 */}
           <div className="text-center p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
-            <div className="text-lg font-semibold text-blue-800 mb-1">
-              🎙️ 더 자연스러운 음성으로 성경 듣기
-            </div>
-            <div className="text-sm text-blue-700">
+            <div className="text-sm font-bold text-blue-700">
               기기에 언어팩을 다운로드하면 고품질 음성을 사용할 수 있습니다
             </div>
           </div>
@@ -35,7 +32,7 @@ export function VoicePackageGuide({ onClose, onNeverShow }: VoicePackageGuidePro
           <div className="p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border-2 border-green-300">
             <div className="text-center mb-2">
               <div className="text-lg font-bold text-green-800 mb-1">
-                [필수] 4개 언어 다운로드
+                4개 언어 다운로드
               </div>
             </div>
             <div className="grid grid-cols-2 gap-2">
@@ -113,8 +110,9 @@ export function VoicePackageGuide({ onClose, onNeverShow }: VoicePackageGuidePro
         </Button>
         <Button
           onClick={onClose}
-          className="flex-1 bg-amber-700 hover:bg-amber-800 text-white text-sm"
+          className="flex-1 bg-amber-600 hover:bg-amber-700 text-sm"
         >
+          <CheckCircle className="h-4 w-4 mr-2" />
           확인
         </Button>
       </div>

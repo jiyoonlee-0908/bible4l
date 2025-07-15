@@ -1,20 +1,10 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.bibleaudio.korean',
+  appId: 'com.yourcompany.bibleaudio',
   appName: '다개국어 성경듣기',
   webDir: 'dist/public',
-  bundledWebRuntime: false,
-  plugins: {
-    CapacitorHttp: {
-      enabled: true
-    }
-  },
-  android: {
-    allowMixedContent: true,
-    captureInput: true,
-    webContentsDebuggingEnabled: false
-  }
+  bundledWebRuntime: false
 };
 
 export default config;
