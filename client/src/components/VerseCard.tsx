@@ -21,8 +21,12 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
   const { audioState, speak, toggle, stop, setSpeed, setPitch } = useSpeech();
   const { isBookmarked, toggleBookmark } = useBookmarks();
   const { toast } = useToast();
-  const embeddedTTS = useEmbeddedTTS();
-  const prerecordedTTS = usePrerecordedTTS();
+  
+  // 내장된 TTS (기존 브라우저 방식)
+  const { speakWithEmbeddedVoice, stopSpeaking, isPlaying: ttsIsPlaying, isLoading: ttsIsLoading } = useEmbeddedTTS();
+  
+  // 사전 녹음된 오디오 파일
+  const { playPrerecordedAudio, stopAudio, isPlaying: audioPlaying, isLoading: audioLoading, isFileAvailable } = usePrerecordedTTS();
 
   // Save reading statistics when viewing verse
   useEffect(() => {
@@ -63,157 +67,111 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
     return () => clearTimeout(timer);
   }, [verse.bookId, verse.chapterId, verse.verseId, language]);
 
-  const saveListeningStats = () => {
-    const listeningStats = JSON.parse(localStorage.getItem('listeningStats') || '[]');
-    const newStat = {
-      book: verse.bookId,
-      chapter: parseInt(verse.chapterId),
-      verse: verse.verseId,
-      language: language,
-      timestamp: new Date().toISOString(),
-      duration: 2,
-      type: 'listen'
-    };
-    listeningStats.push(newStat);
-    localStorage.setItem('listeningStats', JSON.stringify(listeningStats));
-  };
-
-  const handlePlay = () => {
-    const isAnyPlaying = audioState.isPlaying || embeddedTTS.isPlaying || prerecordedTTS.isPlaying;
+  // 재생 버튼 클릭 핸들러
+  const handlePlayClick = async () => {
+    const bookName = verse.bookId;
+    const chapterNum = parseInt(verse.chapterId);
+    const verseNum = verse.verseId;
     
-    if (isAnyPlaying) {
-      if (prerecordedTTS.isPlaying) {
-        prerecordedTTS.stop();
-      } else if (embeddedTTS.isPlaying) {
-        embeddedTTS.stop();
+    // 1. 먼저 사전 녹음된 파일이 있는지 확인
+    const hasPrerecordedFile = isFileAvailable(bookName, chapterNum, verseNum, language);
+    
+    if (hasPrerecordedFile) {
+      console.log(`🎵 사전 녹음된 파일 재생: ${bookName} ${chapterNum}:${verseNum}`);
+      
+      if (audioPlaying) {
+        stopAudio();
       } else {
-        toggle();
+        await playPrerecordedAudio(bookName, chapterNum, verseNum, language, {
+          rate: audioState.speed,
+          volume: 0.8,
+          onStart: () => {
+            // 듣기 통계 저장
+            const listeningStats = JSON.parse(localStorage.getItem('listeningStats') || '[]');
+            const newStat = {
+              book: verse.bookId,
+              chapter: parseInt(verse.chapterId),
+              verse: verse.verseId,
+              language: language,
+              timestamp: new Date().toISOString(),
+              duration: 10,
+              type: 'listen'
+            };
+            listeningStats.push(newStat);
+            localStorage.setItem('listeningStats', JSON.stringify(listeningStats));
+            
+            toast({
+              title: '🎵 고품질 음성으로 재생 중',
+              description: '사전 녹음된 맥북 음성으로 재생됩니다.',
+            });
+          },
+          onError: (error) => {
+            console.error('사전 녹음 파일 재생 실패:', error);
+            // 폴백: 브라우저 TTS 사용
+            fallbackToTTS();
+          }
+        });
       }
     } else {
-      if (mode === 'double' && koreanVerse) {
-        // 교차 모드: 외국어 -> 한국어 순서로 재생
-        speakCrossMode(verse, koreanVerse, language);
-      } else {
-        // 단일 모드: 우선 미리 녹음된 파일 확인
-        if (prerecordedTTS.hasPrerecordedAudio(verse.text, language)) {
-          console.log(`🎵 고품질 녹음 파일 재생: ${language}`);
-          prerecordedTTS.play(verse.text, language, {
-            rate: audioState.speed,
-            volume: 0.8,
-            onStart: () => {
-              console.log(`🎤 녹음 파일 재생 시작: ${language}`);
-            },
-            onEnd: () => {
-              saveListeningStats();
-              console.log(`✅ 녹음 파일 재생 완료: ${language}`);
-            },
-            onError: (error) => {
-              console.error(`❌ 녹음 파일 오류: ${error}`);
-              console.log(`🔄 실시간 TTS로 폴백`);
-              handleFallbackTTS();
-            }
+      // 2. 사전 녹음 파일이 없으면 브라우저 TTS 사용
+      fallbackToTTS();
+    }
+  };
+
+  const fallbackToTTS = async () => {
+    console.log(`🎤 브라우저 TTS 사용: ${language}`);
+    
+    if (ttsIsPlaying) {
+      stopSpeaking();
+    } else {
+      await speakWithEmbeddedVoice(verse.text, language, {
+        rate: audioState.speed,
+        volume: 0.8,
+        onStart: () => {
+          // 듣기 통계 저장
+          const listeningStats = JSON.parse(localStorage.getItem('listeningStats') || '[]');
+          const newStat = {
+            book: verse.bookId,
+            chapter: parseInt(verse.chapterId),
+            verse: verse.verseId,
+            language: language,
+            timestamp: new Date().toISOString(),
+            duration: 10,
+            type: 'listen'
+          };
+          listeningStats.push(newStat);
+          localStorage.setItem('listeningStats', JSON.stringify(listeningStats));
+          
+          toast({
+            title: '🎤 브라우저 음성으로 재생',
+            description: '시스템 TTS를 사용하여 재생됩니다.',
           });
-        } else {
-          // 미리 녹음된 파일이 없으면 실시간 TTS 사용
-          embeddedTTS.speak(verse.text, language, {
-            rate: audioState.speed,
-            volume: 0.8,
-            onStart: () => {
-              console.log(`🎤 실시간 TTS 재생 시작: ${language}`);
-            },
-            onEnd: () => {
-              saveListeningStats();
-              console.log(`✅ 실시간 TTS 재생 완료: ${language}`);
-            },
-            onError: (error) => {
-              console.error(`❌ 실시간 TTS 오류: ${error}`);
-              handleFallbackTTS();
-            }
+        },
+        onError: (error) => {
+          toast({
+            title: '재생 실패',
+            description: '음성 재생 중 오류가 발생했습니다.',
+            variant: 'destructive'
           });
         }
-      }
+      });
     }
   };
 
-  const handleFallbackTTS = () => {
-    if (mode === 'double' && koreanVerse) {
-      speakCrossMode(verse, koreanVerse, language);
-    } else {
-      const voiceMapping = {
-        ko: 'ko-KR',
-        en: 'en-US',
-        zh: 'zh-CN', 
-        ja: 'ja-JP'
-      };
-      
-      const langCode = voiceMapping[language] || 'en-US';
-      speak(verse.text, { rate: audioState.speed, lang: langCode });
-    }
-  };
+  const isCurrentlyPlaying = audioPlaying || ttsIsPlaying;
+  const isCurrentlyLoading = audioLoading || ttsIsLoading;
 
   const speakCrossMode = (primaryVerse: BibleVerse, koreanVerse: BibleVerse, primaryLang: Language) => {
-    const voiceMapping = {
-      ko: 'ko-KR',
-      en: 'en-US',
-      zh: 'zh-CN', 
-      ja: 'ja-JP'
-    };
-
-    const primaryLangCode = voiceMapping[primaryLang] || 'en-US';
-    speak(primaryVerse.text, { 
-      rate: audioState.speed, 
-      lang: primaryLangCode,
-      onEnd: () => {
-        speak(koreanVerse.text, { rate: audioState.speed, lang: 'ko-KR' });
-      }
-    });
-  };
-
-  const handleBookmark = () => {
-    const bookmark = {
-      id: `${verse.id}-${language}`,
-      verseId: verse.id,
-      reference: verse.reference,
-      text: verse.text,
-      language,
-      createdAt: new Date().toISOString(),
-    };
+    const primaryText = primaryVerse.text;
+    const koreanText = koreanVerse.text;
     
-    toggleBookmark(bookmark);
-    toast({
-      title: isBookmarked(verse.id, language) ? '북마크 제거됨' : '북마크 추가됨',
-      description: verse.reference,
-    });
-  };
-
-  const handleShare = async () => {
-    const shareText = `${verse.reference}\n\n${verse.text}`;
+    const combinedText = `${primaryText}. ${koreanText}`;
     
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: verse.reference,
-          text: shareText,
-        });
-      } catch (error) {
-        console.error('Error sharing:', error);
-      }
+    if (audioState.isPlaying && audioState.currentText === combinedText) {
+      stop();
     } else {
-      try {
-        await navigator.clipboard.writeText(shareText);
-        toast({
-          title: '클립보드에 복사됨',
-          description: verse.reference,
-        });
-      } catch (error) {
-        console.error('Error copying to clipboard:', error);
-      }
+      speak(combinedText, primaryLang);
     }
-  };
-
-  const adjustSpeed = (delta: number) => {
-    const newSpeed = Math.max(0.5, Math.min(1.5, audioState.speed + delta));
-    setSpeed(newSpeed);
   };
 
   const getLanguageLabel = (lang: Language) => {
@@ -221,136 +179,188 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
       ko: '한국어',
       en: 'English',
       zh: '中文',
-      ja: '日본語'
+      ja: '日本語'
     };
     return labels[lang];
   };
 
   return (
-    <Card className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
-      {/* Verse Header */}
-      <div className="bg-gradient-to-r from-amber-800 to-amber-900 px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-white text-dynamic-heading font-semibold">{verse.reference}</h3>
-            <p className="text-amber-100 text-sm">성경</p>
+    <Card className="bg-white rounded-2xl shadow-sm border border-slate-200 mb-6">
+      <CardContent className="p-6">
+        <div className="flex justify-between items-start mb-4">
+          <div className="text-sm text-slate-500">
+            {verse.bookId} {verse.chapterId}:{verse.verseId}
           </div>
-          <div className="flex space-x-2">
+          <div className="flex items-center gap-2">
             <Button
               variant="ghost"
-              size="icon"
-              onClick={handleBookmark}
-              className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full"
+              size="sm"
+              onClick={() => toggleBookmark(verse, language)}
+              className={isBookmarked(verse, language) ? 'text-amber-600' : 'text-slate-400'}
             >
-              <Star 
-                className={`h-5 w-5 ${
-                  isBookmarked(verse.id, language) 
-                    ? 'text-amber-300 fill-amber-300' 
-                    : 'text-white'
-                }`} 
-              />
+              <Star className="w-4 h-4" />
             </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleShare}
-              className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full"
-            >
-              <Share2 className="h-5 w-5 text-white" />
+            <Button variant="ghost" size="sm" className="text-slate-400">
+              <Share2 className="w-4 h-4" />
             </Button>
           </div>
         </div>
-      </div>
 
-      {/* Verse Content */}
-      <CardContent className="p-6">
-        <div className="space-y-4">
-          {/* Main verse */}
-          <div className="bg-slate-50 p-4 rounded-lg border border-slate-100">
-            <div className="flex items-center justify-between mb-3">
+        {mode === 'single' ? (
+          <div>
+            <div className="flex justify-between items-center mb-3">
               <span className="text-sm font-medium text-slate-600">
                 {getLanguageLabel(language)}
               </span>
             </div>
-            <p className="text-lg leading-relaxed text-slate-800">
+            
+            <p 
+              className="text-slate-800 leading-relaxed mb-4" 
+              style={{ 
+                fontSize: `var(--text-lg)`,
+                fontFamily: language === 'ja' ? "'Noto Sans JP', sans-serif" : 
+                           language === 'ko' ? "'Noto Sans KR', sans-serif" :
+                           language === 'zh' ? "'Noto Sans SC', sans-serif" : 
+                           "'Inter', sans-serif"
+              }}
+            >
               {verse.text}
             </p>
-          </div>
 
-          {/* Korean verse for double mode */}
-          {mode === 'double' && koreanVerse && language !== 'ko' && (
-            <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-medium text-blue-600">한국어</span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Button
+                  onClick={handlePlayClick}
+                  disabled={isCurrentlyLoading}
+                  className="flex items-center gap-2 bg-amber-700 hover:bg-amber-800 text-white px-4 py-2"
+                >
+                  {isCurrentlyLoading ? (
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : isCurrentlyPlaying ? (
+                    <Pause className="w-4 h-4" />
+                  ) : (
+                    <Play className="w-4 h-4" />
+                  )}
+                  {isCurrentlyLoading ? '로딩...' : isCurrentlyPlaying ? '일시정지' : '재생'}
+                </Button>
+                
+                {isFileAvailable(verse.bookId, parseInt(verse.chapterId), verse.verseId, language) && (
+                  <div className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded">
+                    🎵 고품질 음성
+                  </div>
+                )}
               </div>
-              <p className="text-lg leading-relaxed text-blue-800 mb-4">
-                {koreanVerse.text}
+
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSpeed(Math.max(0.8, audioState.speed - 0.1))}
+                  disabled={audioState.speed <= 0.8}
+                >
+                  <Minus className="w-3 h-3" />
+                </Button>
+                <span className="text-sm text-slate-600 min-w-[3rem] text-center">
+                  {audioState.speed.toFixed(1)}x
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSpeed(Math.min(1.5, audioState.speed + 0.1))}
+                  disabled={audioState.speed >= 1.5}
+                >
+                  <Plus className="w-3 h-3" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div>
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-medium text-slate-600">
+                  {getLanguageLabel(language)}
+                </span>
+              </div>
+              <p 
+                className="text-slate-800 leading-relaxed mb-3" 
+                style={{ 
+                  fontSize: `var(--text-base)`,
+                  fontFamily: language === 'ja' ? "'Noto Sans JP', sans-serif" : 
+                             language === 'ko' ? "'Noto Sans KR', sans-serif" :
+                             language === 'zh' ? "'Noto Sans SC', sans-serif" : 
+                             "'Inter', sans-serif"
+                }}
+              >
+                {verse.text}
               </p>
             </div>
-          )}
 
-          {/* Audio Controls for all modes */}
-          <div className="flex items-center justify-between bg-slate-100 p-3 rounded-lg">
-            <div className="flex items-center gap-2">
-              <Button
-                onClick={handlePlay}
-                size="sm"
-                variant="outline"
-                className="flex items-center gap-2"
-                disabled={embeddedTTS.isLoading || prerecordedTTS.isLoading || (audioState.isPlaying || embeddedTTS.isPlaying || prerecordedTTS.isPlaying)}
-              >
-                {(embeddedTTS.isLoading || prerecordedTTS.isLoading) ? (
-                  <div className="w-4 h-4 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600"></div>
-                ) : (
-                  <Play className="w-4 h-4" />
+            {koreanVerse && (
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium text-slate-600">한국어</span>
+                </div>
+                <p 
+                  className="text-slate-800 leading-relaxed mb-3" 
+                  style={{ 
+                    fontSize: `var(--text-base)`,
+                    fontFamily: "'Noto Sans KR', sans-serif"
+                  }}
+                >
+                  {koreanVerse.text}
+                </p>
+              </div>
+            )}
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Button
+                  onClick={handlePlayClick}
+                  disabled={isCurrentlyLoading}
+                  className="flex items-center gap-2 bg-amber-700 hover:bg-amber-800 text-white px-4 py-2"
+                >
+                  {isCurrentlyLoading ? (
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : isCurrentlyPlaying ? (
+                    <Pause className="w-4 h-4" />
+                  ) : (
+                    <Play className="w-4 h-4" />
+                  )}
+                  {isCurrentlyLoading ? '로딩...' : isCurrentlyPlaying ? '일시정지' : '재생'}
+                </Button>
+                
+                {isFileAvailable(verse.bookId, parseInt(verse.chapterId), verse.verseId, language) && (
+                  <div className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded">
+                    🎵 고품질 음성
+                  </div>
                 )}
-                {(embeddedTTS.isLoading || prerecordedTTS.isLoading) ? '준비 중...' : '재생'}
-              </Button>
-              
-              <Button
-                onClick={() => {
-                  if (prerecordedTTS.isPlaying) {
-                    prerecordedTTS.stop();
-                  } else if (embeddedTTS.isPlaying) {
-                    embeddedTTS.stop();
-                  } else {
-                    toggle();
-                  }
-                }}
-                size="sm"
-                variant="outline"
-                className="flex items-center gap-2"
-                disabled={!(audioState.isPlaying || embeddedTTS.isPlaying || prerecordedTTS.isPlaying)}
-              >
-                <Pause className="w-4 h-4" />
-                일시정지
-              </Button>
-            </div>
-            
-            {/* Speed Controls */}
-            <div className="flex items-center gap-2">
-              <Button
-                onClick={() => adjustSpeed(-0.1)}
-                size="sm"
-                variant="ghost"
-                className="p-1 h-8 w-8"
-              >
-                <Minus className="w-3 h-3" />
-              </Button>
-              <span className="text-sm text-slate-600 min-w-[3rem] text-center">
-                {audioState.speed.toFixed(1)}x
-              </span>
-              <Button
-                onClick={() => adjustSpeed(0.1)}
-                size="sm"
-                variant="ghost"
-                className="p-1 h-8 w-8"
-              >
-                <Plus className="w-3 h-3" />
-              </Button>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSpeed(Math.max(0.8, audioState.speed - 0.1))}
+                  disabled={audioState.speed <= 0.8}
+                >
+                  <Minus className="w-3 h-3" />
+                </Button>
+                <span className="text-sm text-slate-600 min-w-[3rem] text-center">
+                  {audioState.speed.toFixed(1)}x
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSpeed(Math.min(1.5, audioState.speed + 0.1))}
+                  disabled={audioState.speed >= 1.5}
+                >
+                  <Plus className="w-3 h-3" />
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </CardContent>
     </Card>
   );

@@ -82,6 +82,12 @@ Ad-supported model: Keep only ad-supported version, Pro version to be developed 
 ✓ Created useEmbeddedTTS hook for direct Mac voice integration without external dependencies
 ✓ Updated VerseCard to use premium embedded voices with fallback to standard TTS
 ✓ Cleaned up App.tsx to remove voice initialization popups and complex setup flows
+✓ Replaced TTS system with prerecorded audio file system for high-quality consistent playback
+✓ Fixed Japanese font display issues with proper Noto Sans JP font integration
+✓ Created VoiceFileUploader component with Mac voice generation script download
+✓ Implemented usePrerecordedTTS hook for MP3 audio file playback system
+✓ Added audio file directory structure and upload management interface
+✓ Removed TTS debugger from settings as requested - focus on embedded audio files
 
 ## Play Store Deployment Preparation (January 15, 2025)
 

@@ -6,10 +6,7 @@ import { FontSizeModal } from "@/components/FontSizeModal";
 import { DSPControls } from "@/components/DSPControls";
 import { ReadingPlanCard } from "@/components/ReadingPlanCard";
 import { BadgeDisplay } from "@/components/BadgeDisplay";
-import { TTSDebugger } from "@/components/TTSDebugger";
-import { VoiceSetupGuide } from "@/components/VoiceSetupGuide";
-import { VoiceDebugger } from "@/components/VoiceDebugger";
-import { MacVoiceExporter } from "@/components/MacVoiceExporter";
+import { VoiceFileUploader } from "@/components/VoiceFileUploader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -280,8 +277,8 @@ export default function Settings() {
               onUpdateSettings={updateSettings}
             />
 
-            {/* TTS 디버거 */}
-            <TTSDebugger />
+            {/* 음성 파일 업로더 */}
+            <VoiceFileUploader />
 
             {/* Data Management */}
             <Card className="bg-white rounded-2xl shadow-sm border border-slate-200">
