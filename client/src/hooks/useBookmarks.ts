@@ -11,14 +11,7 @@ export function useBookmarks() {
 
   const addBookmark = (bookmark: Bookmark) => {
     Storage.addBookmark(bookmark);
-    const updatedBookmarks = Storage.getBookmarks();
-    setBookmarks(updatedBookmarks);
-    
-    // Check for bookmark badges
-    const badgeEvent = new CustomEvent('badge-check', {
-      detail: { type: 'bookmark', value: updatedBookmarks.length }
-    });
-    window.dispatchEvent(badgeEvent);
+    setBookmarks(Storage.getBookmarks());
   };
 
   const removeBookmark = (verseId: string, language: Language) => {

@@ -81,66 +81,6 @@ export function useBadges() {
   const [badges, setBadges] = useState<Badge[]>([]);
   const { toast } = useToast();
 
-  const checkAndUnlockBadge = useCallback((condition: string, value?: number) => {
-    setBadges(currentBadges => {
-      const badge = currentBadges.find(b => b.condition === condition && !b.unlockedAt);
-      if (!badge) return currentBadges;
-
-      let shouldUnlock = false;
-
-      switch (condition) {
-        case 'first_listen':
-          shouldUnlock = true;
-          break;
-        case 'streak_7':
-          shouldUnlock = value !== undefined && value >= 7;
-          break;
-        case 'streak_30':
-          shouldUnlock = value !== undefined && value >= 30;
-          break;
-        case 'listening_60':
-          shouldUnlock = value !== undefined && value >= 60; // minutes
-          break;
-        case 'listening_300':
-          shouldUnlock = value !== undefined && value >= 300; // minutes
-          break;
-        case 'plan_25':
-          shouldUnlock = value !== undefined && value >= 25; // percentage
-          break;
-        case 'plan_50':
-          shouldUnlock = value !== undefined && value >= 50; // percentage
-          break;
-        case 'plan_100':
-          shouldUnlock = value !== undefined && value >= 100; // percentage
-          break;
-        case 'bookmark_10':
-          shouldUnlock = value !== undefined && value >= 10;
-          break;
-      }
-
-      if (shouldUnlock) {
-        const updatedBadges = currentBadges.map(b => 
-          b.id === badge.id 
-            ? { ...b, unlockedAt: new Date().toISOString() }
-            : b
-        );
-        
-        localStorage.setItem('bible-badges', JSON.stringify(updatedBadges));
-        
-        // Show toast notification
-        toast({
-          title: '🏆 새로운 배지 획득!',
-          description: `"${badge.name}" 배지를 획득했습니다.`,
-          duration: 5000,
-        });
-        
-        return updatedBadges;
-      }
-      
-      return currentBadges;
-    });
-  }, [toast]);
-
   useEffect(() => {
     // Load badges from localStorage
     const savedBadges = localStorage.getItem('bible-badges');
@@ -151,62 +91,67 @@ export function useBadges() {
       setBadges(DEFAULT_BADGES);
       localStorage.setItem('bible-badges', JSON.stringify(DEFAULT_BADGES));
     }
+  }, []);
 
-    // Listen for badge check events
-    const handleBadgeCheck = (event: CustomEvent) => {
-      const { type, value } = event.detail;
-      
-      switch (type) {
-        case 'first_listen':
-          checkAndUnlockBadge('first_listen');
-          break;
-        case 'listening':
-          checkAndUnlockBadge('listening_60', value);
-          checkAndUnlockBadge('listening_300', value);
-          break;
-        case 'bookmark':
-          checkAndUnlockBadge('bookmark_10', value);
-          break;
-        case 'streak':
-          checkAndUnlockBadge('streak_7', value);
-          checkAndUnlockBadge('streak_30', value);
-          break;
-        case 'completion':
-          checkAndUnlockBadge('plan_25', value);
-          checkAndUnlockBadge('plan_50', value);
-          checkAndUnlockBadge('plan_100', value);
-          break;
-      }
-    };
+  const checkAndUnlockBadge = useCallback((condition: string, value?: number) => {
+    const badge = badges.find(b => b.condition === condition && !b.unlockedAt);
+    if (!badge) return;
 
-    window.addEventListener('badge-check', handleBadgeCheck as EventListener);
-    
-    return () => {
-      window.removeEventListener('badge-check', handleBadgeCheck as EventListener);
-    };
-  }, [checkAndUnlockBadge]);
+    let shouldUnlock = false;
+
+    switch (condition) {
+      case 'first_listen':
+        shouldUnlock = true;
+        break;
+      case 'streak_7':
+        shouldUnlock = value !== undefined && value >= 7;
+        break;
+      case 'streak_30':
+        shouldUnlock = value !== undefined && value >= 30;
+        break;
+      case 'listening_60':
+        shouldUnlock = value !== undefined && value >= 60; // minutes
+        break;
+      case 'listening_300':
+        shouldUnlock = value !== undefined && value >= 300; // minutes
+        break;
+      case 'plan_25':
+        shouldUnlock = value !== undefined && value >= 25; // percentage
+        break;
+      case 'plan_50':
+        shouldUnlock = value !== undefined && value >= 50; // percentage
+        break;
+      case 'plan_100':
+        shouldUnlock = value !== undefined && value >= 100; // percentage
+        break;
+      case 'bookmark_10':
+        shouldUnlock = value !== undefined && value >= 10;
+        break;
+    }
+
+    if (shouldUnlock) {
+      unlockBadge(badge.id);
+    }
+  }, [badges]);
 
   const unlockBadge = (badgeId: string) => {
-    setBadges(currentBadges => {
-      const updatedBadges = currentBadges.map(badge => 
-        badge.id === badgeId 
-          ? { ...badge, unlockedAt: new Date().toISOString() }
-          : badge
-      );
+    const updatedBadges = badges.map(badge => 
+      badge.id === badgeId 
+        ? { ...badge, unlockedAt: new Date().toISOString() }
+        : badge
+    );
 
-      localStorage.setItem('bible-badges', JSON.stringify(updatedBadges));
+    setBadges(updatedBadges);
+    localStorage.setItem('bible-badges', JSON.stringify(updatedBadges));
 
-      const unlockedBadge = updatedBadges.find(b => b.id === badgeId);
-      if (unlockedBadge) {
-        toast({
-          title: '🏆 새로운 배지 획득!',
-          description: `"${unlockedBadge.name}" 배지를 획득했습니다.`,
-          duration: 5000,
-        });
-      }
-      
-      return updatedBadges;
-    });
+    const unlockedBadge = updatedBadges.find(b => b.id === badgeId);
+    if (unlockedBadge) {
+      toast({
+        title: '🏆 새로운 배지 획득!',
+        description: `"${unlockedBadge.name}" 배지를 획득했습니다.`,
+        duration: 5000,
+      });
+    }
   };
 
   const getUnlockedBadges = () => {

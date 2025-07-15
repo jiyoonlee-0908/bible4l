@@ -7,9 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, SkipForward, SkipBack, Volume2, Loader2, Repeat, Repeat1, Plus, Minus } from 'lucide-react';
 import { useBible } from '@/hooks/useBible';
-import { useSimpleTTS } from '@/hooks/useSimpleTTS';
-
-
+import { useSpeech } from '@/hooks/useSpeech';
+import { useSubscription } from '@/hooks/useSubscription';
+import { AdFitBanner } from '@/components/AdFitBanner';
 import { FontSizeModal } from '@/components/FontSizeModal';
 import { Storage } from '@/lib/storage';
 import { Language, Settings, languageConfig } from '@shared/schema';
@@ -36,8 +36,8 @@ export default function Player() {
     navigateVerse
   } = useBible();
   
-  const { audioState, speak, toggle, stop, setSpeed } = useSimpleTTS();
-
+  const { isPlaying, speak, toggle, stop } = useSpeech();
+  const { isSubscribed } = useSubscription();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export default function Player() {
 
   // Auto-play when verse changes in continuous mode
   useEffect(() => {
-    if (isPlayingContinuous && currentVerseData && !audioState.isPlaying) {
+    if (isPlayingContinuous && currentVerseData && !isPlaying) {
       setTimeout(() => {
         playCurrentVerse();
       }, 500); // Small delay to ensure verse is loaded
@@ -82,51 +82,63 @@ export default function Player() {
     };
     
     const langCode = voiceMapping[currentLanguage] || 'en-US';
-    speak(currentVerseData.text, langCode);
-    
-    // Save listening statistics
-    const listeningStats = JSON.parse(localStorage.getItem('listeningStats') || '[]');
-    const verseKey = `${currentBook}-${currentChapter}-${currentVerse}-${currentLanguage}`;
-    
-    // Check if this exact verse in this language was already recorded recently (within 5 minutes)
-    const recentRecord = listeningStats.find((stat: any) => {
-      const statKey = `${stat.book}-${stat.chapter}-${stat.verse}-${stat.language}`;
-      const timeDiff = new Date().getTime() - new Date(stat.timestamp).getTime();
-      return statKey === verseKey && timeDiff < 5 * 60 * 1000; // 5 minutes
+    speak(currentVerseData.text, { 
+      rate: 1.0, 
+      lang: langCode,
+      onEnd: () => {
+        setIsLoading(false);
+        
+        // Save listening statistics
+        const listeningStats = JSON.parse(localStorage.getItem('listeningStats') || '[]');
+        const verseKey = `${currentBook}-${currentChapter}-${currentVerse}-${currentLanguage}`;
+        
+        // Check if this exact verse in this language was already recorded recently (within 5 minutes)
+        const recentRecord = listeningStats.find((stat: any) => {
+          const statKey = `${stat.book}-${stat.chapter}-${stat.verse}-${stat.language}`;
+          const timeDiff = new Date().getTime() - new Date(stat.timestamp).getTime();
+          return statKey === verseKey && timeDiff < 5 * 60 * 1000; // 5 minutes
+        });
+        
+        if (!recentRecord) {
+          const newStat = {
+            book: currentBook,
+            chapter: currentChapter,
+            verse: currentVerse,
+            language: currentLanguage,
+            timestamp: new Date().toISOString(),
+            duration: Math.round(currentVerseData.text.length / 15), // Estimate duration based on text length
+            type: 'listen'
+          };
+          listeningStats.push(newStat);
+          localStorage.setItem('listeningStats', JSON.stringify(listeningStats));
+        }
+        
+        if (playMode === 'single') {
+          // Repeat current verse in single mode
+          setTimeout(() => {
+            playCurrentVerse();
+          }, 500);
+        } else if (playMode === 'continuous' && isPlayingContinuous) {
+          // Auto advance to next verse after 1 second
+          setTimeout(() => {
+            navigateVerse('next');
+          }, 1000);
+        } else {
+          setIsPlayingContinuous(false);
+        }
+      }
     });
-    
-    if (!recentRecord) {
-      const newStat = {
-        book: currentBook,
-        chapter: currentChapter,
-        verse: currentVerse,
-        language: currentLanguage,
-        timestamp: new Date().toISOString(),
-        duration: Math.round(currentVerseData.text.length / 15), // Estimate duration based on text length
-        type: 'listen'
-      };
-      listeningStats.push(newStat);
-      localStorage.setItem('listeningStats', JSON.stringify(listeningStats));
-    }
   };
 
   const handlePlay = () => {
-    console.log('🎵 Play button clicked!');
-    console.log('Current verse data:', currentVerseData);
-    console.log('Audio state:', audioState);
-    
     if (audioState.isPlaying) {
-      console.log('🛑 Stopping current playback');
       toggle();
       setIsPlayingContinuous(false);
     } else if (currentVerseData) {
-      console.log('▶️ Starting playback');
       setIsLoading(true);
       setIsPlayingContinuous(true);
       playCurrentVerse();
-      setTimeout(() => setIsLoading(false), 1000);
-    } else {
-      console.log('❌ No verse data available');
+      setIsLoading(false);
     }
   };
 
@@ -141,12 +153,11 @@ export default function Player() {
   };
 
   const adjustSpeed = (delta: number) => {
-    const newSpeed = Math.max(0.5, Math.min(1.5, audioState.speed + delta));
-    setSpeed(newSpeed);
+    // Speed adjustment disabled in simple mode
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <Header
         onFontSizeClick={() => setShowFontSizeModal(true)}
         onSettingsClick={() => setLocation('/settings')}
@@ -242,7 +253,7 @@ export default function Player() {
               >
                 {isLoading ? (
                   <Loader2 className="h-6 w-6 text-white animate-spin" />
-                ) : audioState.isPlaying ? (
+                ) : isPlaying ? (
                   <Pause className="h-6 w-6 text-white" />
                 ) : (
                   <Play className="h-6 w-6 text-white ml-1" />
@@ -272,7 +283,7 @@ export default function Player() {
                   <Minus className="h-3 w-3 text-slate-600" />
                 </Button>
                 <span className="text-sm font-medium text-slate-700 min-w-12 text-center">
-                  {audioState.speed.toFixed(1)}x
+                  1.0x
                 </span>
                 <Button
                   variant="ghost"
@@ -299,7 +310,7 @@ export default function Player() {
                   }`}
                 >
                   <Repeat1 className="h-3 w-3 mr-1" />
-                  한 구절 반복
+                  한 곡 반복
                 </Button>
                 
                 <Button
@@ -313,42 +324,22 @@ export default function Player() {
                   }`}
                 >
                   <Repeat className="h-3 w-3 mr-1" />
-                  전체 듣기
+                  연속 재생
                 </Button>
               </div>
-            </div>
-            
-            {/* TTS Test Button */}
-            <div className="flex justify-center">
-              <Button 
-                onClick={() => {
-                  console.log('🧪 TTS Test Button clicked');
-                  if ('speechSynthesis' in window) {
-                    const testUtterance = new SpeechSynthesisUtterance('안녕하세요. 음성 테스트입니다.');
-                    testUtterance.rate = 1.0;
-                    testUtterance.volume = 1.0;
-                    testUtterance.lang = 'ko-KR';
-                    
-                    testUtterance.onstart = () => console.log('✅ Test TTS Started');
-                    testUtterance.onend = () => console.log('✅ Test TTS Ended');
-                    testUtterance.onerror = (e) => console.error('❌ Test TTS Error:', e.error);
-                    
-                    speechSynthesis.speak(testUtterance);
-                  } else {
-                    console.error('❌ Speech synthesis not available');
-                  }
-                }}
-                variant="outline"
-                className="h-10 px-4 bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-800"
-              >
-                <span className="text-sm">🎤 음성 테스트</span>
-              </Button>
             </div>
 
           </CardContent>
         </Card>
 
-
+        {/* 플레이어 하단 광고 */}
+        <AdFitBanner
+          adUnit="DAN-your-player-bottom-unit"
+          adWidth={320}
+          adHeight={50}
+          isSubscribed={isSubscribed}
+          className="player-bottom-ad"
+        />
       </div>
       
       <BottomNavigation

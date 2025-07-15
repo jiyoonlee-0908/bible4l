@@ -11,8 +11,8 @@ import { BibleSelector } from '@/components/BibleSelector';
 import { useBible } from '@/hooks/useBible';
 import { useBadges } from '@/hooks/useBadges';
 import { useBookmarks } from '@/hooks/useBookmarks';
-
-
+import { useSubscription } from '@/hooks/useSubscription';
+import { AdFitBanner } from '@/components/AdFitBanner';
 import { Storage } from '@/lib/storage';
 import { Language, Settings } from '@shared/schema';
 import { useToast } from '@/hooks/use-toast';
@@ -39,7 +39,7 @@ export default function Home() {
   
   const { checkAndUnlockBadge } = useBadges();
   const { bookmarks } = useBookmarks();
-
+  const { isSubscribed } = useSubscription();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -101,7 +101,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <Header
         onFontSizeClick={() => setShowFontSizeModal(true)}
         onSettingsClick={() => setLocation('/settings')}
@@ -120,6 +120,15 @@ export default function Home() {
           selectedLanguage={currentLanguage}
         />
 
+        {/* 상단 광고 배너 */}
+        <AdFitBanner
+          adUnit="DAN-your-home-banner-unit"
+          adWidth={320}
+          adHeight={100}
+          isSubscribed={isSubscribed}
+          className="home-top-banner"
+        />
+
         {/* Language Toggle with Mode Selection */}
         <LanguageToggle
           selectedLanguage={settings.selectedLanguage}
@@ -136,7 +145,15 @@ export default function Home() {
               mode={settings.displayMode}
               koreanVerse={currentLanguage !== 'ko' ? koreanVerseData : undefined}
             />
-
+            
+            {/* 구절 아래 정사각형 광고 */}
+            <AdFitBanner
+              adUnit="DAN-your-verse-square-unit"
+              adWidth={300}
+              adHeight={250}
+              isSubscribed={isSubscribed}
+              className="verse-square-ad"
+            />
           </>
         )}
         

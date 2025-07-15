@@ -103,7 +103,7 @@ export function ReadingPlanCard({
             </h4>
             <div className="space-y-1">
               <p className="text-sm text-slate-700">
-                <strong>{Array.isArray(todaysReading.books) ? todaysReading.books.join(', ') : todaysReading.books}</strong> {Array.isArray(todaysReading.chapters) ? todaysReading.chapters.join(', ') : todaysReading.chapters}장
+                <strong>{todaysReading.books.join(', ')}</strong> {todaysReading.chapters.join(', ')}장
               </p>
               {todaysReading.description && (
                 <p className="text-xs text-slate-600">{todaysReading.description}</p>

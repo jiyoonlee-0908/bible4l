@@ -57,7 +57,6 @@ export class Storage {
         if (parsed.pitch === undefined) {
           parsed.pitch = 0;
         }
-
         return parsed;
       }
     } catch {

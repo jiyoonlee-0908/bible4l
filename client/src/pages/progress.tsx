@@ -9,8 +9,6 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { TrendingUp, Calendar, Clock, Trophy, BookOpen, Target, CheckCircle, Headphones, Book, Award } from 'lucide-react';
 import { Storage } from '@/lib/storage';
-import { useReadingPlan } from '@/hooks/useReadingPlan';
-
 
 interface ListeningStat {
   book: string;
@@ -28,7 +26,6 @@ export default function ProgressPage() {
   const [showAllRecent, setShowAllRecent] = useState(false);
   const [showFontSizeModal, setShowFontSizeModal] = useState(false);
   const [fontLevel, setFontLevel] = useState(0);
-  const { selectedPlan, progress, availablePlans } = useReadingPlan();
 
   useEffect(() => {
     // Load listening statistics from localStorage
@@ -116,7 +113,7 @@ export default function ProgressPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 pb-24">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-amber-50">
       <Header
         onFontSizeClick={() => setShowFontSizeModal(true)}
         onSettingsClick={() => setLocation('/settings')}
@@ -278,71 +275,33 @@ export default function ProgressPage() {
         )}
 
         {/* Reading Plan Progress */}
-        {selectedPlan && progress && (
-          <Card className="bg-white rounded-xl shadow-lg border border-slate-200">
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                <Target className="h-5 w-5 text-amber-600" />
-                읽기 계획 진행률
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className={`p-4 rounded-lg border ${
-                selectedPlan.type === '365days' 
-                  ? 'bg-amber-50 border-amber-200' 
-                  : 'bg-blue-50 border-blue-200'
-              }`}>
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className={`font-semibold ${
-                    selectedPlan.type === '365days' ? 'text-amber-900' : 'text-blue-900'
-                  }`}>
-                    {selectedPlan.name}
-                  </h4>
-                  <Badge variant="secondary" className={`${
-                    selectedPlan.type === '365days' 
-                      ? 'bg-amber-200 text-amber-800' 
-                      : 'bg-blue-200 text-blue-800'
-                  }`}>
-                    Day {progress.currentDay}/{selectedPlan.totalDays}
-                  </Badge>
-                </div>
-                <Progress 
-                  value={(progress.completedDays.length / selectedPlan.totalDays) * 100} 
-                  className="mb-2" 
-                />
-                <p className={`text-xs ${
-                  selectedPlan.type === '365days' ? 'text-amber-700' : 'text-blue-700'
-                }`}>
-                  완료된 일수: {progress.completedDays.length}일
-                </p>
+        <Card className="bg-white rounded-xl shadow-lg border border-slate-200">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold text-slate-800 flex items-center gap-2">
+              <Target className="h-5 w-5 text-amber-600" />
+              읽기 계획 진행률
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-semibold text-amber-900">365일 성경 통독</h4>
+                <Badge variant="secondary" className="bg-amber-200 text-amber-800">Day 15/365</Badge>
               </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* No Reading Plan Message */}
-        {!selectedPlan && (
-          <Card className="bg-white rounded-xl shadow-lg border border-slate-200">
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                <Target className="h-5 w-5 text-amber-600" />
-                읽기 계획 진행률
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-center py-8">
-              <div className="text-slate-500 mb-4">
-                <BookOpen className="h-12 w-12 mx-auto mb-2" />
-                <p>선택된 읽기 계획이 없습니다</p>
+              <Progress value={4.1} className="mb-2" />
+              <p className="text-xs text-amber-700">오늘: 창세기 15-17장</p>
+            </div>
+            
+            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-semibold text-blue-900">90일 신약 통독</h4>
+                <Badge variant="secondary" className="bg-blue-200 text-blue-800">Day 8/90</Badge>
               </div>
-              <button
-                onClick={() => setLocation('/settings')}
-                className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-lg font-medium"
-              >
-                설정에서 계획 선택하기
-              </button>
-            </CardContent>
-          </Card>
-        )}
+              <Progress value={8.9} className="mb-2" />
+              <p className="text-xs text-blue-700">오늘: 마태복음 5-7장</p>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Bible Grid - 성경전체진도 (기본으로 펼쳐져 있음) */}
         <Card className="bg-white rounded-xl shadow-lg border border-slate-200">
@@ -375,7 +334,6 @@ export default function ProgressPage() {
             </CardContent>
           </Card>
         )}
-
       </div>
       
       <BottomNavigation

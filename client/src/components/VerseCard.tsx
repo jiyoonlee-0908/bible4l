@@ -1,9 +1,9 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, Star, Share2, Minus, Plus } from 'lucide-react';
+import { Play, Pause, Star, Share2 } from 'lucide-react';
 import { BibleVerse } from '@/types/bible';
 import { Language } from '@shared/schema';
-import { useSimpleTTS } from '@/hooks/useSimpleTTS';
+import { useSpeech } from '@/hooks/useSpeech';
 import { useBookmarks } from '@/hooks/useBookmarks';
 import { useToast } from '@/hooks/use-toast';
 import { useEffect } from 'react';
@@ -16,7 +16,7 @@ interface VerseCardProps {
 }
 
 export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps) {
-  const { audioState, speak, toggle, stop, setSpeed } = useSimpleTTS();
+  const { isPlaying, speak, stop } = useSpeech();
   const { isBookmarked, toggleBookmark } = useBookmarks();
   const { toast } = useToast();
 
@@ -27,7 +27,6 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
       const verseKey = `${verse.bookId}-${verse.chapterId}-${verse.verseId}-${language}`;
       
       // Check if this exact verse in this language was already recorded recently (within 5 minutes)
-      // Also prioritize home reading over player listening for the same verse
       const recentRecord = listeningStats.find((stat: any) => {
         const statKey = `${stat.book}-${stat.chapter}-${stat.verse}-${stat.language}`;
         const timeDiff = new Date().getTime() - new Date(stat.timestamp).getTime();
@@ -64,16 +63,9 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
   }, [verse.bookId, verse.chapterId, verse.verseId, language]);
 
   const handlePlay = () => {
-    console.log('🎵 VerseCard Play button clicked!');
-    console.log('Verse:', verse);
-    console.log('Audio state:', audioState);
-    
-    if (audioState.isPlaying) {
-      console.log('🛑 Stopping current playback');
-      toggle();
+    if (isPlaying) {
+      stop();
     } else {
-      console.log('▶️ Starting verse playback');
-      
       const voiceMapping = {
         ko: 'ko-KR',
         en: 'en-US',
@@ -82,11 +74,9 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
       };
       
       const langCode = voiceMapping[language] || 'en-US';
-      speak(verse.text, langCode);
+      speak(verse.text, { rate: 1.0, lang: langCode });
     }
   };
-
-
 
   const handleBookmark = () => {
     const bookmark = {
@@ -94,13 +84,14 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
       verseId: verse.id,
       reference: verse.reference,
       text: verse.text,
-      language,
-      createdAt: new Date().toISOString(),
+      language: language,
+      timestamp: new Date().toISOString(),
     };
     
     toggleBookmark(bookmark);
+    
     toast({
-      title: isBookmarked(verse.id, language) ? '북마크 제거됨' : '북마크 추가됨',
+      title: isBookmarked(verse.id, language) ? '북마크에서 제거됨' : '북마크에 추가됨',
       description: verse.reference,
     });
   };
@@ -130,26 +121,6 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
       }
     }
   };
-
-  const adjustSpeed = (delta: number) => {
-    const newSpeed = Math.max(0.5, Math.min(1.5, audioState.speed + delta));
-    setSpeed(newSpeed);
-  };
-
-  const adjustPitch = (delta: number) => {
-    const newPitch = Math.max(-4, Math.min(4, audioState.pitch + delta));
-    setPitch(newPitch);
-  };
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  const progressPercentage = audioState.duration > 0 
-    ? (audioState.currentPosition / audioState.duration) * 100 
-    : 0;
 
   const getLanguageLabel = (lang: Language) => {
     const labels = {
@@ -210,100 +181,36 @@ export function VerseCard({ verse, language, mode, koreanVerse }: VerseCardProps
                 <div className="text-xs text-slate-500 mb-1">{getLanguageLabel(language)}</div>
                 {verse.text}
               </div>
+              
               {koreanVerse && (
-                <div className="text-slate-600 text-dynamic leading-relaxed border-l-4 border-amber-200 pl-4">
-                  <div className="text-xs text-slate-500 mb-1">한국어</div>
+                <div className="text-slate-600 text-sm leading-relaxed pt-3 border-t border-amber-100">
+                  <div className="text-xs text-amber-600 mb-1">한국어</div>
                   {koreanVerse.text}
                 </div>
               )}
             </div>
           )}
         </div>
-      </CardContent>
-
-      {/* Audio Controls */}
-      <div className="bg-slate-50 px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <Button
-              onClick={handlePlay}
-              className="w-12 h-12 bg-amber-800 hover:bg-amber-900 rounded-full shadow-lg transition-all duration-200 transform hover:scale-105"
-            >
-              {audioState.isPlaying ? (
-                <Pause className="h-5 w-5 text-white" />
-              ) : (
-                <Play className="h-5 w-5 text-white ml-1" />
-              )}
-            </Button>
-            
+        
+        {/* Audio Controls */}
+        <div className="mt-6 flex items-center justify-center space-x-4">
+          <Button
+            onClick={handlePlay}
+            className="bg-amber-700 hover:bg-amber-800 text-white rounded-full px-6 py-3 shadow-lg transition-all duration-200 hover:scale-105"
+          >
             <div className="flex items-center space-x-2">
-              <div className="flex flex-col items-center space-y-1">
-                <div className="flex items-center space-x-1">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => adjustSpeed(-0.1)}
-                    className="w-6 h-6 bg-slate-200 hover:bg-slate-300 rounded-full"
-                  >
-                    <Minus className="h-2 w-2 text-slate-600" />
-                  </Button>
-                  <span className="text-xs font-medium text-slate-700 min-w-8 text-center">
-                    {audioState.speed.toFixed(1)}x
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => adjustSpeed(0.1)}
-                    className="w-6 h-6 bg-slate-200 hover:bg-slate-300 rounded-full"
-                  >
-                    <Plus className="h-2 w-2 text-slate-600" />
-                  </Button>
-                </div>
-                <span className="text-xs text-slate-500">속도</span>
-              </div>
-              
-              <div className="flex flex-col items-center space-y-1">
-                <div className="flex items-center space-x-1">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => adjustPitch(-1)}
-                    className="w-6 h-6 bg-amber-200 hover:bg-amber-300 rounded-full"
-                  >
-                    <Minus className="h-2 w-2 text-amber-700" />
-                  </Button>
-                  <span className="text-xs font-medium text-amber-700 min-w-8 text-center">
-                    {audioState.pitch > 0 ? '+' : ''}{audioState.pitch}
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => adjustPitch(1)}
-                    className="w-6 h-6 bg-amber-200 hover:bg-amber-300 rounded-full"
-                  >
-                    <Plus className="h-2 w-2 text-amber-700" />
-                  </Button>
-                </div>
-                <span className="text-xs text-amber-600">음조</span>
-              </div>
+              {isPlaying ? (
+                <Pause className="h-4 w-4 text-amber-600" />
+              ) : (
+                <Play className="h-4 w-4 text-amber-600" />
+              )}
+              <span className="text-sm font-medium">
+                {isPlaying ? '일시정지' : '듣기'}
+              </span>
             </div>
-          </div>
-          
-          <div className="flex flex-col items-end space-y-1">
-            <div className="text-xs text-slate-500">
-              {audioState.isPlaying ? '재생 중' : '일시정지'}
-            </div>
-            {audioState.isPlaying && (
-              <div className="w-16 bg-slate-200 rounded-full h-1">
-                <div 
-                  className="bg-amber-800 h-1 rounded-full transition-all duration-300" 
-                  style={{ width: `${progressPercentage}%` }}
-                />
-              </div>
-            )}
-          </div>
+          </Button>
         </div>
-      </div>
+      </CardContent>
     </Card>
   );
 }

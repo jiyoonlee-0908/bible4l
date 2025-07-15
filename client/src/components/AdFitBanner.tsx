@@ -5,18 +5,21 @@ interface AdFitBannerProps {
   adWidth: number;
   adHeight: number;
   className?: string;
-
+  isSubscribed?: boolean; // 구독 사용자는 광고 숨김
 }
 
 export function AdFitBanner({ 
   adUnit, 
   adWidth, 
   adHeight, 
-  className = ''
+  className = '',
+  isSubscribed = false 
 }: AdFitBannerProps) {
   const adRef = useRef<HTMLInsElement>(null);
 
   useEffect(() => {
+    // 구독 사용자는 광고 표시하지 않음
+    if (isSubscribed) return;
 
     // 애드핏 스크립트 로드
     const script = document.createElement('script');
@@ -55,7 +58,12 @@ export function AdFitBanner({
         script.parentNode.removeChild(script);
       }
     };
-  }, [adUnit]);
+  }, [adUnit, isSubscribed]);
+
+  // 구독 사용자는 광고 렌더링하지 않음
+  if (isSubscribed) {
+    return null;
+  }
 
   const handleAdFail = (element: HTMLElement) => {
     console.log('AdFit 광고 로드 실패');

@@ -17,39 +17,41 @@ export function BottomNavigation({ currentPath, onNavigate }: BottomNavigationPr
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-lg z-50">
-      <div className="max-w-md mx-auto">
-        <div className="flex items-center justify-around py-2 px-4">
-          {navItems.map(({ path, icon: Icon, label }) => {
-            const isActive = currentPath === path;
-            return (
-              <Button
-                key={path}
-                variant="ghost"
-                onClick={() => onNavigate(path)}
-                className={`flex flex-col items-center py-3 px-3 rounded-xl transition-all transform hover:scale-105 ${
-                  isActive
-                    ? 'bg-amber-50 hover:bg-amber-100 shadow-sm'
-                    : 'hover:bg-slate-50'
-                }`}
-              >
-                <Icon 
-                  className={`text-lg h-5 w-5 ${
-                    isActive ? 'text-amber-800' : 'text-slate-500'
-                  }`} 
-                />
-                <span 
-                  className={`text-xs font-medium mt-1 ${
-                    isActive ? 'text-amber-800' : 'text-slate-600'
+    <nav className="max-w-md mx-auto px-4 pb-4 sticky bottom-4">
+      <Card className="bg-white rounded-2xl shadow-lg border border-slate-200">
+        <CardContent className="p-2">
+          <div className="flex items-center justify-around px-2">
+            {navItems.map(({ path, icon: Icon, label }) => {
+              const isActive = currentPath === path;
+              return (
+                <Button
+                  key={path}
+                  variant="ghost"
+                  onClick={() => onNavigate(path)}
+                  className={`flex flex-col items-center py-3 px-3 rounded-xl transition-all transform hover:scale-105 ${
+                    isActive
+                      ? 'bg-amber-50 hover:bg-amber-100 shadow-sm'
+                      : 'hover:bg-slate-50'
                   }`}
                 >
-                  {label}
-                </span>
-              </Button>
-            );
-          })}
-        </div>
-      </div>
+                  <Icon 
+                    className={`text-lg h-5 w-5 ${
+                      isActive ? 'text-amber-800' : 'text-slate-500'
+                    }`} 
+                  />
+                  <span 
+                    className={`text-xs font-medium mt-1 ${
+                      isActive ? 'text-amber-800' : 'text-slate-600'
+                    }`}
+                  >
+                    {label}
+                  </span>
+                </Button>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
     </nav>
   );
 }
