@@ -28,7 +28,7 @@ export const settingsSchema = z.object({
   playbackSpeed: z.number().min(0.8).max(1.5).default(1.0),
   pitch: z.number().min(-4).max(4).default(0), // semitones
   autoPlay: z.boolean().default(false),
-  voice: z.string().optional(),
+
   dsp: z.object({
     echo: z.boolean().default(false),
     reverb: z.boolean().default(false),

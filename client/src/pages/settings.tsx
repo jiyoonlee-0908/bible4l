@@ -178,27 +178,16 @@ export default function Settings() {
                   />
                 </div>
 
-                {voices.length > 0 && (
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-slate-700">음성 선택</label>
-                    <Select
-                      value={settings.voice || 'default'}
-                      onValueChange={(voice) => updateSettings({ voice: voice === 'default' ? undefined : voice })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="기본 음성" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="default">기본 음성</SelectItem>
-                        {voices.map((voice) => (
-                          <SelectItem key={voice.name} value={voice.name}>
-                            {voice.name} ({voice.lang})
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <div className="text-sm font-medium text-blue-800 mb-2">🎙️ 음성 설정</div>
+                  <div className="text-xs text-blue-600 space-y-1">
+                    <div>• 한국어: 구글 한국어 음성 우선</div>
+                    <div>• English: 구글 미국 영어 음성 우선</div>
+                    <div>• 中文: 구글 중국어 음성 우선</div>
+                    <div>• 日本語: 구글 일본어 음성 우선</div>
+                    <div className="mt-2 text-blue-500">각 언어별로 가장 자연스러운 음성이 자동 선택됩니다.</div>
                   </div>
-                )}
+                </div>
 
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-slate-700">기본 언어</label>

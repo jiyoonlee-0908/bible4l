@@ -95,6 +95,81 @@ export function useSpeech() {
     return langMap[currentSettings.selectedLanguage] || 'en-US';
   }, []);
 
+  const selectBestVoice = useCallback((targetLang: string) => {
+    if (!voices.length) return null;
+    
+    const langCode = targetLang.split('-')[0];
+    const languageVoices = voices.filter(v => v.lang.startsWith(langCode));
+    
+    if (languageVoices.length === 0) return null;
+    
+    // 각 언어별 최적 음성 우선순위 (억양이 가장 자연스러운 순서)
+    const voicePriorities = {
+      ko: [
+        'Google 한국의',
+        'Yuna',
+        'Google Korean',
+        'Microsoft Heami',
+        'Kyuri',
+        'Korean Female',
+        'ko-KR-Standard-A',
+        'ko-KR-Standard-B'
+      ],
+      en: [
+        'Google US English',
+        'Google UK English Female',
+        'Samantha',
+        'Daniel',
+        'Microsoft Zira',
+        'Microsoft David',
+        'Alex',
+        'en-US-Standard-C',
+        'en-US-Standard-E'
+      ],
+      zh: [
+        'Google 普通话（中国大陆）',
+        'Google Chinese (China)',
+        'Ting-Ting',
+        'Microsoft Huihui',
+        'Microsoft Yaoyao',
+        'zh-CN-Standard-A',
+        'zh-CN-Standard-C'
+      ],
+      ja: [
+        'Google 日本語',
+        'Google Japanese',
+        'Kyoko',
+        'Otoya',
+        'Microsoft Haruka',
+        'Microsoft Ayumi',
+        'ja-JP-Standard-A',
+        'ja-JP-Standard-B'
+      ]
+    };
+    
+    const priorities = voicePriorities[langCode as keyof typeof voicePriorities] || [];
+    
+    // 우선순위에 따라 음성 선택
+    for (const priorityName of priorities) {
+      const voice = languageVoices.find(v => 
+        v.name.includes(priorityName) || 
+        v.name.toLowerCase().includes(priorityName.toLowerCase())
+      );
+      if (voice) return voice;
+    }
+    
+    // Google 음성 우선
+    const googleVoices = languageVoices.filter(v => v.name.toLowerCase().includes('google'));
+    if (googleVoices.length > 0) return googleVoices[0];
+    
+    // 로컬 음성 우선
+    const localVoices = languageVoices.filter(v => v.localService);
+    if (localVoices.length > 0) return localVoices[0];
+    
+    // 폴백
+    return languageVoices[0];
+  }, [voices]);
+
   const applyDSPSettings = useCallback(() => {
     if (!eqNodesRef.current || !gainNodeRef.current) return;
     
@@ -151,16 +226,10 @@ export function useSpeech() {
       if (options.voice) {
         newUtterance.voice = options.voice;
       } else {
-        // Auto-select voice based on specified or current language
         const targetLang = options.lang || getCurrentLanguageCode();
-        const languageVoices = voices.filter(v => v.lang.startsWith(targetLang.split('-')[0]));
-        if (languageVoices.length > 0) {
-          newUtterance.voice = languageVoices[0];
-        } else if (settings.voice && voices.length > 0) {
-          const selectedVoice = voices.find(v => v.name === settings.voice);
-          if (selectedVoice) {
-            newUtterance.voice = selectedVoice;
-          }
+        const selectedVoice = selectBestVoice(targetLang);
+        if (selectedVoice) {
+          newUtterance.voice = selectedVoice;
         }
       }
       
