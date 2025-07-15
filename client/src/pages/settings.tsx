@@ -209,21 +209,6 @@ export default function Settings() {
                   />
                 </div>
 
-                <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                  <div className="text-sm font-medium text-blue-800 mb-2">
-                    🎙️ 음성 설정
-                  </div>
-                  <div className="text-xs text-blue-600 space-y-1">
-                    <div>• 한국어: 구글 한국어 음성 우선</div>
-                    <div>• English: 구글 미국 영어 음성 우선</div>
-                    <div>• 中文: 구글 중국어 음성 우선</div>
-                    <div>• 日本語: 구글 일본어 음성 우선</div>
-                    <div className="mt-2 text-blue-500">
-                      각 언어별로 가장 자연스러운 음성이 자동 선택됩니다.
-                    </div>
-                  </div>
-                </div>
-
                 {/* Voice Package Download Guide */}
                 <VoicePackageButton />
 
