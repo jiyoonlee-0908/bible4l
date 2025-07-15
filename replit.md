@@ -41,6 +41,7 @@ Ad-supported model: Keep only ad-supported version, Pro version to be developed 
 ✓ Updated player mode labels to "한 구절 반복" and "전체 듣기" for better user clarity
 ✓ Removed all advertisements - ads require actual app store registration for approval
 ✓ AdFitBanner component kept for future use after app store deployment
+✓ Increased bottom padding from pb-20 to pb-32 to prevent bottom navigation overlap
 
 ## System Architecture
 
