@@ -6,8 +6,6 @@ import { FontSizeModal } from "@/components/FontSizeModal";
 import { DSPControls } from "@/components/DSPControls";
 import { ReadingPlanCard } from "@/components/ReadingPlanCard";
 import { BadgeDisplay } from "@/components/BadgeDisplay";
-import { VoiceFileUploader } from "@/components/VoiceFileUploader";
-import { VoiceSetupGuide } from "@/components/VoiceSetupGuide";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -34,7 +32,6 @@ export default function Settings() {
     "audio",
   );
   const [showFontSizeModal, setShowFontSizeModal] = useState(false);
-  const [showVoiceGuide, setShowVoiceGuide] = useState(false);
   const [fontLevel, setFontLevel] = useState(0);
   const { voices } = useSpeech();
   const { toast } = useToast();
@@ -201,8 +198,6 @@ export default function Settings() {
                   </div>
                 </div>
 
-
-
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium text-slate-700">
                     자동 재생
@@ -278,9 +273,6 @@ export default function Settings() {
               onUpdateSettings={updateSettings}
             />
 
-            {/* 음성 파일 업로더 */}
-            <VoiceFileUploader />
-
             {/* Data Management */}
             <Card className="bg-white rounded-2xl shadow-sm border border-slate-200">
               <CardHeader>
@@ -350,11 +342,6 @@ export default function Settings() {
         onClose={() => setShowFontSizeModal(false)}
         currentLevel={fontLevel}
         onLevelChange={setFontLevel}
-      />
-      
-      <VoiceSetupGuide
-        isOpen={showVoiceGuide}
-        onClose={() => setShowVoiceGuide(false)}
       />
     </div>
   );

@@ -117,33 +117,27 @@ export function useSpeech() {
         'google ko',
         'google korean',
         'ko-KR-Standard-A',
-        'ko-KR-Standard-B', 
+        'ko-KR-Standard-B',
         'ko-KR-Standard-C',
-        'ko-KR-Standard-D',
-        'ko-KR-Neural2-A',
-        'ko-KR-Neural2-B',
-        'ko-KR-Neural2-C',
-        'ko-KR-Wavenet-A',
-        'ko-KR-Wavenet-B',
-        'ko-KR-Wavenet-C',
-        'ko-KR-Wavenet-D'
+        'ko-KR-Standard-D'
       ],
       en: [
         'Google US English',
-        'Google English',
         'Google UK English Female',
-        'Google UK English Male',
+        'Google UK English Male', 
+        'Google English',
+        'google en',
+        'google english',
         'en-US-Standard-A',
         'en-US-Standard-B',
         'en-US-Standard-C',
         'en-US-Standard-D',
-        'en-US-Neural2-A',
-        'en-US-Neural2-B',
-        'en-US-Neural2-C',
-        'en-US-Wavenet-A',
-        'en-US-Wavenet-B',
-        'en-US-Wavenet-C',
-        'en-US-Wavenet-D'
+        'en-US-Standard-E',
+        'en-US-Standard-F',
+        'en-US-Standard-G',
+        'en-US-Standard-H',
+        'en-US-Standard-I',
+        'en-US-Standard-J'
       ],
       zh: [
         'Google 普通话（中国大陆）',
@@ -256,28 +250,9 @@ export function useSpeech() {
       const cleanedText = cleanText(text);
       const newUtterance = new SpeechSynthesisUtterance(cleanedText);
       
-      // 구글 음성 강제 설정 (우선순위 음성 사용)
+      // 구글 음성 강제 설정
       const targetLang = options.lang || getCurrentLanguageCode();
-      let selectedVoice = selectBestVoice(targetLang);
-      
-      // 저장된 우선순위 음성 체크
-      try {
-        const preferredVoices = localStorage.getItem('bible-preferred-voices');
-        if (preferredVoices) {
-          const preferences = JSON.parse(preferredVoices);
-          const langPrefs = preferences[targetLang];
-          if (langPrefs && langPrefs.length > 0) {
-            const currentVoices = speechSynthesis.getVoices();
-            const preferredVoice = currentVoices.find(v => v.name === langPrefs[0].name);
-            if (preferredVoice) {
-              selectedVoice = preferredVoice;
-              console.log(`Using preferred voice: ${preferredVoice.name}`);
-            }
-          }
-        }
-      } catch (error) {
-        console.log('Failed to load preferred voices:', error);
-      }
+      const selectedVoice = selectBestVoice(targetLang);
       
       if (selectedVoice) {
         newUtterance.voice = selectedVoice;

@@ -16,7 +16,6 @@ import { useBookmarks } from '@/hooks/useBookmarks';
 import { Storage } from '@/lib/storage';
 import { Language, Settings } from '@shared/schema';
 import { useToast } from '@/hooks/use-toast';
-import { getLocalizedBookName } from '@/utils/bookNames';
 
 export default function Home() {
   const [location, setLocation] = useLocation();
@@ -113,10 +112,9 @@ export default function Home() {
         <BibleSelector
           onSelect={(book, chapter, verse) => {
             setVerse(book, chapter, verse);
-            const localizedBookName = getLocalizedBookName(book, currentLanguage);
             toast({
               title: '성경 구절 선택됨',
-              description: `${localizedBookName} ${chapter}:${verse}로 이동했습니다.`,
+              description: `${book} ${chapter}:${verse}로 이동했습니다.`,
             });
           }}
           selectedLanguage={currentLanguage}
@@ -157,10 +155,9 @@ export default function Home() {
           onClose={() => setShowChapterVerseSelector(false)}
           onSelect={(chapter, verse) => {
             setVerse(currentBook, chapter, verse);
-            const localizedBookName = getLocalizedBookName(currentBook, currentLanguage);
             toast({
               title: '구절 이동됨',
-              description: `${localizedBookName} ${chapter}:${verse}로 이동했습니다.`,
+              description: `${currentBook} ${chapter}:${verse}로 이동했습니다.`,
             });
           }}
           currentChapter={currentChapter}

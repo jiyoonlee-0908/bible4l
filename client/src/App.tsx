@@ -5,7 +5,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { GlobalAudioProvider } from '@/hooks/useGlobalAudio';
 import { GlobalAudioBar } from '@/components/GlobalAudioBar';
-
 import { Storage } from '@/lib/storage';
 import { useState, useEffect } from 'react';
 import React from 'react';
@@ -71,7 +70,6 @@ class AppErrorBoundary extends React.Component<{children: React.ReactNode}, {has
 function App() {
   const [fontLevel, setFontLevel] = useState(0);
 
-
   useEffect(() => {
     // 전역 에러 핸들러
     const handleError = (event: ErrorEvent) => {
@@ -100,8 +98,6 @@ function App() {
       const savedSettings = Storage.getSettings();
       const level = savedSettings.fontLevel || 0;
       setFontLevel(level);
-      
-
     } catch (error) {
       console.error('Settings loading error:', error);
     }
@@ -138,7 +134,6 @@ function App() {
             <Toaster />
             <Router />
             <GlobalAudioBar />
-
           </TooltipProvider>
         </GlobalAudioProvider>
       </QueryClientProvider>

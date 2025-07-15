@@ -54,40 +54,6 @@ Ad-supported model: Keep only ad-supported version, Pro version to be developed 
 ✓ Fixed badge system with proper event-driven architecture for real-time badge unlocking
 ✓ Connected badge checks to actual app activities (listening, bookmarks, reading plans, streaks)
 ✓ Added totalListeningTime tracking to settings schema for accurate badge calculations
-✓ Implemented automatic TTS voice initialization system for 4 languages at app startup
-✓ Added VoiceInitializer component for guided voice setup and optimization
-✓ Enhanced TTS voice selection with preferred voice storage and fallback system
-✓ Added comprehensive voice testing and mobile optimization features
-✓ Created TTSInstallGuide component with platform-specific Google TTS installation instructions
-✓ Integrated missing language detection and automatic TTS download guidance system
-✓ Added Android/iOS/Desktop-specific TTS installation workflows with direct store links
-✓ Modified TTS popup to show repeatedly until "다시 보지 않기" is clicked (not just first-time)
-✓ Improved Android TTS language addition with direct settings navigation and detailed instructions
-✓ Added comprehensive 3-method guidance for Chinese/Japanese voice installation
-✓ Created TTSEngineDetector component for automatic TTS engine identification (Google/Samsung/etc.)
-✓ Implemented VoiceLanguageChecker for detailed language-specific voice availability testing
-✓ Added voice quality diagnosis with real-time testing for all 4 languages
-✓ Enhanced TTS setup with manufacturer-specific guidance (Samsung TTS vs Google TTS)
-✓ Integrated direct language install attempts for missing voice packages
-✓ Implemented Smart TTS system with automatic voice optimization and quality scoring
-✓ Added SmartTTSIndicator for non-intrusive voice quality improvement notifications
-✓ Simplified VoiceInitializer to focus on user-friendly experience over complex setup
-✓ Integrated Smart TTS into VerseCard for automatic best voice selection during playback
-✓ Enhanced VoiceDebugger with improved testing and macOS voice priority system
-✓ Created MacVoiceExporter to extract high-quality Mac voice settings for Android use
-✓ Optimized voice quality scoring to prioritize Mac premium voices (Yuna, Karen, Samantha, etc.)
-✓ Fixed TTS testing functionality with proper error handling and status feedback
-✓ Removed complex TTS setup system and popup interfaces as requested by user
-✓ Implemented embedded voice system using Mac premium voices (Yuna, Karen, Samantha, Kyoko, Tingting)
-✓ Created useEmbeddedTTS hook for direct Mac voice integration without external dependencies
-✓ Updated VerseCard to use premium embedded voices with fallback to standard TTS
-✓ Cleaned up App.tsx to remove voice initialization popups and complex setup flows
-✓ Replaced TTS system with prerecorded audio file system for high-quality consistent playback
-✓ Fixed Japanese font display issues with proper Noto Sans JP font integration
-✓ Created VoiceFileUploader component with Mac voice generation script download
-✓ Implemented usePrerecordedTTS hook for MP3 audio file playback system
-✓ Added audio file directory structure and upload management interface
-✓ Removed TTS debugger from settings as requested - focus on embedded audio files
 
 ## Play Store Deployment Preparation (January 15, 2025)
 
