@@ -35,6 +35,7 @@ export function useEmbeddedTTS() {
     options: EmbeddedTTSOptions = {}
   ) => {
     try {
+      console.log(`🔧 TTS 시작: ${language} - "${text.substring(0, 50)}..."`);
       setState(prev => ({ ...prev, isLoading: true, error: null }));
 
       // 기존 재생 중단
@@ -47,6 +48,26 @@ export function useEmbeddedTTS() {
         synthesisRef.current = null;
       }
 
+      // Web Speech API 지원 확인
+      if (!('speechSynthesis' in window)) {
+        throw new Error('Web Speech API not supported in this browser');
+      }
+
+      // 음성 목록 확인
+      let voices = speechSynthesis.getVoices();
+      console.log(`🎤 사용 가능한 음성 개수: ${voices.length}`);
+      
+      // 음성 목록이 비어있으면 잠시 대기 후 재시도
+      if (voices.length === 0) {
+        await new Promise(resolve => {
+          speechSynthesis.onvoiceschanged = () => {
+            voices = speechSynthesis.getVoices();
+            console.log(`🔄 음성 목록 재로드: ${voices.length}개`);
+            resolve(void 0);
+          };
+        });
+      }
+
       const voiceId = defaultVoicesByLanguage[language];
       const voiceSettings = macVoiceSettings[voiceId];
       
@@ -56,73 +77,67 @@ export function useEmbeddedTTS() {
 
       setState(prev => ({ ...prev, currentVoiceId: voiceId }));
 
-      // 맥북 시스템 음성으로 실시간 생성
-      const voices = speechSynthesis.getVoices();
-      const targetVoice = voices.find(v => 
-        v.name.toLowerCase().includes(voiceSettings.voice.toLowerCase()) ||
-        v.voiceURI.toLowerCase().includes(voiceSettings.voice.toLowerCase())
-      );
+      // 언어별 음성 찾기
+      const languageMapping = {
+        ko: ['ko-KR', 'ko', 'yuna'],
+        en: ['en-US', 'en-GB', 'en', 'samantha', 'karen'],
+        zh: ['zh-CN', 'zh-TW', 'zh', 'tingting'],
+        ja: ['ja-JP', 'ja', 'kyoko']
+      };
 
-      if (targetVoice) {
-        // 고품질 맥북 음성 사용
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.voice = targetVoice;
-        utterance.rate = options.rate || voiceSettings.rate;
-        utterance.volume = options.volume || voiceSettings.volume;
-        utterance.pitch = voiceSettings.pitch;
-
-        utterance.onstart = () => {
-          setState(prev => ({ ...prev, isLoading: false, isPlaying: true }));
-          options.onStart?.();
-        };
-
-        utterance.onend = () => {
-          setState(prev => ({ ...prev, isPlaying: false, currentVoiceId: null }));
-          options.onEnd?.();
-        };
-
-        utterance.onerror = (event) => {
-          const errorMsg = `TTS Error: ${event.error}`;
-          setState(prev => ({ ...prev, isLoading: false, isPlaying: false, error: errorMsg }));
-          options.onError?.(errorMsg);
-        };
-
-        synthesisRef.current = utterance;
-        speechSynthesis.speak(utterance);
-      } else {
-        // 폴백: 브라우저 기본 TTS
-        const utterance = new SpeechSynthesisUtterance(text);
-        const fallbackVoices = voices.filter(v => v.lang.startsWith(language === 'zh' ? 'zh' : language));
-        
-        if (fallbackVoices.length > 0) {
-          utterance.voice = fallbackVoices[0];
-        }
-        
-        utterance.rate = options.rate || 0.9;
-        utterance.volume = options.volume || 0.8;
-        utterance.pitch = 1.0;
-
-        utterance.onstart = () => {
-          setState(prev => ({ ...prev, isLoading: false, isPlaying: true }));
-          options.onStart?.();
-        };
-
-        utterance.onend = () => {
-          setState(prev => ({ ...prev, isPlaying: false, currentVoiceId: null }));
-          options.onEnd?.();
-        };
-
-        utterance.onerror = (event) => {
-          const errorMsg = `Fallback TTS Error: ${event.error}`;
-          setState(prev => ({ ...prev, isLoading: false, isPlaying: false, error: errorMsg }));
-          options.onError?.(errorMsg);
-        };
-
-        synthesisRef.current = utterance;
-        speechSynthesis.speak(utterance);
+      const searchTerms = languageMapping[language] || ['en-US'];
+      
+      let selectedVoice = null;
+      for (const term of searchTerms) {
+        selectedVoice = voices.find(v => 
+          v.lang.toLowerCase().includes(term.toLowerCase()) ||
+          v.name.toLowerCase().includes(term.toLowerCase()) ||
+          v.voiceURI.toLowerCase().includes(term.toLowerCase())
+        );
+        if (selectedVoice) break;
       }
+
+      console.log(`🎯 선택된 음성: ${selectedVoice ? selectedVoice.name : '기본 음성'}`);
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
+      }
+      
+      utterance.rate = options.rate || 0.9;
+      utterance.volume = options.volume || 0.8;
+      utterance.pitch = 1.0;
+      utterance.lang = language === 'zh' ? 'zh-CN' : `${language}-${language.toUpperCase()}`;
+
+      utterance.onstart = () => {
+        console.log(`▶️ TTS 재생 시작`);
+        setState(prev => ({ ...prev, isLoading: false, isPlaying: true }));
+        options.onStart?.();
+      };
+
+      utterance.onend = () => {
+        console.log(`✅ TTS 재생 완료`);
+        setState(prev => ({ ...prev, isPlaying: false, currentVoiceId: null }));
+        options.onEnd?.();
+      };
+
+      utterance.onerror = (event) => {
+        const errorMsg = `TTS Error: ${event.error}`;
+        console.error(`❌ TTS 오류:`, event);
+        setState(prev => ({ ...prev, isLoading: false, isPlaying: false, error: errorMsg }));
+        options.onError?.(errorMsg);
+      };
+
+      synthesisRef.current = utterance;
+      
+      // TTS 실행
+      console.log(`🚀 TTS 실행 중...`);
+      speechSynthesis.speak(utterance);
+      
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : 'Unknown error';
+      console.error(`💥 TTS 예외:`, error);
       setState(prev => ({ ...prev, isLoading: false, isPlaying: false, error: errorMsg }));
       options.onError?.(errorMsg);
     }

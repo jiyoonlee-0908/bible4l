@@ -6,6 +6,7 @@ import { FontSizeModal } from "@/components/FontSizeModal";
 import { DSPControls } from "@/components/DSPControls";
 import { ReadingPlanCard } from "@/components/ReadingPlanCard";
 import { BadgeDisplay } from "@/components/BadgeDisplay";
+import { TTSDebugger } from "@/components/TTSDebugger";
 import { VoiceSetupGuide } from "@/components/VoiceSetupGuide";
 import { VoiceDebugger } from "@/components/VoiceDebugger";
 import { MacVoiceExporter } from "@/components/MacVoiceExporter";
@@ -278,6 +279,9 @@ export default function Settings() {
               settings={settings}
               onUpdateSettings={updateSettings}
             />
+
+            {/* TTS 디버거 */}
+            <TTSDebugger />
 
             {/* Data Management */}
             <Card className="bg-white rounded-2xl shadow-sm border border-slate-200">
