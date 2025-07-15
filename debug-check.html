@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head><title>Debug Check</title></head>
+<body>
+<h1>서버 확인</h1>
+<p>Replit 프리뷰 시 다음 URL을 시도하세요:</p>
+<ul>
+<li><a href="http://localhost:5000/">메인 페이지</a></li>
+<li><a href="http://localhost:5000/src/App.tsx">App.tsx 소스</a></li>
+</ul>
+<script>
+console.log('Debug check loaded');
+setTimeout(() => {
+    console.log('Testing fetch to main page...');
+    fetch('/')
+        .then(r => r.text())
+        .then(t => console.log('Main page content:', t.substring(0, 200)))
+        .catch(e => console.error('Error:', e));
+}, 1000);
+</script>
+</body>
+</html>
