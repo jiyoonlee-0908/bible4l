@@ -62,6 +62,7 @@ Ad-supported model: Keep only ad-supported version, Pro version to be developed 
 ✓ Reorganized settings tabs: "음성 설정" with only voice guide and data management
 ✓ Fixed dialog close issue with proper state management
 ✓ Removed "모든 효과 초기화" button from DSP controls
+✓ Removed settings button from header to eliminate duplication with bottom navigation
 
 ## Play Store Deployment Preparation (January 15, 2025)
 

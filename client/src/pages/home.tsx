@@ -123,7 +123,6 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 pb-32">
       <Header
         onFontSizeClick={() => setShowFontSizeModal(true)}
-        onSettingsClick={() => setLocation('/settings')}
       />
       
       <div className="max-w-md mx-auto px-4 py-3 space-y-3">

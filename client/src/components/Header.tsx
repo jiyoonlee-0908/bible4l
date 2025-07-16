@@ -1,15 +1,14 @@
-import { Type, Settings, Download } from 'lucide-react';
+import { Type, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLocation } from 'wouter';
 import { VoicePackageButton } from '@/components/VoicePackageGuide';
 
 interface HeaderProps {
   onFontSizeClick: () => void;
-  onSettingsClick: () => void;
   onVoicePackageClick?: () => void;
 }
 
-export function Header({ onFontSizeClick, onSettingsClick, onVoicePackageClick }: HeaderProps) {
+export function Header({ onFontSizeClick, onVoicePackageClick }: HeaderProps) {
   const [, setLocation] = useLocation();
 
   const handleHeaderClick = () => {
@@ -46,14 +45,6 @@ export function Header({ onFontSizeClick, onSettingsClick, onVoicePackageClick }
               </div>
             </Button>
             <VoicePackageButton isHeaderButton={true} />
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onSettingsClick}
-              className="w-10 h-10 bg-amber-200/50 hover:bg-amber-300/50 rounded-full"
-            >
-              <Settings className="h-5 w-5 text-amber-800" />
-            </Button>
           </div>
         </div>
       </div>
