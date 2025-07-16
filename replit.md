@@ -63,6 +63,7 @@ Ad-supported model: Keep only ad-supported version, Pro version to be developed 
 ✓ Fixed dialog close issue with proper state management
 ✓ Removed "모든 효과 초기화" button from DSP controls
 ✓ Removed settings button from header to eliminate duplication with bottom navigation
+✓ Changed app ID to com.bibleaudio4l.app to resolve Play Store signing key conflicts
 
 ## Play Store Deployment Preparation (January 15, 2025)
 
