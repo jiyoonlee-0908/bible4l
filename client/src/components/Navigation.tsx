@@ -30,14 +30,18 @@ export function Navigation({
   secondaryVerse,
 }: NavigationProps) {
   const { globalAudioState, toggleGlobalPlayback } = useGlobalAudio();
-  const { isPlaying, speak, stop, pause, resume, settings, setSpeed, audioState } = useSpeech();
+  const { isPlaying, speak, stop, pause, resume, toggle, settings, setSpeed, audioState } = useSpeech();
   const { isBookmarked, toggleBookmark } = useBookmarks();
 
-  const handlePlay = () => {
-    if (speechSynthesis.paused) {
+  const handleToggle = () => {
+    if (audioState.isPlaying) {
+      // 재생 중이면 일시정지/토글
+      toggle();
+    } else if (speechSynthesis.paused) {
+      // 일시정지 상태이면 재개
       resume();
     } else if (verseText) {
-      // Check if in double mode (cross mode) and both verses exist
+      // 새로 재생 시작
       if (primaryVerse && secondaryVerse) {
         speakCrossMode(primaryVerse, secondaryVerse, primaryVerse.language);
       } else {
@@ -67,12 +71,6 @@ export function Navigation({
         speak(secondaryVerse.text, { rate: currentSpeed, lang: 'ko-KR' });
       }
     });
-  };
-
-  const handlePause = () => {
-    if (speechSynthesis.speaking && !speechSynthesis.paused) {
-      pause();
-    }
   };
 
   const handleSpeedChange = (increment: number) => {
@@ -484,10 +482,10 @@ export function Navigation({
             {/* 재생/일시정지 토글 버튼 */}
             <Button
               variant="ghost"
-              onClick={isPlaying ? handlePause : handlePlay}
+              onClick={handleToggle}
               className="p-4 bg-amber-800 hover:bg-amber-700 rounded-full transition-colors"
             >
-              {isPlaying ? (
+              {audioState.isPlaying ? (
                 <Pause className="h-6 w-6 text-white" />
               ) : (
                 <Play className="h-6 w-6 text-white ml-1" />
