@@ -24,7 +24,7 @@ export function VoicePackageGuide({ onClose, onNeverShow }: VoicePackageGuidePro
           {/* 안내 메시지 */}
           <div className="text-center p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
             <div className="text-sm font-bold text-blue-700">
-              기기에 언어팩을 다운로드하면 고품질 음성을 사용할 수 있습니다
+              기기에 언어팩을 다운로드 하시면 고품질 음성을 사용할 수 있습니다. 아래 다운로드 방법을 따라해주세요.
             </div>
           </div>
 

@@ -222,14 +222,14 @@ export default function Player() {
             
             {currentVerseData && (
               <>
-                <div className="text-center text-slate-600 text-sm leading-relaxed">
+                <div className="text-center text-slate-600 text-lg leading-relaxed font-medium">
                   {currentVerseData.text}
                 </div>
                 
                 {/* Force single mode for player - show Korean if available for non-Korean languages */}
                 {currentLanguage !== 'ko' && koreanVerseData && (
-                  <div className="text-center text-slate-500 text-xs leading-relaxed mt-3 pt-3 border-t border-amber-100">
-                    <div className="text-xs text-amber-600 mb-1">한국어</div>
+                  <div className="text-center text-slate-500 text-base leading-relaxed mt-4 pt-3 border-t border-amber-100">
+                    <div className="text-sm text-amber-600 mb-2">한국어</div>
                     {koreanVerseData.text}
                   </div>
                 )}
