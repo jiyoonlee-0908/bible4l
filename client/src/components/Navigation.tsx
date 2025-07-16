@@ -481,22 +481,17 @@ export function Navigation({
               <SkipBack className="h-5 w-5 text-slate-600" />
             </Button>
 
-            {/* 재생 버튼 */}
+            {/* 재생/일시정지 토글 버튼 */}
             <Button
               variant="ghost"
-              onClick={handlePlay}
+              onClick={isPlaying ? handlePause : handlePlay}
               className="p-4 bg-amber-800 hover:bg-amber-700 rounded-full transition-colors"
             >
-              <Play className="h-6 w-6 text-white" />
-            </Button>
-
-            {/* 일시정지 버튼 */}
-            <Button
-              variant="ghost"
-              onClick={handlePause}
-              className="p-3 bg-slate-200 hover:bg-slate-300 rounded-full transition-colors"
-            >
-              <Pause className="h-5 w-5 text-slate-600" />
+              {isPlaying ? (
+                <Pause className="h-6 w-6 text-white" />
+              ) : (
+                <Play className="h-6 w-6 text-white ml-1" />
+              )}
             </Button>
 
             {/* 다음 버튼 */}
